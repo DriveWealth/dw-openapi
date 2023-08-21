@@ -1,1 +1,1 @@
-# investing-api-spec
+# investing-api-oas
