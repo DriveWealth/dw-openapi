@@ -1,1 +1,0 @@
-# investing-api-oas
