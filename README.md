@@ -1,5 +1,5 @@
-![DW Developer Logo](http://www.drivewealth.com/developer-assets/dev-logo-dark.svg)
-![DW Developer Logo](http://www.drivewealth.com/developer-assets/dev-logo-light.svg)
+![DW Developer Logo](http://www.drivewealth.com/developer-assets/dev-logo-dark.svg#gh-light-mode-only)
+![DW Developer Logo](http://www.drivewealth.com/developer-assets/dev-logo-light.svg#gh-dark-mode-only)
 
 # DriveWealth's OpenAPI Specification
 
