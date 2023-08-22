@@ -1,5 +1,5 @@
-![DW Developer Logo](./static/dw-logo-dark.svg#gh-dark-mode-only)
-![DW Developer Logo](./static/dw-logo-light.svg#gh-light-mode-only)
+![DW Developer Logo](./static/dw-logo-dark.svg#gh-light-mode-only)
+![DW Developer Logo](./static/dw-logo-light.svg#gh-dark-mode-only)
 
 #DriveWealth's Investing APIs OAS Specifications
 
