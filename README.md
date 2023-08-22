@@ -1,5 +1,8 @@
-![DW Developer Logo](http://www.drivewealth.com/developer-assets/dev-logo-dark.svg#gh-light-mode-only)
-![DW Developer Logo](http://www.drivewealth.com/developer-assets/dev-logo-light.svg#gh-dark-mode-only)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="http://www.drivewealth.com/developer-assets/dev-logo-light.svg">
+  <source media="(prefers-color-scheme: light)" srcset="http://www.drivewealth.com/developer-assets/dev-logo-dark.svg">
+  <img alt="Shows a black logo in light color mode and a white one in dark color mode." src="http://www.drivewealth.com/developer-assets/dev-logo-dark.svg">
+</picture>
 
 # DriveWealth's OpenAPI Specification
 
