@@ -44,6 +44,10 @@ tags:
     x-displayName: Auth
   - name: Supported Countries
     x-displayName: Supported Countries
+  - name: Disclosures
+    x-displayName: Disclosures
+  - name: Disclosure Acknowledgments
+    x-displayName: Disclosure Acknowledgments
   - name: Exchanges
     x-displayName: Exchanges
   - name: Charts
@@ -1704,6 +1708,165 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DepositByDepositID'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /disclosures:
+    post:
+      tags:
+        - Disclosures
+      summary: Create a disclosure
+      description: Creates a disclosure. Caller must have `DISCLOSURES_CREATE` permission.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDisclosureInput'
+      responses:
+        '200':
+          description: Creating a disclosure was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDisclosureOutput'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+    get:
+      tags:
+        - Disclosures
+      summary: List all disclosures
+      description: >-
+        Fetches a list of disclosures which are ACTIVE. If caller has
+        `DISCLOSURES_GET_ALL` permission, also returns not ACTIVE disclosures
+        additionally.
+      responses:
+        '200':
+          description: Fetching A List of Disclosures was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfDisclosures'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /disclosures/{disclosureID}:
+    get:
+      tags:
+        - Disclosures
+      summary: Returns an existing disclosure
+      description: >-
+        Returns an existing ACTIVE disclosure. If existing disclosure is not
+        ACTIVE, caller must have `DISCLOSURES_GET_ALL` permission to retrieve
+        it.
+      parameters:
+        - in: path
+          name: disclosureID
+          schema:
+            $ref: '#/components/schemas/disclosureID'
+          required: true
+      responses:
+        '200':
+          description: Disclosure was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Disclosure'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+    patch:
+      tags:
+        - Disclosures
+      summary: Updates an existing disclosure
+      description: >-
+        Updates an existing disclosure with the values in the payload. Caller
+        must have `DISCLOSURES_UPDATE` permission.
+      parameters:
+        - in: path
+          name: disclosureID
+          schema:
+            $ref: '#/components/schemas/disclosureID'
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDisclosureInput'
+      responses:
+        '200':
+          description: Disclosure was updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateDisclosureOutput'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /users/{userID}/acknowledgments:
+    post:
+      tags:
+        - Disclosure Acknowledgments
+      summary: Create a disclosure acknowledgment
+      description: >-
+        Creates a disclosure acknowledgment. Caller must have
+        `USER_DISCLOSURE_CREATE` permission.
+      parameters:
+        - in: path
+          name: userID
+          schema:
+            $ref: '#/components/schemas/userID'
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAcknowledgmentInput'
+      responses:
+        '200':
+          description: Creating a disclosure acknowledgment was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Acknowledgment'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+    get:
+      tags:
+        - Disclosure Acknowledgments
+      summary: List all disclosures acknowledgments for the given user
+      description: >-
+        Fetches a list of disclosures acknowledgments for the given user. Caller
+        must have `USER_DISCLOSURE_GET` permission.
+      parameters:
+        - in: path
+          name: userID
+          schema:
+            $ref: '#/components/schemas/userID'
+          required: true
+      responses:
+        '200':
+          description: Fetching A List of Disclosure Acknowledgments was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfAcknowledgments'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -8531,6 +8694,204 @@ components:
       description: DESCRIPTION COMING SOON...
       enum:
         - INSTANT FUNDING BREAKDOWN JOB
+    disclosureID:
+      type: string
+      format: uuid
+      example: 31b087cc-4a74-41ad-b0f2-57acca333de6
+      description: The id of a disclosure
+    disclosureName:
+      type: string
+      pattern: ^[a-zA-Z0-9_]+$
+      example: OPTIONS_AGREEMENT_V1
+      description: The name of the disclosure
+    documentID:
+      type: string
+      format: uuid
+      example: 31b087cc-4a74-41ad-b0f2-57acca333de6
+      description: The id of a document
+    url:
+      type: string
+      format: url
+      example: >-
+        https://dandbndiekfkx.cloudfront.net/xxxxcxxx-yyyy-zzzz-b0f2-57acca333de6.jpeg?Policy=eyJTdGF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6Imh0dHBzOi8vZG56cXZuMjgxazc0bS5jbG91ZGZyb250Lm5ldC8zMWIwOD
+      description: The url of the disclosure document
+    version:
+      type: string
+      format: ^[0-9]{1,3}([.])[0-9]{1,3}([.])[0-9]{1,3}$
+      example: 1.1.0
+      description: Version of the disclosure
+    obligation:
+      type: string
+      example: DELIVERY
+      description: Indicates the legal obligation of the disclosure
+      enum:
+        - ACKNOWLEDGE
+        - DELIVERY
+    effectiveDate:
+      type: string
+      format: date
+      pattern: yyyy-MM-dd
+      example: '2023-06-14'
+      description: Indicates the effective date of the disclosure
+    product:
+      type: string
+      example: EQUITY
+      description: The applicable product if the disclosure is product specific
+      enum:
+        - ALL
+        - EQUITY
+        - CRYPTO
+        - MUTUAL_FUNDS
+        - DRIVEHUB
+    subProduct:
+      type: string
+      example: OPTIONS
+      description: >-
+        The applicable sub product within the product if the disclosure is sub
+        product specific
+      enum:
+        - ALL
+        - OPTIONS
+        - REINVESTMENT
+        - OMNI_OPTIONS
+        - TERMS
+    notes:
+      type: string
+      example: Options agreement, major change
+      description: >-
+        Free text field to provide a summary of a new disclosure, or a summary
+        of changes when updating a disclosure
+    status:
+      type: string
+      example: ACTIVE
+      description: A disclosure can be active or no longer supported
+      enum:
+        - ACTIVE
+        - INACTIVE
+    acknowledged:
+      type: boolean
+      example: true
+      description: >-
+        Indicates whether the end user acknowledged or declined the disclosure
+        agreement
+    signedAt:
+      type: string
+      format: timestamp
+      example: '2023-06-14T15:07:24.634Z'
+      description: >-
+        Timestamp of when the customer acknowledged or declined the disclosure
+        agreement
+    Disclosure:
+      type: object
+      properties:
+        disclosureID:
+          $ref: '#/components/schemas/disclosureID'
+        name:
+          $ref: '#/components/schemas/disclosureName'
+        documentID:
+          $ref: '#/components/schemas/documentID'
+        url:
+          $ref: '#/components/schemas/url'
+        version:
+          $ref: '#/components/schemas/version'
+        obligation:
+          $ref: '#/components/schemas/obligation'
+        effectiveDate:
+          $ref: '#/components/schemas/effectiveDate'
+        product:
+          $ref: '#/components/schemas/product'
+        subProduct:
+          $ref: '#/components/schemas/subProduct'
+        status:
+          $ref: '#/components/schemas/status'
+        created:
+          $ref: '#/components/schemas/created'
+        updated:
+          $ref: '#/components/schemas/updated'
+    Acknowledgment:
+      type: object
+      properties:
+        disclosureID:
+          $ref: '#/components/schemas/disclosureID'
+        acknowledged:
+          $ref: '#/components/schemas/acknowledged'
+        signedAt:
+          $ref: '#/components/schemas/signedAt'
+    CreateDisclosureInput:
+      type: object
+      required:
+        - name
+        - documentID
+        - version
+        - obligation
+        - effectiveDate
+        - product
+        - subProduct
+        - status
+      properties:
+        name:
+          $ref: '#/components/schemas/disclosureName'
+        documentID:
+          $ref: '#/components/schemas/documentID'
+        version:
+          $ref: '#/components/schemas/version'
+        obligation:
+          $ref: '#/components/schemas/obligation'
+        effectiveDate:
+          $ref: '#/components/schemas/effectiveDate'
+        product:
+          $ref: '#/components/schemas/product'
+        subProduct:
+          $ref: '#/components/schemas/subProduct'
+        status:
+          $ref: '#/components/schemas/status'
+    CreateDisclosureOutput:
+      $ref: '#/components/schemas/Disclosure'
+    UpdateDisclosureInput:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/disclosureName'
+        documentID:
+          $ref: '#/components/schemas/documentID'
+        version:
+          $ref: '#/components/schemas/version'
+        obligation:
+          $ref: '#/components/schemas/obligation'
+        effectiveDate:
+          $ref: '#/components/schemas/effectiveDate'
+        product:
+          $ref: '#/components/schemas/product'
+        subProduct:
+          $ref: '#/components/schemas/subProduct'
+        status:
+          $ref: '#/components/schemas/status'
+    UpdateDisclosureOutput:
+      $ref: '#/components/schemas/Disclosure'
+    CreateAcknowledgmentInput:
+      required:
+        - disclosureID
+        - signedAt
+        - acknowledged
+      $ref: '#/components/schemas/Acknowledgment'
+    CreateAcknowledgmentOutput:
+      $ref: '#/components/schemas/Acknowledgment'
+    ListOfDisclosures:
+      type: object
+      description: A list of disclosures
+      properties:
+        disclosures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Disclosure'
+    ListOfAcknowledgments:
+      type: object
+      description: A list of disclosure acknowledgments
+      properties:
+        acknowledgments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Acknowledgment'
     Bars:
       type: object
       properties:
