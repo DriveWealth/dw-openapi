@@ -10840,7 +10840,6 @@ components:
         timeOffset:
           type: number
           example: '1671208571982'
-          description: Description coming soon.
         volume:
           type: number
           example: 2779731
