@@ -46,8 +46,8 @@ tags:
     x-displayName: Supported Countries
   - name: Disclosures
     x-displayName: Disclosures
-  - name: Disclosure Acknowledgments
-    x-displayName: Disclosure Acknowledgments
+  - name: Disclosure
+    x-displayName: Disclosure
   - name: Exchanges
     x-displayName: Exchanges
   - name: Charts
@@ -1715,10 +1715,12 @@ paths:
           dwAppKey: []
   /disclosures:
     post:
+      x-dw-config:
+        internal: true
       tags:
         - Disclosures
-      summary: Create a disclosure
-      description: Creates a disclosure. Caller must have `DISCLOSURES_CREATE` permission.
+      summary: Create Disclosure
+      description: Creates a disclosure.
       requestBody:
         required: true
         content:
@@ -1740,11 +1742,8 @@ paths:
     get:
       tags:
         - Disclosures
-      summary: List all disclosures
-      description: >-
-        Fetches a list of disclosures which are ACTIVE. If caller has
-        `DISCLOSURES_GET_ALL` permission, also returns not ACTIVE disclosures
-        additionally.
+      summary: List all Disclosures
+      description: Fetches a list of disclosures.
       responses:
         '200':
           description: Fetching A List of Disclosures was Successful.
@@ -1761,11 +1760,8 @@ paths:
     get:
       tags:
         - Disclosures
-      summary: Returns an existing disclosure
-      description: >-
-        Returns an existing ACTIVE disclosure. If existing disclosure is not
-        ACTIVE, caller must have `DISCLOSURES_GET_ALL` permission to retrieve
-        it.
+      summary: Retrive Disclosure
+      description: Fetches a disclosure's details by disclosureID.
       parameters:
         - in: path
           name: disclosureID
@@ -1785,12 +1781,12 @@ paths:
         - sessionToken: []
           dwAppKey: []
     patch:
+      x-dw-config:
+        internal: true
       tags:
         - Disclosures
-      summary: Updates an existing disclosure
-      description: >-
-        Updates an existing disclosure with the values in the payload. Caller
-        must have `DISCLOSURES_UPDATE` permission.
+      summary: Updates an existing Disclosure
+      description: Updates an existing disclosure with the values in the payload.
       parameters:
         - in: path
           name: disclosureID
@@ -1818,11 +1814,9 @@ paths:
   /users/{userID}/acknowledgments:
     post:
       tags:
-        - Disclosure Acknowledgments
-      summary: Create a disclosure acknowledgment
-      description: >-
-        Creates a disclosure acknowledgment. Caller must have
-        `USER_DISCLOSURE_CREATE` permission.
+        - Disclosures
+      summary: Create Disclosure Acknowledgment
+      description: Creates a user's disclosure acknowledgment.
       parameters:
         - in: path
           name: userID
@@ -1849,11 +1843,9 @@ paths:
           dwAppKey: []
     get:
       tags:
-        - Disclosure Acknowledgments
-      summary: List all disclosures acknowledgments for the given user
-      description: >-
-        Fetches a list of disclosures acknowledgments for the given user. Caller
-        must have `USER_DISCLOSURE_GET` permission.
+        - Disclosure
+      summary: List all Disclosures acknowledgments by User
+      description: Fetches a list of disclosures acknowledgments for the given user.
       parameters:
         - in: path
           name: userID
