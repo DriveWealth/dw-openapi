@@ -46,8 +46,6 @@ tags:
     x-displayName: Supported Countries
   - name: Disclosures
     x-displayName: Disclosures
-  - name: Disclosure
-    x-displayName: Disclosure
   - name: Exchanges
     x-displayName: Exchanges
   - name: Charts
@@ -1843,7 +1841,7 @@ paths:
           dwAppKey: []
     get:
       tags:
-        - Disclosure
+        - Disclosures
       summary: List all Disclosures acknowledgments by User
       description: Fetches a list of disclosures acknowledgments for the given user.
       parameters:
