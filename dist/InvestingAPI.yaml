@@ -38,8 +38,10 @@ tags:
     x-displayName: Orders
   - name: Positions
     x-displayName: Positions
-  - name: Asset Transfers
-    x-displayName: Asset Transfers
+  - name: Asset Transfer
+    x-displayName: Asset Transfer
+  - name: Cancel Rebill
+    x-displayName: Cancel Rebill
   - name: Auth
     x-displayName: Auth
   - name: Supported Countries
@@ -1159,9 +1161,8 @@ paths:
   /asset-transfers/acats:
     post:
       tags:
-        - Asset Transfers
+        - Asset Transfer
       summary: Create ACATS Transfer
-      operationId: account-graduate
       x-readme:
         samples-languages:
           - javascript
@@ -1332,7 +1333,7 @@ paths:
   /asset-transfers/minor-graduation:
     post:
       tags:
-        - Asset Transfers
+        - Asset Transfer
       summary: Create Minor Graduation Transfer
       responses:
         '200':
@@ -1392,7 +1393,7 @@ paths:
         required: true
     get:
       tags:
-        - Asset Transfers
+        - Asset Transfer
       summary: Retrieve Transfer
       responses:
         '200':
@@ -1464,7 +1465,6 @@ paths:
                           description: Asset transfer request has been initiated.
                         comment: Transfer request has been submitted in queue
                     created: '2023-07-26T14:05:18.518Z'
-      operationId: get-back-office-accounts-accountID-transfer-id
       description: Get a Transfer's current details.
       security:
         - bearerAuth: []
@@ -1475,8 +1475,7 @@ paths:
     get:
       summary: List all Transfers
       tags:
-        - Asset Transfers
-      operationId: list-all-minor-gradudations-transfers
+        - Asset Transfer
       description: >-
         Lists all of your Transfers across all Accounts. This can be filtered by
         type of Transfer.
@@ -1584,6 +1583,166 @@ paths:
                     nextPageOffset: >-
                       80f9b672-120d-4b73-9cc9-42fb3262c4b9#acats_a2a787f0-8e4b-4c39-9653-2da92820cc3e#2023-07-28T23:55:34.142Z
                     prevPageOffset: ''
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /asset-transfers/cancel-rebills:
+    post:
+      tags:
+        - Cancel Rebill
+      summary: Create Cancel Rebill
+      description: Create Cancel Rebill
+      requestBody:
+        description: Created Cancel Rebill
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelRebillRequest'
+            examples:
+              Create Cancel Rebill:
+                value:
+                  orderNo: IKJL0000001
+                  type: PRICE_ADJUSTMENT
+                  reason: PRICE_ADJUSTMENT_PARTNER
+                  adjustedPrice: 22.99
+                  approvedBy: John Doe
+                  comment: Incorrect price during execution.
+                  metadata:
+                    - {}
+      responses:
+        '200':
+          description: Creating a Cancel Rebill was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelRebillResponse'
+              examples:
+                Cancel Rebill Response:
+                  value:
+                    id: cxl_rbl_497f6eca-6276-4993-bfeb-53cbbbba6f08
+                    reason: PRICE_ADJUSTMENT_PARTNER
+                    type: PRICE_ADJUSTMENT
+                    orderNo: KJG000001
+                    approvedBy: John Doe
+                    status: STARTED
+                    comment: reported NSF
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+    get:
+      tags:
+        - Cancel Rebill
+      summary: Retrieve All Cancel Rebills
+      description: Get all the Cancel Rebills
+      parameters:
+        - name: from
+          in: query
+          description: The start date of the range of Cancel Rebill.
+          required: true
+          schema:
+            type: string
+            example: '2023-04-22'
+        - name: to
+          in: query
+          description: The end date of the range of Cancel Rebill.
+          required: true
+          schema:
+            type: string
+            example: '2023-04-22'
+        - name: partnerID
+          in: query
+          schema:
+            type: string
+            example: 5730ee28-78cb-4736-9c99-ede6dc1084a3
+        - name: status
+          in: query
+          description: The Cancel Rebill status code.
+          required: true
+          schema:
+            type: string
+            example: STARTED
+            enum:
+              - STARTED
+              - PENDING
+              - ON_HOLD
+              - APPROVED
+              - REJECTED
+              - SUCCESSFUL
+        - name: limit
+          in: query
+          description: The number of records to be returned by the query.
+          required: false
+          schema:
+            type: integer
+            example: 20
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: offset
+          in: query
+          description: The offset of the last queried result.
+          required: false
+          schema:
+            type: string
+            example: >-
+              5730ee28-78cb-4736-9c99-ede6dc1084a3#cxl_rbl_5730ee28-78cb-4736-9c99-ede6dc1084a3
+        - name: direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - next
+              - previous
+            default: next
+            example: next
+      responses:
+        '200':
+          description: Retrieving Cancel Rebills was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelRebillDetailResponse'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /asset-transfers/cancel-rebills/{id}:
+    get:
+      tags:
+        - Cancel Rebill
+      summary: Retrieve Cancel Rebill by ID
+      description: Get Cancel Rebill details by ID.
+      parameters:
+        - name: id
+          in: path
+          description: The identifier of the Cancel Rebill.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retrieving Cancel Rebill was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelRebillResponse'
+              examples:
+                Cancel Rebill Response:
+                  value:
+                    id: cxl_rbl_497f6eca-6276-4993-bfeb-53cbbbba6f08
+                    reason: PRICE_ADJUSTMENT_PARTNER
+                    type: PRICE_ADJUSTMENT
+                    orderNo: KJG000001
+                    approvedBy: John Doe
+                    status: STARTED
+                    comment: reported NSF
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -8026,6 +8185,273 @@ components:
           minimum: 1
       required:
         - quantity
+    CancelRebillUpdateRes:
+      type: object
+      properties:
+        partnerID:
+          $ref: '#/components/schemas/parentIBIDObject'
+        id:
+          type: string
+        status:
+          $ref: '#/components/schemas/CancelRebillStatus/properties/name'
+        comment:
+          $ref: '#/components/schemas/note'
+    CancelRebillRequest:
+      type: object
+      required:
+        - orderNo
+        - type
+        - reason
+      properties:
+        orderNo:
+          $ref: '#/components/schemas/orderNo'
+        type:
+          type: string
+          example: CANCEL
+          enum:
+            - CANCEL
+            - PRICE_ADJUSTMENT
+          description: The adjustment classification.
+        reason:
+          type: string
+          example: FRAUD
+          enum:
+            - FRAUD
+            - PRICE_ADJUSTMENT_PARTNER
+            - PRICE_ADJUSTMENT_VENUE
+            - DRIVEWEALTH_TECHNICAL_ERROR
+            - PARTNER_TECHNICAL_ERROR
+            - VENDOR_ERROR
+          description: The cause of the request.
+        approvedBy:
+          $ref: '#/components/schemas/userID'
+        adjustedPrice:
+          type: number
+          example: 125.3
+          description: >-
+            The *updated* price that should be set; from the original
+            transaction.
+        comment:
+          type: string
+          description: Comment on the reason for Cancellation or a price adjustment.
+          minLength: 1
+          maxLength: 100
+        metadata:
+          type: array
+          description: >-
+            Any metadata field which needs to be part of cancel rebill
+            transaction.
+          items:
+            type: object
+    CancelRebillIdentifer:
+      type: string
+      description: A unique identifier generated for the Cancel Rebill.
+      format: string
+    CancelRebillResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/CancelRebillIdentifer'
+        reason:
+          $ref: '#/components/schemas/CancelRebillReason'
+        type:
+          $ref: '#/components/schemas/CancelRebillType'
+        orderNo:
+          $ref: '#/components/schemas/orderNo'
+        status:
+          $ref: '#/components/schemas/CancelRebillStatus'
+        approvedBy:
+          type: string
+          description: The user who approved the Cancel Rebill Request.
+          minLength: 1
+          maxLength: 50
+        comment:
+          $ref: '#/components/schemas/note'
+    CancelRebillReason:
+      type: object
+      properties:
+        name:
+          example: PRICE_ADJUSTMENT_PARTNER
+          enum:
+            - FRAUD
+            - PRICE_ADJUSTMENT_PARTNER
+            - PRICE_ADJUSTMENT_VENUE
+            - DRIVEWEALTH_TECHNICAL_ERROR
+            - PARTNER_TECHNICAL_ERROR
+            - VENDOR_ERROR
+          description: The Cancel Rebill reason.
+        description:
+          type: string
+          description: The description of the reason for the Cancel Rebill.
+    CancelRebillType:
+      type: object
+      properties:
+        name:
+          example: CANCEL
+          enum:
+            - CANCEL
+            - PRICE_ADJUSTMENT
+          description: The type of Cancel Rebill.
+        description:
+          type: string
+          description: The description of the cancel rebill type.
+    CancelRebillStatus:
+      type: object
+      properties:
+        name:
+          enum:
+            - STARTED
+            - APPROVED
+            - ON_HOLD
+            - REJECTED
+            - PENDING
+            - SUCCESSFUL
+          description: The status of the Cancel Rebill.
+        description:
+          type: string
+          description: The description of the Cancel Rebill status.
+        code:
+          type: integer
+    CancelRebillDetailResponse:
+      type: object
+      title: CancelRebillDetailResponse
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CancelRebillDetail'
+        responseMetadata:
+          $ref: '#/components/schemas/ResponseMetadata'
+    CancelRebillDetail:
+      type: object
+      title: CancelRebillDetail
+      description: Model object to list all the cancel rebill transaction attributes.
+      properties:
+        id:
+          $ref: '#/components/schemas/CancelRebillIdentifer'
+        partner:
+          $ref: '#/components/schemas/parentIBIDObject'
+        reviewRequired:
+          example: true
+          type: boolean
+          description: >-
+            Flag which suggests whether the cancel rebill request require manual
+            processing.
+        orderNo:
+          $ref: '#/components/schemas/orderNo'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        errorAccountNo:
+          $ref: '#/components/schemas/accountNo'
+          description: >-
+            Error Account against which the Cancel rebill transaction was
+            booked.
+        type:
+          $ref: '#/components/schemas/CancelRebillType'
+        reason:
+          $ref: '#/components/schemas/CancelRebillReason'
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+          description: The instrument symbol for which the original trade was booked.
+        quantity:
+          type: number
+          example: 4
+          description: The order quantity of original transaction.
+        price:
+          type: number
+          example: 100.01
+          description: The price of original transaction.
+        adjustedPrice:
+          type: number
+          example: 100.03
+          description: New price when adjusting the price of original transaction.
+        status:
+          $ref: '#/components/schemas/CancelRebillStatus'
+        statusComment:
+          type: string
+          description: Comment while approving rejecting the Cancel Rebill transaction.
+        createdBy:
+          type: string
+          description: The user identifier who initiated the Cancel Rebill transaction.
+        created:
+          type: string
+          description: The date when the Cancel Rebill transaction was initiated.
+        approvedBy:
+          type: string
+          description: The user who approved the Cancel Rebill Request.
+          minLength: 1
+          maxLength: 50
+        updatedBy:
+          type: string
+          description: The User who updated the Cancel rebill transaction.
+        updated:
+          type: string
+          description: The last updated date of the Cancel Rebill transaction.
+        comment:
+          $ref: '#/components/schemas/note'
+        auditDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditDetails'
+    AuditDetails:
+      type: object
+      properties:
+        status:
+          example: APPROVED
+          enum:
+            - STARTED
+            - APPROVED
+            - ON_HOLD
+            - REJECTED
+            - PENDING
+            - SUCCESSFUL
+          description: The status of the Cancel Rebill.
+        comment:
+          $ref: '#/components/schemas/note'
+        updatedBy:
+          type: string
+          description: The user who updated the status.
+        updated:
+          type: string
+          description: The date when the status was last updated.
+    ResponseMetadata:
+      type: object
+      title: ResponseMetadata
+      properties:
+        lastKey:
+          type: string
+          example: >-
+            5730ee28-78cb-4736-9c99-ede6dc1084a3#cxl_rbl_9ee1379f-2d18-433f-a2b4-0d523afe4007
+        count:
+          type: integer
+          example: 50
+    CancelRebillUpdateRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/UpdateRequest'
+    UpdateRequest:
+      type: object
+      properties:
+        partnerID:
+          $ref: '#/components/schemas/partnerID'
+        id:
+          $ref: '#/components/schemas/CancelRebillIdentifer'
+        status:
+          example: APPROVED
+          enum:
+            - STARTED
+            - APPROVED
+            - ON_HOLD
+            - REJECTED
+            - PENDING
+            - SUCCESSFUL
+          description: The status of the Cancel Rebill.
+        comment:
+          $ref: '#/components/schemas/note'
+      required:
+        - partnerID
+        - id
+        - status
     metadata:
       type: object
       example:
@@ -8037,6 +8463,10 @@ components:
       type: string
       example: c85b231a-2bc9-11ee-be56-0242ac120002
       description: The unique identifier of the asset transfer.
+    partnerID:
+      type: string
+      example: 80f9b672-120d-4b73-9ccv9-42fb3262c4b9
+      description: The partner's unique identifier.
     CreateAuthToken:
       type: object
       properties:
