@@ -1871,31 +1871,6 @@ paths:
         - sessionToken: []
           dwAppKey: []
   /disclosures:
-    post:
-      x-dw-config:
-        internal: true
-      tags:
-        - Disclosures
-      summary: Create Disclosure
-      description: Creates a disclosure.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateDisclosureInput'
-      responses:
-        '200':
-          description: Creating a disclosure was successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateDisclosureOutput'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
     get:
       tags:
         - Disclosures
@@ -1932,37 +1907,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Disclosure'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-    patch:
-      x-dw-config:
-        internal: true
-      tags:
-        - Disclosures
-      summary: Updates an existing Disclosure
-      description: Updates an existing disclosure with the values in the payload.
-      parameters:
-        - in: path
-          name: disclosureID
-          schema:
-            $ref: '#/components/schemas/disclosureID'
-          required: true
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateDisclosureInput'
-      responses:
-        '200':
-          description: Disclosure was updated successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UpdateDisclosureOutput'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -4068,6 +4012,7 @@ paths:
                     politicallyExposed: false
                     riskTolerance: HIGH
                     userNoteQty: 0
+                    validTaxForm: false
                     taxTreatyWithUS: true
                     avatarURL: >-
                       https://secure.gravatar.com/avatar/2076105f6efe7c11e285add95f514b9a.jpg
@@ -8639,14 +8584,18 @@ components:
           $ref: '#/components/schemas/currency'
         type:
           $ref: '#/components/schemas/depositTypes'
+        bankAccountID:
+          $ref: '#/components/schemas/bankAccountID'
         note:
           $ref: '#/components/schemas/note'
         iraContribution:
           $ref: '#/components/schemas/iraContribution'
-        bankAccountID:
-          $ref: '#/components/schemas/bankAccountID'
         recurringFrequency:
           $ref: '#/components/schemas/recurringFrequency'
+        startDate:
+          type: string
+          example: '2017-09-18'
+          description: The start date of recurring deposit.
         settlementProfileID:
           $ref: '#/components/schemas/settlementProfileID'
         originatorBankDetails:
@@ -8668,6 +8617,13 @@ components:
               $ref: '#/components/schemas/externalAccountHolderAddress'
             accountHolderCountry:
               $ref: '#/components/schemas/externalAccountHolderCountry'
+        metadata:
+          type: object
+          example:
+            myCustomKey: myCustomValue
+          description: >-
+            The metadata object allows for creating a maximum of 5 keys (max 36
+            characters) and each value cannot exceed more than 128 bytes.
     Deposit:
       type: object
       properties:
@@ -8817,7 +8773,6 @@ components:
       enum:
         - ACH
         - WIRE
-        - CHECK
         - INSTANT_FUNDING
         - CASH_PROMOTION
         - CASH_TRANSFER_DEPOSITS
@@ -12275,7 +12230,10 @@ components:
           $ref: '#/components/schemas/currency'
         type:
           $ref: '#/components/schemas/withdrawalTypes'
+        bankAccountID:
+          $ref: '#/components/schemas/bankAccountID'
         details:
+          deprecated: true
           $ref: '#/components/schemas/withdrawalDetailsObject'
         iraDistribution:
           $ref: '#/components/schemas/iraDistribution'
@@ -12291,25 +12249,6 @@ components:
           $ref: '#/components/schemas/note'
         settlementProfileID:
           $ref: '#/components/schemas/settlementProfileID'
-        receivingBankDetails:
-          type: object
-          properties:
-            bankAccountNumber:
-              $ref: '#/components/schemas/bankAccountNumber'
-            bankRoutingNumber:
-              $ref: '#/components/schemas/bankRoutingNumber'
-            bankName:
-              $ref: '#/components/schemas/externalBankName'
-            bankAddress:
-              $ref: '#/components/schemas/externalBankAddress'
-            bankAccountCountry:
-              $ref: '#/components/schemas/externalBankCountry'
-            accountHolderName:
-              $ref: '#/components/schemas/accountHolderName'
-            accountHolderAddress:
-              $ref: '#/components/schemas/externalAccountHolderAddress'
-            accountHolderCountry:
-              $ref: '#/components/schemas/externalAccountHolderCountry'
     WithdrawalByRedemptionID:
       type: object
       properties:
@@ -12414,7 +12353,6 @@ components:
       enum:
         - ACH
         - WIRE
-        - CHECK
         - CASH_TRANSFER
         - CASH_TRANSFER_WITHDRAWALS
     withdrawalID:
@@ -14421,7 +14359,11 @@ components:
         userNoteQty:
           type: number
           example: 0
-          description: DESCRIPTION COMING SOON...
+          description: Total number of notes on the user.
+        validTaxForm:
+          type: boolean
+          example: true
+          description: True, if the user has verified/updated tax information.
         taxTreatyWithUS:
           type: boolean
           example: true
