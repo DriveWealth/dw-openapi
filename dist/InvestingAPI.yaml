@@ -6105,9 +6105,10 @@ components:
           description: Permission assigned to the authorized user.
           example:
             - ORDERS_CREATE
-          enum:
-            - ORDERS_CREATE
-            - MINOR_GRADUATION_TRANSFER
+          items:
+            enum:
+              - ORDERS_CREATE
+              - MINOR_GRADUATION_TRANSFER
     leverage:
       type: number
       example: 1
@@ -6372,6 +6373,10 @@ components:
           type: number
           example: 1.49
           description: Minimum commission rate.
+    name:
+      type: string
+      example: Tom Ace
+      description: Full name or entity name of type.
     beneficiariesObject:
       type: object
       description: An object containing the information of a beneficiary.
@@ -6384,9 +6389,7 @@ components:
             - PERSON
             - ENTITY
         name:
-          type: string
-          example: Tom Ace
-          description: Full name or entity name of type.
+          $ref: '#/components/schemas/name'
         percentage:
           type: number
           example: '0.25'
@@ -6425,6 +6428,10 @@ components:
       type: string
       example: '7442393174'
       description: The account number of the user's external bank account.
+    bankName:
+      type: string
+      example: JP Morgan Chase
+      description: The name of the user's bank.
     beneficiaryBankAddress:
       type: string
       example: 222 BROADWAY
@@ -6445,19 +6452,13 @@ components:
       type: string
       example: USA
       description: The user's external bank country.
-    name:
-      type: string
-      example: Tom Ace
-      description: Full name or entity name of type.
     wireDetails:
       type: object
       properties:
         bankAccountNumber:
           $ref: '#/components/schemas/bankAccountNumber'
         bankName:
-          type: string
-          example: JP Morgan Chase
-          description: The name of the user's bank.
+          $ref: '#/components/schemas/bankName'
         bankSwiftCode:
           type: string
           example: CHASUS33
@@ -6505,10 +6506,6 @@ components:
       type: string
       example: '110000000'
       description: The routing number of the user's external bank.
-    bankName:
-      type: string
-      example: JP Morgan Chase
-      description: The name of the user's bank.
     bankAddress:
       type: object
       properties:
@@ -7274,6 +7271,14 @@ components:
         - PENDING_CANCEL
         - CANCELED
         - REJECTED
+    limitPrice:
+      type: number
+      example: null
+      description: The price set for the limit order.
+    stopPrice:
+      type: number
+      example: 200
+      description: The stop price of a limit order.
     ordersObj:
       type: object
       properties:
@@ -7298,9 +7303,7 @@ components:
           example: null
           description: The time when the limit order expires.
         limitPrice:
-          type: number
-          example: null
-          description: The price set for the limit order.
+          $ref: '#/components/schemas/limitPrice'
         side:
           $ref: '#/components/schemas/sideAbbreviated'
         orderCashAmt:
@@ -7308,9 +7311,7 @@ components:
           example: null
           description: The amount of cash requested for an order (fractional shares only).
         stopPrice:
-          type: number
-          example: 200
-          description: The stop price of a limit order.
+          $ref: '#/components/schemas/stopPrice'
     transactionSumObj:
       type: object
       properties:
@@ -7672,14 +7673,6 @@ components:
       example: OPTION
       description: Type of transaction.
       deprecated: true
-    limitPrice:
-      type: number
-      example: null
-      description: The price set for the limit order.
-    stopPrice:
-      type: number
-      example: 200
-      description: The stop price of a limit order.
     transactionObj:
       type: object
       properties:
@@ -9388,10 +9381,8 @@ components:
           type: integer
           description: Number of days for the instrument to settle
           example: 1
-    EquityInstrumentDetails:
+    InstrumentsProperties:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/InstrumentBase'
       properties:
         reutersPrimaryRic:
           type: string
@@ -10037,6 +10028,8 @@ components:
           example:
             - NASDAQ 100 Index
             - S&P 500
+          items:
+            type: string
           enum:
             - TR Equity United States Index
             - S&P 600 Small Cap
@@ -10168,6 +10161,11 @@ components:
           type: string
           example: http://syscdn.drivewealth.net/images/symbols/ms.png
           description: A publicly hosted image of the instruments logo.
+    EquityInstrumentDetails:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/InstrumentBase'
+        - $ref: '#/components/schemas/InstrumentsProperties'
     fundamentalDataModel:
       type: object
       nullable: true
@@ -10334,6 +10332,7 @@ components:
               type: string
               example: '2018-09-18'
               description: The date the Option Contract will expire
+              format: date
             optionType:
               type: string
               example: PUT
@@ -10602,6 +10601,8 @@ components:
             - '2022-05-10'
             - '2022-05-11'
           description: The date the Option Contract will expire
+          items:
+            type: string
     OptionsList:
       type: object
       properties:
@@ -12418,25 +12419,15 @@ components:
           example: Bank of America
           description: The user's external bank name.
         beneficiaryBankAddress:
-          type: string
-          example: 222 BROADWAY
-          description: The user's external bank street address.
+          $ref: '#/components/schemas/beneficiaryBankAddress'
         beneficiaryBankCity:
-          type: string
-          example: New York City
-          description: The user's external bank city.
+          $ref: '#/components/schemas/beneficiaryBankCity'
         beneficiaryBankProvince:
-          type: string
-          example: New York
-          description: The user's external bank state or province.
+          $ref: '#/components/schemas/beneficiaryBankProvince'
         beneficiaryBankZip:
-          type: string
-          example: '10038'
-          description: The user's external bank postal code.
+          $ref: '#/components/schemas/beneficiaryBankZip'
         beneficiaryBankCountry:
-          type: string
-          example: USA
-          description: The user's external bank country.
+          $ref: '#/components/schemas/beneficiaryBankCountry'
         intermediarySwift:
           type: string
           example: CHASUS3AXXX
