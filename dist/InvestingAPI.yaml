@@ -2985,8 +2985,8 @@ paths:
                 value:
                   - field: debtData.spRating
                     operator: '><'
-                    value1: AAA
-                    value2: A
+                    value1: A
+                    value2: AAA
               MultipleFiltersSample:
                 value:
                   - field: debtData.askYieldToMaturity
@@ -3067,9 +3067,10 @@ paths:
                     currency: USD
                     amount: 8
                   commission: 3.567
-                  price: 133.632
+                  price: 4.5
                   currency: USD
                   timeInForce: DAY
+                  limitType: YIELD
         required: true
       responses:
         '200':
@@ -3363,34 +3364,44 @@ paths:
                       - bidPrice: 98.882
                         bidSize: 100000
                         bidYield: 4.799
+                        minQty: 150
                       - bidPrice: 98.872
                         bidSize: 230000
                         bidYield: 4.812
+                        minQty: 112
                     askPrices:
                       - askPrice: 98.884
                         askSize: 1000
                         askYield: 4.793
+                        minQty: 150
                       - askPrice: 98.889
                         askSize: 250000
                         askYield: 4.768
+                        minQty: 150
                     effectiveBidPrices:
                       - bidPrice: 99.022
                         bidSize: 100000
                         bidYield: 4.739
+                        minQty: 112
                       - bidPrice: 99.012
                         bidSize: 230000
                         bidYield: 4.812
+                        minQty: 112
                     effectiveAskPrices:
                       - askPrice: 98.744
                         askSize: 1000
                         askYield: 4.793
+                        minQty: 150
                       - askPrice: 98.749
                         askSize: 250000
                         askYield: 4.768
+                        minQty: 150
                     recentTrades:
                       - price: 98.992
                         quantity: 10000
                         yield: 4.799
+                        side: buy
+                        dateTime: '2017-07-21T17:32:28Z'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -11058,6 +11069,13 @@ components:
             - LIMIT
             - STOP
             - MARKET_IF_TOUCHED
+        limitType:
+          type: string
+          enum:
+            - PRICE
+            - YIELD
+          description: The type of limit order
+          example: PRICE
         symbol:
           type: string
           example: AAPL
@@ -11705,24 +11723,31 @@ components:
         bidPrice: 98.992
         bidSize: 10000
         bidYield: 4.799
+        minQty: 150
       properties:
         bidPrice:
           type: number
-          format: float
+          format: double
           example: 130.529
           description: Bid value
           readOnly: true
         bidSize:
           type: number
-          format: float
+          format: double
           example: 150
           description: Bid size
           readOnly: true
         bidYield:
           type: number
-          format: float
+          format: double
           example: 4.799
           description: Bid yield
+          readOnly: true
+        minQty:
+          type: number
+          format: double
+          example: 150
+          description: Minimum quantity
           readOnly: true
     AskPrice:
       type: object
@@ -11731,50 +11756,56 @@ components:
         askPrice: 98.992
         askSize: 10000
         askYield: 4.799
+        minQty: 150
       properties:
         askPrice:
           type: number
-          format: float
+          format: double
           example: 98.884
           description: Ask value
           readOnly: true
         askSize:
           type: number
-          format: float
+          format: double
           example: 150
           description: Ask size
           readOnly: true
         askYield:
           type: number
-          format: float
+          format: double
           example: 4.793
           description: Ask yield
           readOnly: true
-      title: ''
+        minQty:
+          type: number
+          format: double
+          example: 150
+          description: Minimum quantity
+          readOnly: true
     RecentTrade:
       type: object
       description: Recent Trade
       properties:
         price:
           type: number
-          format: float
+          format: double
           example: 98.884
           description: Trade price
         quantity:
           type: number
-          format: float
+          format: double
           example: 150
           description: Trade size/quantity
         yield:
           type: number
-          format: float
+          format: double
           example: 4.793
           description: Trade yield
-        date:
+        dateTime:
           type: string
-          format: date
-          description: Asset's trade date.
-          example: '2022-08-01'
+          format: date-time
+          description: Asset's trade time.
+          example: '2017-07-21T17:32:28Z'
         side:
           type: string
           example: sell
@@ -11787,7 +11818,7 @@ components:
         size: 10000
         yield: 4.799
         side: buy
-        date: '2023-03-04'
+        dateTime: '2017-07-21T17:32:28Z'
     MarketQuoteRequest:
       type: object
       description: Trade Quote Request for Fixed Income Securities
@@ -11803,7 +11834,7 @@ components:
           $ref: '#/components/schemas/instrumentID'
         quantity:
           type: number
-          format: float
+          format: double
           example: 3.14
           description: The quantity of bonds user wishes to trade.
           minimum: 0
@@ -11829,20 +11860,23 @@ components:
             - askPrice: 98.992
               askSize: 10000
               askYield: 4.799
+              minQty: 150
           effectiveBidPrices:
             - bidPrice: 98.992
               bidSize: 10000
               bidYield: 4.799
+              minQty: 112
           effectiveAskPrices:
             - askPrice: 98.992
               askSize: 10000
               askYield: 4.799
+              minQty: 150
           recentTrades:
             - price: 98.992
               size: 10000
               yield: 4.799
               side: buy
-              date: '2023-03-04'
+              dateTime: '2017-07-21T17:32:28Z'
       properties:
         id:
           type: string
@@ -11860,7 +11894,7 @@ components:
           readOnly: true
         quantity:
           type: number
-          format: float
+          format: double
           example: 150
           description: Trade size/quantity
         salesCredit:
