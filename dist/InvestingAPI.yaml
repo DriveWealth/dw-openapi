@@ -3147,6 +3147,30 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
+  /orders/byOrderNo/{orderNo}:
+    get:
+      tags:
+        - Orders
+      summary: Retrieve Order By OrderNo
+      description: Retrieves an Order by OrderNo
+      parameters:
+        - in: path
+          name: orderNo
+          schema:
+            $ref: '#/components/schemas/orderNo'
+          required: true
+      responses:
+        '200':
+          description: ' Retrieving an Order by OrderNo was Successful.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatusResponse'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
   /orders/crypto/rfq:
     post:
       tags:
@@ -6074,6 +6098,22 @@ components:
           items:
             oneOf:
               - $ref: '#/components/schemas/transactionObj'
+    docs:
+      type: object
+      properties:
+        displayName:
+          type: string
+          example: 2023 Privacy Policy
+          description: The description of the regulatory document.
+        fileKey:
+          type: string
+          example: '2023092751'
+          description: The file key identifier.
+    RegulatoryInsertsRes:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/docs'
     userID:
       type: string
       example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
@@ -7954,7 +7994,7 @@ components:
       type: string
       enum:
         - ACAT
-        - MINOR_GRADUATION
+        - TEEN
         - CASH
         - PROMOTIONAL
         - REWARD
@@ -11108,12 +11148,7 @@ components:
             The order quantity in share amounts for all order types including
             fractional shares. Only required if `amountCash` is null.
         amountCash:
-          type: number
-          format: double
-          example: null
-          description: >-
-            Order quantity in USD cash amount for "MARKET" and "STOP" order
-            types. Only required if `quantity` is null.
+          $ref: '#/components/schemas/amountCash'
         price:
           type: number
           format: double
@@ -11230,28 +11265,9 @@ components:
           type: string
           example: MARKET
           description: The type of order placed.
-        side:
-          type: string
-          example: BUY
-          description: Side of the order - BUY or SELL.
-          enum:
-            - BUY
-            - SELL
+        side: {}
         status:
-          type: string
-          example: FILLED
-          description: >-
-            status of the order. FILLED - The order was successfully completed
-            PARTIAL_FILL - The order was partially completed REJECTED - The
-            order was rejected CANCELED - The order was cancelled NEW - Recently
-            created pending order PENDING_CANCEL - Indicates an order is
-            awaiting a cancellation response from the "street".
-          enum:
-            - FILLED
-            - PARTIAL_FILL
-            - REJECTED
-            - CANCELED
-            - PENDING_CANCEL
+          $ref: '#/components/schemas/localOrderStatus'
         instrumentID:
           $ref: '#/components/schemas/instrumentID'
         ISIN:
@@ -11497,6 +11513,154 @@ components:
       type: number
       example: 1
       description: ''
+    amountCash:
+      type: number
+      format: double
+      example: null
+      description: The order quantity in USD cash amount.
+    localOrderStatus:
+      type: string
+      example: FILLED
+      description: The current status of the order.
+      enum:
+        - NEW
+        - FILLED
+        - PARTIAL_FILL
+        - REJECTED
+        - CANCELED
+        - PENDING_CANCEL
+    side:
+      type: string
+      example: BUY
+      description: The side of the order.
+      enum:
+        - BUY
+        - SELL
+    OrderAuditResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/orderID'
+        orderNo:
+          $ref: '#/components/schemas/orderNo'
+        accountID:
+          $ref: '#/components/schemas/accountID'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        quantities:
+          type: object
+          properties:
+            requestedQuantity:
+              type: number
+              example: 1
+              description: The amount of shares requested in the order.
+            totalFilledQuantity:
+              type: number
+              example: 1
+              description: The amount of shares filled in the order.
+        openQuantity:
+          $ref: '#/components/schemas/openQuantity'
+        availableForTradingQuantity:
+          $ref: '#/components/schemas/availableForTradingQuantity'
+        amountCash:
+          $ref: '#/components/schemas/amountCash'
+        status:
+          $ref: '#/components/schemas/localOrderStatus'
+        side:
+          $ref: '#/components/schemas/side'
+        instrumentID:
+          $ref: '#/components/schemas/instrumentID'
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+        type:
+          example: 1
+        pricing:
+          type: object
+          properties:
+            avgPxRaw:
+              example: 33.66
+            avgPx:
+              example: 33.66
+            stopPx:
+              example: 0
+            minTriggerPrice:
+              example: 0
+        expires:
+          description: The date and time the order expires.
+          $ref: '#/components/schemas/updated'
+        commissionOverride:
+          type: object
+          properties:
+            commissionOverrideType:
+              example: NO_OVERRIDE
+            commissionID:
+              $ref: '#/components/schemas/commissionID'
+            commissionOverrideDesc:
+              example: Standard Commission
+        commissionAndFees:
+          type: object
+          properties:
+            total:
+              example: 2.99
+            tefra:
+              example: 0
+            ptp:
+              example: 0
+        auditLog:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/auditLog'
+    auditLog:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/localOrderStatus'
+        quantities:
+          type: object
+          properties:
+            cumulativeQuantity:
+              example: 0
+            filledQuantity:
+              example: 0
+            remainingQuantity:
+              example: 0
+        pricing:
+          type: object
+          properties:
+            averagePrice:
+              example: 0
+            averagePriceRaw:
+              example: 0
+            lastPrice:
+              example: 0
+            rateAsk:
+              example: 0
+            rateBid:
+              example: 0
+        commissionAndFees:
+          type: object
+          properties:
+            commission:
+              example: 0
+            feeSec:
+              example: 0
+            feeTaf:
+              example: 0
+            feeBase:
+              example: 0
+            feeXtraShares:
+              example: 0
+            feeExchange:
+              example: 0
+        pnl:
+          example: 0
+        transactTime:
+          $ref: '#/components/schemas/updated'
+        comment:
+          $ref: '#/components/schemas/note'
+        createdWhen:
+          $ref: '#/components/schemas/created'
     UploadUserPhysicalDocument:
       type: object
       properties:
