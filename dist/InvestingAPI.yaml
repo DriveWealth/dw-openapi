@@ -62,6 +62,8 @@ tags:
     x-displayName: Depth of Book
   - name: Settlements
     x-displayName: Settlements
+  - name: Risk
+    x-displayName: Risk
   - name: Subscriptions
     x-displayName: Subscriptions
   - name: Users
@@ -111,7 +113,6 @@ paths:
             made.
       summary: Retrieve Trade Allocation
       description: Fetches the details of a Trade Allocation using the allocationID.
-      x-readme: {}
       responses:
         '200':
           description: Fetch Trade Allocation details by allocationID was Successful.
@@ -162,7 +163,6 @@ paths:
           description: The unique identifier associated with the Fund.
       summary: Get Fund details by fundID
       description: Fetch the details of a fund using the unique fundID.
-      x-readme: {}
       responses:
         '200':
           description: Fetch fund details was Successful.
@@ -205,7 +205,6 @@ paths:
         - Portfolios
       summary: Retrieve Portfolio
       description: Get the details of a specific Portfolio using the portfolioID.
-      x-readme: {}
       parameters:
         - in: path
           name: portfolioID
@@ -231,7 +230,6 @@ paths:
         - Portfolios
       summary: Update Portfolio
       description: Edit the holdings of an existing portfolio using the portfolioID.
-      x-readme: {}
       parameters:
         - in: path
           name: portfolioID
@@ -327,19 +325,32 @@ paths:
         - Accounts
       summary: Create Account
       description: Create a new brokerage Account for a User.
-      x-readme: {}
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AccountReq'
             examples:
-              Create a self-directed account:
+              Self Directed Account:
                 value:
                   userID: cc07f91b-7ee1-4868-b8fc-823c70a1b932
                   accountType: LIVE
                   accountManagementType: SELF
                   tradingType: CASH
+              Managed Account:
+                value:
+                  userID: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+                  accountType: LIVE
+                  accountManagementType: MANAGED
+                  tradingType: CASH
+              Robo Advisory Account:
+                value:
+                  userID: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+                  accountType: LIVE
+                  accountManagementType: RIA_MANAGED
+                  tradingType: CASH
+                  riaProductID: product_b94c0b6a-5ac8-43e4-95d1-777051c0503b
+                  riaUserID: 80f9b672-120d-4b73-9ccv9-42fb3262c4b9
         required: true
       responses:
         '200':
@@ -365,7 +376,6 @@ paths:
           required: true
       summary: Retrieve Account
       description: Fetch Account details using the unique accountID.
-      x-readme: {}
       responses:
         '200':
           description: Fetch account details was Successful.
@@ -389,23 +399,6 @@ paths:
           required: true
       summary: Update Account
       description: Update an Account's information by using a User's Account ID.
-      x-readme:
-        samples-languages:
-          - javascript
-        code-samples:
-          - language: javascript
-            code: |-
-              {
-                  "authorizedUsers": [
-                      {
-                          "userID": "f6fd0783-2fdb-4ddb-9fd5-2464d8abc267",
-                          "permissions": [
-                              "MINOR_GRADUATION_TRANSFER"
-                          ]
-                      }
-                  ]
-              }
-            name: Add Authorized User
       requestBody:
         content:
           application/json:
@@ -476,6 +469,12 @@ paths:
                       accountFeatures:
                         fixedIncome:
                           enrolled: true
+                Add Authorized User:
+                  value:
+                    authorizedUsers:
+                      - userID: f6fd0783-2fdb-4ddb-9fd5-2464d8abc267
+                        permissions:
+                          - MINOR_GRADUATION_TRANSFER
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -495,7 +494,6 @@ paths:
       description: >-
         Fetch a list of all commissions available for a customers account
         associated to its parentIBID.
-      x-readme: {}
       responses:
         '200':
           description: Fetch a list of commissions was Successful.
@@ -522,7 +520,6 @@ paths:
       description: >-
         Create a new set of Beneficiaries or contingent Beneficiaries on an
         existing Account.
-      x-readme: {}
       requestBody:
         content:
           application/json:
@@ -552,7 +549,6 @@ paths:
           required: true
       summary: Retrieve Beneficiaries by Account
       description: List all existing Beneficiaries on an Account.
-      x-readme: {}
       responses:
         '200':
           description: Fetch list of beneficiaries was Successful.
@@ -576,7 +572,6 @@ paths:
           required: true
       summary: Delete Beneficiaries
       description: Removes all Beneficiaries from an account.
-      x-readme: {}
       responses:
         '202':
           description: Beneficiaries has been recorded for deletion.
@@ -597,7 +592,6 @@ paths:
           required: true
       summary: Retrieve Virtual Bank Account by Account
       description: Fetch a customers virtual account details.
-      x-readme: {}
       responses:
         '200':
           description: Fetch virtual account details was Successful.
@@ -622,7 +616,6 @@ paths:
           required: true
       summary: List Deposits by Account
       description: Fetch all Deposits associated with a specific Account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching a list of an Account's Deposits was successful.
@@ -647,7 +640,6 @@ paths:
           required: true
       summary: List Withdrawals by Account
       description: Fetch a list of Withdrawals associated to a specific Account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching a list of Account's Withdrawals was successful.
@@ -762,7 +754,6 @@ paths:
           required: true
       summary: Retrieve portfolio status by Account
       description: Fetch the status of a portfolio using the accountID.
-      x-readme: {}
       responses:
         '200':
           description: Fetching portfolio status details was successful.
@@ -787,7 +778,6 @@ paths:
           required: true
       summary: Retrieve money details by Account
       description: Fetch a real time snapshot of cash balances of an account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching cash balance details of an Account was successful.
@@ -812,7 +802,6 @@ paths:
           required: true
       summary: List monthly statements by Account
       description: List all statement files for a particular account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching a list of Statements for an Account was successful.
@@ -837,7 +826,6 @@ paths:
           required: true
       summary: List tax documents by Account
       description: Fetch a list of all the tax documents for a particular account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching a list of tax documents for an Account was successful.
@@ -862,7 +850,6 @@ paths:
           required: true
       summary: List trade confirmations by Account
       description: List all trade confirmation files for a particular account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching a list of trade confirmations was successful.
@@ -890,7 +877,6 @@ paths:
         Fetch an account summary with the balance, orders, positions, violations
         and transactions of a particular Account.
       deprecated: true
-      x-readme: {}
       responses:
         '200':
           description: Fetching account summary details was successful.
@@ -953,7 +939,6 @@ paths:
       description: >-
         Fetch the daily realized and unrealized profit/loss for a specific
         account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching account performance details was successful.
@@ -978,7 +963,6 @@ paths:
           required: true
       summary: List Positions by Account
       description: Fetch a list of all the equity positions related to an account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching an Account's Positions was successful.
@@ -1003,7 +987,6 @@ paths:
           required: true
       summary: Retrieve violation summary by Account
       description: Fetch the summary of all current account violations.
-      x-readme: {}
       responses:
         '200':
           description: Fetching an Account's violation summary was Successful.
@@ -1028,7 +1011,6 @@ paths:
           required: true
       summary: List Violations by Account
       description: Fetch a list of all current Account Violations.
-      x-readme: {}
       responses:
         '200':
           description: Fetching a list of Violations for an Account was successful.
@@ -1053,7 +1035,6 @@ paths:
           required: true
       summary: Retrieve margin details by Account
       description: Fetch a list of all margin information associated with an Account.
-      x-readme: {}
       responses:
         '200':
           description: Fetching an Account's margin details was successful.
@@ -1078,7 +1059,6 @@ paths:
           required: true
       summary: Retrieve transaction summary by Account
       description: Fetch a list of all recent Account Transactions.
-      x-readme: {}
       responses:
         '200':
           description: Fetching transaction summary details was successful.
@@ -1145,7 +1125,6 @@ paths:
           description: The direction of pagination
       summary: List Transactions by Account
       description: Fetch a list of all Account Transactions in a given time range
-      x-readme: {}
       responses:
         '200':
           description: Fetching an Account's Transactions was successful.
@@ -1163,30 +1142,6 @@ paths:
       tags:
         - Asset Transfer
       summary: Create ACATS Transfer
-      x-readme:
-        samples-languages:
-          - javascript
-        code-samples:
-          - language: javascript
-            code: |-
-              {
-                  "source": "FOLIO12345",
-                  "destination": "DWST000077",
-                  "clearingNo": "DTCC-0052",
-                  "sourceAccountType": "INDIVIDUAL",
-                  "type": "FULL",
-                  "cash": 0,
-                  "positions": [
-                      {
-                          "symbol": "AMZN",
-                          "instrumentID": "4312a85c-93ba-4adb-b50d-cc7973243a53",
-                          "quantity": 1
-                      }
-                  ],
-                  "comment": "string",
-                  "metadata": {}
-              }
-            name: Automated Customer Transfer
       responses:
         '200':
           description: Initiating a transfer was successful
@@ -1248,6 +1203,20 @@ paths:
                       - symbol: META
                         instrumentID: 4312a85c-93ba-4adb-b50d-cc7973243a53
                         quantity: 1
+                Automated Customer Transfer:
+                  value:
+                    source: FOLIO12345
+                    destination: DWST000077
+                    clearingNo: DTCC-0052
+                    sourceAccountType: INDIVIDUAL
+                    type: FULL
+                    cash: 0
+                    positions:
+                      - symbol: AMZN
+                        instrumentID: 4312a85c-93ba-4adb-b50d-cc7973243a53
+                        quantity: 1
+                    comment: string
+                    metadata: {}
         '400':
           description: Bad Request
           content:
@@ -1355,26 +1324,19 @@ paths:
                       name: TEEN
                       description: Teen Account Transfer
                     created: '2023-07-26T14:05:18.518Z'
-      x-readme:
-        samples-languages:
-          - javascript
-        code-samples:
-          - language: javascript
-            code: |-
-              {
-                  "source": "LKGE000001",
-                  "destination": "LKKZ000004",
-                  "comment": "Migrating Teen account to Individual account.",
-                  "metadata": [
-                      {}
-                  ]
-              }
-            name: Minor Graduation
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/MinorCreateRequestModel'
+            examples:
+              Minor Graduation:
+                value:
+                  source: LKGE000001
+                  destination: LKKZ000004
+                  comment: Migrating Teen account to Individual account.
+                  metadata:
+                    - {}
       description: >-
         If an Account is opened for the purpose of allowing a minor to invest,
         this API will allow for the transfer of assets from this account to the
@@ -1833,6 +1795,20 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DepositRequestReq'
+            examples:
+              Individual ACH Deposit:
+                value:
+                  accountNo: DWFS001102
+                  amount: 100.25
+                  currency: USD
+                  type: ACH
+                  bankAccountID: bank_a4656e60-321e-425b-aa0d-a2e75c38885f
+              Bulk Deposit:
+                value:
+                  accountNo: DWFS001102
+                  amount: 100.25
+                  currency: USD
+                  type: INSTANT_FUNDING
       responses:
         '200':
           description: Creating a User's Account Deposit was successful.
@@ -2758,7 +2734,6 @@ paths:
             date. If set do not use `dateStart` and `dateEnd` values.
       summary: Retrieve Chart
       description: Fetch historical bars for a given instrument over a given time period.
-      x-readme: {}
       responses:
         '200':
           description: Fetching Chart details was successful.
@@ -2788,7 +2763,6 @@ paths:
         Fetch a list of all the available Instruments offered on the DriveWealth
         platform. This endpoint will return an array of over 6,500+ instrument
         objects.
-      x-readme: {}
       responses:
         '200':
           description: Fetching all Instruments was successful.
@@ -2829,7 +2803,6 @@ paths:
             for a specific Instrument.
       summary: Retrieve Instrument
       description: Fetch the details of a specific Instrument.
-      x-readme: {}
       responses:
         '200':
           description: Fetching Instrument details was successful.
@@ -3054,9 +3027,42 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateOrderRequest'
             examples:
-              FixedIncomeOrderRequest:
+              'Market Cash Amount Order ':
                 value:
-                  accountNo: CSSW000001
+                  accountNo: DWFS001102
+                  orderType: MARKET
+                  symbol: SBUX
+                  side: BUY
+                  amountCash: 100
+              Market Quantity Order:
+                value:
+                  accountNo: DWFS001102
+                  orderType: MARKET
+                  symbol: SBUX
+                  side: BUY
+                  quantity: 2
+              Limit GTC Order:
+                value:
+                  accountNo: DWFS001102
+                  orderType: LIMIT
+                  symbol: AAPL
+                  price: 165.25
+                  quantity: 10
+                  timeInForce: GTC
+                  expiration: '2023-12-31'
+              Option Order:
+                value:
+                  accountNo: DWFS001102
+                  orderType: LIMIT
+                  timeInForce: GTC
+                  expiration: '2023-08-01'
+                  symbol: AAPL230818C00195000
+                  side: BUY_OPEN
+                  quantity: 1
+                  price: 3.42
+              Fixed Income Order:
+                value:
+                  accountNo: DWFS001102
                   orderType: LIMIT
                   side: SELL
                   instrumentID: f6d3e213-4e6f-4ee3-8a9a-793027c62c57
@@ -3096,16 +3102,6 @@ paths:
           required: true
       summary: Retrieve Order
       description: Fetch the status of an Order.
-      x-readme:
-        sample-languages:
-          - curl
-        code-samples:
-          - language: curl
-            code: |-
-              curl --request GET \
-               --url https://bo-api.drivewealth.io/back-office/orders/EF.418a5506-256c-4c3c-9d4d-f491522cf7f2 \
-               --header 'accept: application/json'
-            name: Filled Order
       responses:
         '200':
           description: Fetching Order status was successful.
@@ -3177,7 +3173,6 @@ paths:
         - Orders
       summary: Create a request-for-quote
       description: Create an a request-for-quote (RFQ) for a cryptocurrency.
-      x-readme: {}
       requestBody:
         content:
           application/json:
@@ -3202,7 +3197,6 @@ paths:
         - Orders
       summary: Create Order with request-for-quote
       description: Creates a market order or executes a RFQ order
-      x-readme: {}
       requestBody:
         content:
           application/json:
@@ -3296,7 +3290,6 @@ paths:
       description: >-
         Fetch the realtime or 15 minute delayed Referential quote details for a
         specific security.
-      x-readme: {}
       responses:
         '200':
           description: Fetch referential quote details was Successful.
@@ -3304,6 +3297,84 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Referential'
+              examples:
+                Equity Quote:
+                  value:
+                    - symbol: SBUX
+                      bid: 95.59
+                      ask: 95.6
+                      lastTrade: 95.6
+                      change: 0.32
+                      open: 95.65
+                      high: 96.2
+                      low: 95.23
+                      close: 0
+                      priorClose: 95.28
+                      volume: 3973709
+                      marketCondition: NORMAL
+                      dataProvider: BATS
+                Option Quote:
+                  value:
+                    - symbol: AAPL230818C00177500
+                      bid: 0.01
+                      ask: 0.03
+                      lastTrade: 0
+                      change: 0
+                      close: 0.85
+                      priorClose: 1.5
+                      volume: 0
+                      marketCondition: NORMAL
+                      dataProvider: OPRA
+                    - symbol: AAPL230818C00180000
+                      bid: 0.01
+                      ask: 0.02
+                      lastTrade: 0.01
+                      change: -0.22
+                      close: 16.52
+                      priorClose: 16.85
+                      volume: 43512
+                      marketCondition: NORMAL
+                      dataProvider: OPRA
+                    - symbol: AAPL230818C00182500
+                      bid: 0.01
+                      ask: 0.02
+                      lastTrade: 0.01
+                      change: -0.05
+                      close: 0.06
+                      priorClose: 0.14
+                      volume: 16388
+                      marketCondition: NORMAL
+                      dataProvider: OPRA
+                    - symbol: AAPL230818C00175000
+                      bid: 0.01
+                      ask: 0.02
+                      lastTrade: 0.01
+                      change: -0.45
+                      close: 21.45
+                      priorClose: 21.65
+                      volume: 172163
+                      marketCondition: NORMAL
+                      dataProvider: OPRA
+                    - symbol: AAPL230818C00172500
+                      bid: 1.71
+                      ask: 2.28
+                      lastTrade: 1.9
+                      change: -0.02
+                      close: 4.3
+                      priorClose: 5.5
+                      volume: 33437
+                      marketCondition: NORMAL
+                      dataProvider: OPRA
+                    - symbol: AAPL230818C00170000
+                      bid: 4.4
+                      ask: 5.2
+                      lastTrade: 4.4
+                      change: 0.32
+                      close: 26.15
+                      priorClose: 26.55
+                      volume: 3230
+                      marketCondition: NORMAL
+                      dataProvider: OPRA
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -3323,7 +3394,6 @@ paths:
           description: The ticker symbol of the associated instrument.
       summary: Retrieve Quote (consolidated feed)
       description: Fetch the NBBO quote details for a specific security.
-      x-readme: {}
       responses:
         '200':
           description: Fetch NBBO quote details was Successful.
@@ -3814,99 +3884,6 @@ paths:
         - Users
       summary: Create User
       description: Create a User's profile on the DriveWealth platform.
-      x-readme:
-        code-samples:
-          - language: javascript
-            code: |-
-              {
-                "userType": "INDIVIDUAL_TRADER",
-                "documents": [
-                  {
-                    "type": "BASIC_INFO",
-                    "data": {
-                      "firstName": "Justin",
-                      "lastName": "Smith",
-                      "country": "USA",
-                      "phone": "18004612680",
-                      "emailAddress": "jj@drivewealth.dev",
-                      "language": "en_US"
-                    }
-                  },
-                  {
-                    "type": "IDENTIFICATION_INFO",
-                    "data": {
-                      "value": "122333444",
-                      "type": "SSN",
-                      "citizenship": "USA",
-                      "usTaxPayer": true
-                    }
-                  },
-                  {
-                    "type": "TAX_INFO",
-                    "data": {
-                      "taxTreatyWithUS": false
-                    }
-                  },
-                  {
-                    "type": "PERSONAL_INFO",
-                    "data": {
-                      "birthDay": 3,
-                      "birthMonth": 12,
-                      "birthYear": 2000,
-                      "irsBackupWithholdings": false,
-                      "gender": "Male",
-                      "martial": "SINGLE"
-                    }
-                  },
-                  {
-                    "type": "ADDRESS_INFO",
-                    "data": {
-                      "street1": "15 Exchange Place",
-                      "street2": "Suite 1000",
-                      "city": "Jersey City",
-                      "provience": "NJ",
-                      "postalCode": "07302",
-                      "country": "USA"
-                    }
-                  },
-                  {
-                    "type": "EMPLOYMENT_INFO",
-                    "data": {
-                      "status": "EMPLOYED",
-                      "company": "DriveWealth LLC",
-                      "type": "FINANCE",
-                      "position": "ENGINEER",
-                      "broker": true,
-                      "directorOf": false
-                    }
-                  },
-                  {
-                    "type": "INVESTOR_PROFILE_INFO",
-                    "data": {
-                      "investmentExperience": "YRS_10_",
-                      "annualIncome": 1000000,
-                      "networthTotal": 2500000,
-                      "riskTolerance": "HIGH",
-                      "investmentObjectives": "LONG_TERM",
-                      "networthLiquid": 300000
-                    }
-                  },
-                  {
-                    "type": "DISCLOSURES",
-                    "data": {
-                      "termsOfUse": true,
-                      "customerAgreement": true,
-                      "marketDataAgreement": true,
-                      "rule14b": true,
-                      "finderFee": false,
-                      "privacyPolicy": true,
-                      "dataSharing": true,
-                      "signedBy": "Justin Smith"
-                    }
-                  }
-                ]
-              }
-            name: Equities User
       requestBody:
         content:
           application/json:
@@ -3919,6 +3896,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+              examples:
+                Create User:
+                  value:
+                    userType: INDIVIDUAL_TRADER
+                    documents:
+                      - type: BASIC_INFO
+                        data:
+                          firstName: Justin
+                          lastName: Smith
+                          country: USA
+                          phone: '18004612680'
+                          emailAddress: jj@drivewealth.dev
+                          language: en_US
+                      - type: IDENTIFICATION_INFO
+                        data:
+                          value: '122333444'
+                          type: SSN
+                          citizenship: USA
+                          usTaxPayer: true
+                      - type: TAX_INFO
+                        data:
+                          taxTreatyWithUS: false
+                      - type: PERSONAL_INFO
+                        data:
+                          birthDay: 3
+                          birthMonth: 12
+                          birthYear: 2000
+                          irsBackupWithholdings: false
+                          gender: Male
+                          martial: SINGLE
+                      - type: ADDRESS_INFO
+                        data:
+                          street1: 15 Exchange Place
+                          street2: Suite 1000
+                          city: Jersey City
+                          provience: NJ
+                          postalCode: '07302'
+                          country: USA
+                      - type: EMPLOYMENT_INFO
+                        data:
+                          status: EMPLOYED
+                          company: DriveWealth LLC
+                          type: FINANCE
+                          position: ENGINEER
+                          broker: true
+                          directorOf: false
+                      - type: INVESTOR_PROFILE_INFO
+                        data:
+                          investmentExperience: YRS_10_
+                          annualIncome: 1000000
+                          networthTotal: 2500000
+                          riskTolerance: HIGH
+                          investmentObjectives: LONG_TERM
+                          networthLiquid: 300000
+                      - type: DISCLOSURES
+                        data:
+                          termsOfUse: true
+                          customerAgreement: true
+                          marketDataAgreement: true
+                          rule14b: true
+                          finderFee: false
+                          privacyPolicy: true
+                          dataSharing: true
+                          signedBy: Justin Smith
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -10439,7 +10480,7 @@ components:
               example: INST
             loadType:
               type: string
-              description: Identifies how, if any commissions are paid for the fund.
+              description: Identifies how commissions are paid for the fund, if any.
               enum:
                 - NO_LOAD
                 - FRONT_END
@@ -10465,6 +10506,10 @@ components:
                 - AZ
               items:
                 type: string
+            settlementDays:
+              type: integer
+              description: Number of days for the instrument to settle.
+              example: 1
             purchaseCutOff:
               type: string
               description: The cutoff time to accept a buy order and execute the same day.
@@ -10473,74 +10518,99 @@ components:
               type: string
               description: The cutoff time to accept a sell order and execute the same day.
               example: '16:00'
-            maxPurchaseAmt:
+            maximumPurchaseAmount:
               type: integer
               description: The maximum purchase amount in dollars the fund will allow.
               example: 10000000
-            purchaseMins:
+            purchaseMinimums:
               type: object
               properties:
-                minInitTaxablePurchase:
+                minimumInitialTaxable:
                   type: integer
                   description: >-
                     The minimum initial purchase amount, in dollars, the fund
                     will allow for taxable accounts.
                   example: 500
-                minInitIRAPurchase:
+                minimumInitialIRA:
                   type: integer
                   description: >-
                     The minimum initial purchase amount, in dollars, the fund
                     will allow for IRA accounts.
                   example: 500
-                minInitQualifiedPurchase:
+                minimumInitialQualifiedPlans:
                   type: integer
                   description: >-
                     The minimum initial purchase amount, in dollars, the fund
                     will allow for qualified plans. This would include 401K,
                     HSAs, etc.
                   example: 500
-                minSubsequentTaxablePurchase:
+                minimumSubsequentTaxable:
                   type: integer
                   description: >-
                     The minimum subsequent purchase amount, in dollars, the fund
                     will allow for taxable accounts.
                   example: 100
-                minSubsequentIRAPurchase:
+                minimumSubsequentIRA:
                   type: integer
                   description: >-
                     The minimum subsequent purchase amount, in dollars, the fund
                     will allow for IRA accounts.
                   example: 100
-                minSubsequentQualifiedPurchase:
+                minimumSubsequentQualifiedPlans:
                   type: integer
                   description: >-
                     The minimum subsequent purchase amount, in dollars, the fund
                     will allow for qualified plans. This would include 401K,
                     HSAs, etc. 
                   example: 100
-                minSystematicPurchase:
+                minimumSystematicPurchase:
                   type: integer
                   description: >-
                     The minimum amount, in dollars, which will be allowed for
                     systematic purchases.
                   example: 10
+                minimumInitialExchange:
+                  type: integer
+                  description: >-
+                    The minimum initial purchase amount, in dollars, which will
+                    be allowed for exchange purchases.
+                  example: 10
+                minimumSubsequentExchange:
+                  type: integer
+                  description: >-
+                    The minimum subsequent purchase amount, in dollars, which
+                    will be allowed for exchange purchases.
+                  example: 10
             fundType:
               type: string
-              description: Type of mutual fund.
+              description: The type of mutual fund.
               enum:
                 - MUTUAL_FUND
-                - MONEY_MARKET_FUND
+                - MONEY_MARKET
                 - UIT
-                - CLOSED_END_MUTUAL_FUND
-                - OFFSHORE_US_DOLLAR_ENHANCED
+                - CLOSE_END
+                - GIC
+                - STABLE_VALUE
+                - SEPARATE_ACCOUNT
+                - BANK_COLLECTIVE_TRUST
+                - OFFSHORE_NRA
+                - BIC
+                - 529_PLAN
+                - OFFSHORE_US_DOLLAR
+                - OFFSHORE_NON_US_DOLLAR
+                - ANNUITY
+                - UNKNOWN
               example: MUTUAL_FUND
             fundStatus:
               type: string
-              description: Indicates if the fund is open or closed.
+              description: >-
+                Indicates if the fund is open or closed. Eligible values are
+                Open, Closed - Liquidated, Closed - Merged.
               enum:
                 - OPEN
-                - CLOSED_LIQUIDATED
-                - CLOSED_MERGED
+                - LIQUIDATED
+                - MERGED
+                - UNKNOWN
               example: OPEN
             largeTradeNotificationRequired:
               type: boolean
@@ -10551,11 +10621,11 @@ components:
               type: number
               description: At what dollar amount is prior trade notification.
               example: 1000000000
-            redemptionFeePerc:
+            redemptionFeePercentage:
               type: integer
               description: The percent charged for the non-short-term redemption.
               example: 0
-            redemptionFeeAmt:
+            redemptionFeeAmount:
               type: integer
               description: >-
                 The amount, in dollars, charged for the non-short-term
@@ -10574,21 +10644,33 @@ components:
                 (see Prospectus).
               enum:
                 - ALL
-                - EXISTING
+                - EXISTING_ONLY
                 - CLOSED
                 - RESTRICTIONS_APPLY
+                - UNKNOWN
               example: ALL
             exchangeBuyEligibility:
               type: string
               description: >-
                 Can shares of another fund be exchanged into new and/or existing
                 accounts or is the fund closed for exchange purchases.
+              enum:
+                - ALL
+                - EXISTING_ONLY
+                - CLOSED
+                - RESTRICTIONS_APPLY
+                - UNKNOWN
               example: ALL
             exchangeFee:
               type: string
               description: >-
                 Are exchange fees charged on this fund and, if so, are they done
                 on a percentage or fixed dollar basis.
+              enum:
+                - NO_EXCHANGE_FEE
+                - PERCENTAGE
+                - FIXED_DOLLAR
+                - UNKNOWN
               example: PERCENTAGE
             exchangeFeePercentage:
               type: number
@@ -10598,7 +10680,7 @@ components:
               type: integer
               description: The amount, in dollars, of the exchange fee charged.
               example: 0
-            divFrequency:
+            dividendFrequency:
               type: string
               description: The frequency dividends are paid out by the fund.
               enum:
@@ -10617,10 +10699,11 @@ components:
               type: number
               description: Investment portfolio turnover rate.
               example: 10.7
-            strRulesApply:
+            shortTermRedemptionRules:
               type: boolean
               description: Do Short-Term Redemption Fee fields apply for this fund.
-            strMinimumAmount:
+              example: true
+            shortTermRedemptionMinimumAmount:
               type: integer
               description: >-
                 The minimum amount that the fund will charge as a short-term
@@ -12692,6 +12775,89 @@ components:
           description: >-
             A custom description that describes the current status of the
             redemption/withdrawal.
+    ExpirationAnalysisReq:
+      type: object
+      required:
+        - partners
+        - outOfTheMoneyPercentage
+      properties:
+        partners:
+          type: array
+          description: Array of partners IBID
+          example:
+            - d4a68ab7-f3ce-4855-bb5f-40b112511f83
+            - bd7f3c21-c246-4d1a-8296-37343846b1cd
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/parentIBID'
+        outOfTheMoneyPercentage:
+          type: number
+          example: 3
+          description: The out of money percentage.
+    ExpirationAnalysisRes:
+      type: object
+      properties:
+        requestId:
+          type: string
+          example: bd7f3c21-c246-4d1a-8296-37343846b1cd
+          description: The unique request Id for each analysis request.
+    ExpirationAnalysisStatusRes:
+      type: object
+      properties:
+        requestId:
+          type: string
+          example: bd7f3c21-c246-4d1a-8296-37343846b1cd
+          description: The unique request Id for each analysis request
+        statusId:
+          type: string
+          example: COMPLETED
+          description: The status of the expiration analysis request
+          enum:
+            - PENDING
+            - COMPLETED
+            - FAILED
+    ClosingPositionsPaginated:
+      type: object
+      properties:
+        requestId:
+          type: string
+          example: bd7f3c21-c246-4d1a-8296-37343846b1cd
+          description: The unique request Id for each analysis request
+        pageInfo:
+          type: object
+          description: Page Info
+          properties:
+            page:
+              type: number
+              example: 1
+            pageSize:
+              type: number
+              example: 10
+            totalRecords:
+              type: number
+              example: 26
+            sortOrder:
+              type: string
+              example: asc
+        closingPositionsList:
+          type: array
+          description: A list of expiring positions.
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/ClosingPosition'
+    ClosingPosition:
+      type: object
+      properties:
+        partnerIbid:
+          $ref: '#/components/schemas/parentIBID'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+        quantity:
+          type: number
+          example: '10.234'
+          description: The quantity of the closing position.
     DailySettlementDetails:
       type: object
       properties:
