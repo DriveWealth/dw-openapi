@@ -2890,7 +2890,8 @@ paths:
                           optionType: PUT
                           strikePrice: '16.00'
                           sharesPerContract: '100'
-                          contractShrs: '100'
+                          deliverable: '100'
+                          multiplier: '100'
                         symbol: AAPL220517P00016000
                         name: Apple Computer September 9 $16.00 Put
                         orderSizeMax: 20000
@@ -3796,6 +3797,104 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SettlementByID'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /accounts/{accountID}/reports/daily-trade-summary:
+    post:
+      tags:
+        - Settlements
+      summary: Create DVP/RVP Report
+      description: Creates a job to generate a DVP/RVP Report
+      parameters:
+        - in: path
+          name: accountID
+          schema:
+            $ref: '#/components/schemas/accountID'
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDVPRVP'
+      responses:
+        '200':
+          description: Creating the job to generate a DVP/RVP Report was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDVPRVPRes'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+    get:
+      tags:
+        - Settlements
+      summary: List DVP/RVP Reports
+      description: Lists DVP/RVP reports.
+      parameters:
+        - in: path
+          name: accountID
+          schema:
+            $ref: '#/components/schemas/accountID'
+          required: true
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/DVPRVPStatus'
+          description: A filter, to filter on the status of the DVP/RVP.
+        - in: query
+          name: from
+          schema:
+            $ref: '#/components/schemas/from'
+          required: true
+        - in: query
+          name: to
+          schema:
+            $ref: '#/components/schemas/to'
+          required: true
+      responses:
+        '200':
+          description: Fetching DVP/RVP List was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDVPRVP'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /accounts/{accountID}/reports/daily-trade-summary/{reportID}:
+    get:
+      summary: Retrieve DVP/RVP
+      description: Retrieves a DVP/RVP by Report ID.
+      tags:
+        - Settlements
+      parameters:
+        - in: path
+          name: accountID
+          schema:
+            $ref: '#/components/schemas/accountID'
+          required: true
+        - in: path
+          name: reportID
+          schema:
+            type: string
+            example: bsr_040fb9cc-84e8-4f20-bf09-d398dacd458d.1622745430469_20210604
+            description: The DVP/RVP report identifier.
+          required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DVPRVPDetails'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -9153,6 +9252,7 @@ components:
       example: SYSTEM
       description: DESCRIPTION COMING SOON...
       enum:
+        - SYSTEM REPORT SERVICE
         - INSTANT FUNDING BREAKDOWN JOB
     disclosureID:
       type: string
@@ -10442,12 +10542,22 @@ components:
               description: >-
                 Number of underlying equity shares that this contract
                 represents.
-            contractShrs:
+            deliverable:
               type: number
               example: '100'
+              default: 100
               description: >-
-                Number of underlying equity shares that this contract
-                represents.
+                The deliverable unit, available for stock and index options, is
+                the number of shares of the underlying stock with respect to one
+                option contract.
+            multiplier:
+              type: number
+              example: '100'
+              default: 100
+              description: >-
+                The premium/strike Multiplier, available for stock and index
+                options, provides the premium/strike multiplier for an option
+                contract.
     MutualFundInstrumentDetails:
       type: object
       allOf:
@@ -11169,6 +11279,15 @@ components:
       type: number
       example: 86.85
       description: The highest price in the current trading day.
+    UpdatePartnerProfile:
+      type: object
+      properties:
+        omnibusAccountIDs:
+          type: array
+          description: A list of omibus account ids assiocated to the partner profile.
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/accountID'
     CreateOrderRequest:
       type: object
       required:
@@ -12974,6 +13093,138 @@ components:
           $ref: '#/components/schemas/updatedBy'
         settlementProfileID:
           $ref: '#/components/schemas/settlementProfileID'
+    CreateDVPRVP:
+      type: object
+      required:
+        - tradeDate
+      properties:
+        tradeDate:
+          type: string
+          format: date
+          example: '2021-06-04'
+          pattern: yyyy-MM-dd
+          description: The date to generate the DVP/RVP report for.
+        note:
+          $ref: '#/components/schemas/note'
+    CreateDVPRVPRes:
+      type: object
+      properties:
+        id:
+          type: string
+          example: bsr_040fb9cc-84e8-4f20-bf09-d398dacd458d.1622745430469_20210604
+          description: The DVP/RVP report identifier.
+        accountID:
+          $ref: '#/components/schemas/accountID'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        tradeDate:
+          type: string
+          format: date
+          example: '2021-06-04'
+          pattern: yyyy-MM-dd
+          description: The date for which the DVP/RVP was run for.
+        note:
+          $ref: '#/components/schemas/note'
+        partnerID:
+          $ref: '#/components/schemas/partnerID'
+    DVPRVPStatus:
+      type: string
+      example: Processing
+      enum:
+        - Processing
+        - Successful
+    DVPRVP:
+      type: object
+      properties:
+        id:
+          type: string
+          example: bsr_040fb9cc-84e8-4f20-bf09-d398dacd458d.1622745430469_20210604
+          description: The DVP/RVP report identifier.
+        tradeDate:
+          type: string
+          format: date
+          example: '2021-06-04'
+          pattern: yyyy-MM-dd
+          description: The date for which the DVP/RVP was run for.
+        status:
+          type: string
+          example: SUCCESSFUL
+          description: The status of the generated report.
+          enum:
+            - PROCESSING
+            - SUCCESSFUL
+        note:
+          $ref: '#/components/schemas/note'
+        partnerID:
+          $ref: '#/components/schemas/partnerID'
+        created:
+          $ref: '#/components/schemas/created'
+        updated:
+          $ref: '#/components/schemas/updated'
+        updatedBy:
+          $ref: '#/components/schemas/updatedBy'
+        source:
+          type: string
+          example: MANUAL
+          enum:
+            - MANUAL
+            - SYSTEM
+          description: The method type in which the report was generated.
+    ListDVPRVP:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/DVPRVP'
+    DVPRVPDetails:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/DVPRVP'
+        - type: object
+          properties:
+            amount:
+              type: object
+              properties:
+                totalBuy:
+                  type: object
+                  properties:
+                    quantity:
+                      type: number
+                      example: 10.71358941
+                      description: The amount of shares that were purchased.
+                    notional:
+                      type: number
+                      example: 144.26
+                      description: The total amount in USD value of the instruments.
+                    orders:
+                      type: number
+                      example: 30
+                      description: >-
+                        The total amount of orders assiocated to the amount of
+                        shares purchased.
+                totalSell:
+                  type: object
+                  properties:
+                    quantity:
+                      type: number
+                      example: 0
+                      description: The amount of shares that were sold.
+                    notional:
+                      type: number
+                      example: 0
+                      description: The total amount in USD value of the instruments.
+                    orders:
+                      type: number
+                      example: 0
+                      description: >-
+                        The total amount of orders assiocated to the amount of
+                        shares sold.
+            breakdownJson:
+              type: string
+              format: url
+              description: >-
+                A json file of the trade breakdown of all the purchases and sale
+                transactions.
+              example: https://du2c4wzqz90h1.cloudfront.net/buySellTradesReport....
     category:
       type: string
       example: DEPOSIT
@@ -12999,6 +13250,18 @@ components:
         - PROCESSING
         - SUCCESSFUL
         - FAILED
+    from:
+      type: string
+      format: date
+      pattern: yyyy-MM-dd
+      example: '2022-12-25'
+      description: A filter, the start date.
+    to:
+      type: string
+      format: date
+      pattern: yyyy-MM-dd
+      example: '2022-12-26'
+      description: A filter, the end date.
     UserGeneratedAccountDocument:
       type: object
       properties:
