@@ -5318,6 +5318,10 @@ components:
       enum:
         - B
         - S
+        - BUY_OPEN
+        - BUY_CLOSE
+        - SELL_OPEN
+        - SELL_CLOSE
     holdingsObject:
       type: object
       description: An object in the holdings array that holds the instrumentID and target.
@@ -6068,6 +6072,10 @@ components:
           description: Time of last update.
         equityValue:
           $ref: '#/components/schemas/equityValue'
+        optionsValue:
+          $ref: '#/components/schemas/optionsValue'
+        positionsValue:
+          $ref: '#/components/schemas/positionsValue'
         equityPositions:
           type: array
           description: An array of the positions in the account.
@@ -7038,15 +7046,6 @@ components:
       description: >-
         The amount of shares currently being transacted; larger orders may
         execute in chunks.
-    orderTypes:
-      type: string
-      example: MARKET
-      description: The type of order that is placed.
-      enum:
-        - MARKET
-        - LIMIT
-        - STOP
-        - MARKET_IF_TOUCHED
     orderQuantity:
       type: number
       example: 0.7219
@@ -7136,12 +7135,34 @@ components:
                     $ref: '#/components/schemas/orderCumulativeQuantity'
                   orderStatus:
                     type: string
-                    example: PENDING
+                    example: '2'
                     description: The current status of the order.
                     enum:
-                      - PENDING_CANCEL
+                      - 0
+                      - 1
+                      - 2
+                      - 3
+                      - 4
+                      - 6
+                      - 7
+                      - 8
+                      - 9
+                      - A
+                      - B
+                      - C
                   orderType:
-                    $ref: '#/components/schemas/orderTypes'
+                    type: string
+                    example: '1'
+                    description: The type of order that is placed.
+                    enum:
+                      - 0
+                      - 1
+                      - 2
+                      - 3
+                      - 4
+                      - 6
+                      - 7
+                      - m
                   orderQty:
                     $ref: '#/components/schemas/orderQuantity'
                   isoTimeRestingOrderExpires:
@@ -7170,6 +7191,15 @@ components:
                     $ref: '#/components/schemas/SalesCredit'
                   instrumentType:
                     $ref: '#/components/schemas/instrumentType'
+    orderTypes:
+      type: string
+      example: MARKET
+      description: The type of order that is placed.
+      enum:
+        - MARKET
+        - LIMIT
+        - STOP
+        - MARKET_IF_TOUCHED
     fundID:
       type: string
       example: fund_4c16152c-f8e7-4a5a-af6b-c36f4e5cc6e7
@@ -7391,7 +7421,7 @@ components:
       type: number
       format: double
       example: 34275565.44
-      description: Current total market value of the account's open positions.
+      description: The current total market value of the account's open equity positions.
     equityPositionsObj:
       type: object
       properties:
@@ -7616,6 +7646,16 @@ components:
           description: >-
             The total amount of fees calculated from 4pm of previous day until
             current time.
+    optionsValue:
+      type: number
+      format: double
+      example: 12345.67
+      description: The current total market value of the account's open option positions.
+    positionsValue:
+      type: number
+      format: double
+      example: 34287911.11
+      description: The current total market value of the account's open positions.
     optionsPositionsObj:
       type: object
       description: 'Object of options positions. TODO: Complete this section.'
@@ -7660,6 +7700,22 @@ components:
           type: number
           example: 30.84
           description: The average price of the position.
+        mktPrice:
+          type: number
+          example: 440.75
+          description: The current market price of the position.
+        unrealizedPL:
+          type: number
+          example: 14.24
+          description: The unrealized profit and loss for the position.
+        unrealizedDayPLPercent:
+          type: number
+          example: 1.65
+          description: The unrealized day profit and loss for position in percent.
+        unrealizedDayPL:
+          type: number
+          example: 0.54
+          description: The unrealized day profit and loss for the position.
     mutualFundsPositionsObj:
       type: object
       description: 'Object of mutual funds positions. TODO: Complete this section.'
@@ -7859,11 +7915,6 @@ components:
       minLength: 9
       maxLength: 9
       example: E09876AA7
-    type:
-      type: string
-      example: OPTION
-      description: Type of transaction.
-      deprecated: true
     transactionObj:
       type: object
       properties:
@@ -7879,14 +7930,38 @@ components:
           $ref: '#/components/schemas/instrumentCUSIP'
         instrumentType:
           $ref: '#/components/schemas/instrumentType'
-        type:
-          $ref: '#/components/schemas/type'
         cumQty:
           $ref: '#/components/schemas/orderCumulativeQuantity'
         orderStatus:
-          $ref: '#/components/schemas/orderStatus'
+          type: string
+          example: '2'
+          description: The current status of the order.
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+            - 6
+            - 7
+            - 8
+            - 9
+            - A
+            - B
+            - C
         orderType:
-          $ref: '#/components/schemas/orderTypes'
+          type: string
+          example: '1'
+          description: The type of order that is placed.
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+            - 6
+            - 7
+            - m
         orderQty:
           $ref: '#/components/schemas/orderQuantity'
         limitPrice:
@@ -7909,7 +7984,7 @@ components:
           type: string
           example: market_order-buy-new
           description: A reason for the update.
-        commissions:
+        commission:
           type: number
           example: 0
           description: Commission for the transaction if applicable.
