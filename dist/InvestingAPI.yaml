@@ -13494,10 +13494,21 @@ components:
             verificationFullName:
               type: string
               example: Justin Smith
-              description: ''
-            verificiationTimestamp:
+              description: >-
+                The name of the customer that was passed during the KYC
+                verification.
+            verificationTimestamp:
+              type: string
               example: '2022-12-22T16:04:46.724Z'
-              description: ''
+              description: >-
+                The ISO 8601 timestamp of when the KYC verification was
+                completed by the partner.
+            verificationTransactionID:
+              type: string
+              example: ''
+              description: >-
+                A unique identifier passed to reference the KYC verification was
+                completed by the partner.
             customField1:
               example: customFieldValue1
             customField2:
