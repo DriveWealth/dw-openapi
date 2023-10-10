@@ -3271,6 +3271,12 @@ paths:
       tags:
         - Quotes
       parameters:
+        - in: header
+          name: dw-customer-user-id
+          schema:
+            type: string
+            example: 66304da9-3h6f-2234-935f-ac6b7933d706
+            description: The unique identifier of the user, who is requesting the quote.
         - in: query
           name: symbols
           schema:
@@ -3386,6 +3392,12 @@ paths:
       tags:
         - Quotes
       parameters:
+        - in: header
+          name: dw-customer-user-id
+          schema:
+            type: string
+            example: 66304da9-3h6f-2234-935f-ac6b7933d706
+            description: The unique identifier of the user, who is requesting the quote.
         - in: query
           name: symbols
           schema:
