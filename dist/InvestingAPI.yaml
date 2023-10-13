@@ -1137,6 +1137,58 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
+  /accounts/byNo/{accountNo}/position-details:
+    get:
+      tags:
+        - Accounts
+      summary: Retrieve Account Position Lots
+      description: Retrieves Account Position Lots by Account Number
+      parameters:
+        - in: path
+          name: accountNo
+          schema:
+            $ref: '#/components/schemas/accountNo'
+          required: true
+      responses:
+        '200':
+          description: Retrieving an Account's Position Lots was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountPositionLots'
+              examples:
+                Account Lots:
+                  value:
+                    accountID: 0d1d686c-abe3-4203-82e5-62f1bd8266f3.1654094651810
+                    accountNo: XYRR000001
+                    positions:
+                      - instrumentID: 5b85fabb-d57c-44e6-a7f6-a3efc760226c
+                        symbol: TSLA
+                        currency: USD
+                        costBasis: 4
+                        quantity: 0.01648699
+                        currentMarketPrice: 253.76
+                        currentMarketValue: 4.18
+                        unrealizedPnL: 0.18
+                        effectiveCostPerShare: 242.6155411
+                        legs:
+                          - created: '2022-08-25T10:07:47.235Z'
+                            initialQuantity: 0.01240767
+                            openQuantity: 0.01240767
+                            effectiveCostPerShare: 241.79
+                            side: B
+                            comment: SPLIT CAFB015132 TSLA...
+                          - created: '2023-09-25T15:28:12.120Z'
+                            initialQuantity: 0.00407932
+                            openQuantity: 0.00407932
+                            effectiveCostPerShare: 245.14
+                            side: B
+                            comment: TSLA FRACK part TSLA KI...
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
   /asset-transfers/acats:
     post:
       tags:
@@ -6274,6 +6326,81 @@ components:
       items:
         oneOf:
           - $ref: '#/components/schemas/docs'
+    AccountPositionLots:
+      type: object
+      properties:
+        accountID:
+          $ref: '#/components/schemas/accountID'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        positions:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/PositionLots'
+    PositionLots:
+      type: object
+      properties:
+        instrumentID:
+          $ref: '#/components/schemas/instrumentID'
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+        currency:
+          $ref: '#/components/schemas/currency'
+        costBasis:
+          type: number
+          example: 19
+          description: The cost basis of the position.
+        quantity:
+          type: number
+          example: 0.16707001
+          description: The total amount of securities held in this position.
+        currentMarketPrice:
+          type: number
+          example: 90.16
+          description: The current market price of the instrument.
+        currentMarketValue:
+          type: number
+          example: 15.06
+          description: The average price of the the total position.
+        unrealizedPnL:
+          type: number
+          example: -3.94
+          description: The unrealized profit/loss of the position.
+        effectiveCostPerShare:
+          type: number
+          example: 1.09
+          description: The effective cost per share of the position.
+        legs:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/PositionLegs'
+    PositionLegs:
+      type: object
+      properties:
+        created:
+          type: string
+          example: '2017-06-16T15:35:30.617Z'
+          description: The timestamp when the position was created.
+        initialQuantity:
+          type: number
+          example: 0.17583963
+          description: The initial quantity of shares for position leg.
+        openQuantity:
+          type: number
+          example: 10.1
+          description: >-
+            The total amount of shares that are currently held in this position
+            leg.
+        effectiveCostPerShare:
+          type: number
+          example: 113.74
+          description: The effective cost per share of the position leg.
+        side:
+          $ref: '#/components/schemas/sideAbbreviated'
+        comment:
+          $ref: '#/components/schemas/note'
     userID:
       type: string
       example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
