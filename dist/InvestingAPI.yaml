@@ -1137,7 +1137,7 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
-  /accounts/byNo/{accountNo}/position-details:
+  /accounts/{accountID}/position-details:
     get:
       tags:
         - Accounts
@@ -1145,9 +1145,9 @@ paths:
       description: Retrieves Account Position Lots by Account Number
       parameters:
         - in: path
-          name: accountNo
+          name: accountID
           schema:
-            $ref: '#/components/schemas/accountNo'
+            $ref: '#/components/schemas/accountID'
           required: true
       responses:
         '200':
