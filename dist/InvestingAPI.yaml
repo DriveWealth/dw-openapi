@@ -2809,14 +2809,14 @@ paths:
             type: string
           required: false
           example: ACTIVE
-          description: The current instrument status to filter by.
+          description: The instrument status; to filter by.
         - in: query
           name: isOptionsEnabled
           schema:
             type: boolean
           required: false
           example: true
-          description: Retrieves options enabled instruments.
+          description: The ability to trade options for this instrument; to filter by.
       summary: List all Instruments
       description: >-
         Fetch a list of all the available Instruments offered on the DriveWealth
