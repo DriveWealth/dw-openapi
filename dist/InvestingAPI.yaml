@@ -3232,7 +3232,7 @@ paths:
             $ref: '#/components/schemas/orderID'
           required: true
       summary: Update Order
-      description: Cancel a pending order.
+      description: Updates an Order in progress.
       requestBody:
         content:
           application/json:
@@ -3241,7 +3241,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Cancel order was successful.
+          description: The Order was Successfully Updated.
           content:
             application/json:
               schema:
@@ -11905,7 +11905,9 @@ components:
         method:
           type: string
           example: CANCEL
-          description: Set to "CANCEL"
+          enum:
+            - CANCEL
+          description: The method in which is requested.
     CancelOrderResponse:
       type: object
       properties:
