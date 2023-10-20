@@ -2977,19 +2977,17 @@ paths:
           description: >-
             The expiration dates for the given underlying security; to filter
             by.
-      summary: Retrieve an options chain
-      description: Generate a list of options chain based on query parameters.
+      summary: Retrieve an Options chain
+      description: Retrieves a list of Options chain based on query parameters.
       responses:
         '200':
-          description: >-
-            Retrieving all Options chain based on query parameters was
-            successful
+          description: Retrieving Options chain was Successful.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OptionsList'
               examples:
-                Retrieving an options chain was successful:
+                Options Chain:
                   value:
                     symbol: AAPL
                     options:
