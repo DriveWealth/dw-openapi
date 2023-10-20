@@ -2903,7 +2903,7 @@ paths:
             type: string
           required: true
           example: '2022-05-15'
-          description: TBD
+          description: The expiration date of the option security; to filter by.
         - in: query
           name: page
           schema:
