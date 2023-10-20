@@ -2810,6 +2810,13 @@ paths:
           required: false
           example: ACTIVE
           description: The current instrument status to filter by.
+        - in: query
+          name: isOptionsEnabled
+          schema:
+            type: boolean
+          required: false
+          example: true
+          description: Retrieves options enabled instruments.
       summary: List all Instruments
       description: >-
         Fetch a list of all the available Instruments offered on the DriveWealth
@@ -2914,11 +2921,62 @@ paths:
           name: sortOrder
           schema:
             type: string
+            enum:
+              - asc
+              - desc
+            default: asc
           required: false
           example: asc
+          description: The sorting order of option instruments.
+        - in: query
+          name: noOfStrikes
+          schema:
+            type: integer
+          required: false
+          example: 5
           description: >-
-            Retrieve option Instruments based on sort order. Default sortBy is
-            createdAt
+            The number of option instruments to be returned above and below
+            market price.
+        - in: query
+          name: minStrikePrice
+          schema:
+            type: integer
+          required: false
+          example: 20
+          description: The option instruments to be returned above the strike price.
+        - in: query
+          name: maxStrikePrice
+          schema:
+            type: integer
+          required: false
+          example: 100
+          description: The option instruments to be returned below the strike price.
+        - in: query
+          name: optionType
+          schema:
+            type: string
+            enum:
+              - CALL
+              - PUT
+          required: false
+          example: CALL
+          description: The type of option instruments to be returned.
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: false
+          example: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
+          description: The instrument ID of the option security.
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          required: false
+          example: expirationDate
+          description: >-
+            The expiration dates for the given underlying security; to filter
+            by.
       summary: Retrieve an options chain
       description: Generate a list of options chain based on query parameters.
       responses:
@@ -2935,26 +2993,23 @@ paths:
                   value:
                     symbol: AAPL
                     options:
-                      - optionData:
-                          rootId: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
+                      - optionsData:
                           rootSymbol: AAPL
+                          rootId: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
                           expirationDate: '2018-09-18'
                           optionType: PUT
                           strikePrice: '16.00'
                           sharesPerContract: '100'
                           deliverable: '100'
                           multiplier: '100'
+                        id: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
                         symbol: AAPL220517P00016000
+                        type: OPTION
                         name: Apple Computer September 9 $16.00 Put
+                        exchange: NYQ
                         orderSizeMax: 20000
                         orderSizeMin: 1
                         orderSizeStep: 1
-                        id: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
-                        instrumentType: OPTION
-                        exchange: NYQ
-                        status: ACTIVE
-                        ISIN: US023135BX34
-                        settlementDays: 1
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -2971,7 +3026,7 @@ paths:
             type: string
           required: true
           example: AAPL
-          description: Symbol or instrumentID of the underlying equity security
+          description: Symbol or instrumentID of the underlying equity security.
       summary: Retrieve option expiration dates
       description: Retrieve option expiration dates for an underlying security.
       responses:
@@ -9748,6 +9803,11 @@ components:
             - HALTED
         ISIN:
           $ref: '#/components/schemas/instrumentISIN'
+        isOptionsEnabled:
+          type: boolean
+          example: true
+          default: false
+          description: The ability to trade options for this equity instrument.
     InstrumentBase:
       type: object
       properties:
@@ -9787,6 +9847,39 @@ components:
           type: integer
           description: Number of days for the instrument to settle
           example: 1
+    OptionInstrumentBase:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/instrumentID'
+        symbol:
+          type: string
+          example: AAPL220517P00016000
+          description: The Option OSI symbol
+        type:
+          $ref: '#/components/schemas/instrumentType'
+        name:
+          type: string
+          example: Morgan Stanley
+          description: >-
+            A friendly name of the Instrument, like the Company name for an
+            equity
+        exchange:
+          type: string
+          example: NYQ
+          description: The stock exchange the instrument is listed on.
+        orderSizeMax:
+          type: number
+          example: 20000
+          description: The maximum share amount for any order of this Instrument.
+        orderSizeMin:
+          type: number
+          example: 0.1
+          description: The minimum share amount for any order of this Instrument.
+        orderSizeStep:
+          type: number
+          example: 0.01
+          description: Increment amount on order of this Instrument.
     InstrumentsProperties:
       type: object
       properties:
@@ -10717,23 +10810,23 @@ components:
     OptionInstrumentDetails:
       type: object
       allOf:
-        - $ref: '#/components/schemas/InstrumentBase'
+        - $ref: '#/components/schemas/OptionInstrumentBase'
       properties:
-        optionData:
+        optionsData:
           type: object
           properties:
-            rootId:
-              type: string
-              example: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
-              description: >-
-                A unique ID created by DriveWealth to identify a specific
-                Instrument that this Option is derived from.
             rootSymbol:
               type: string
               example: AAPL
               description: >-
                 Ticker symbol of the underlying instrument from which this
                 Option is derived.
+            rootId:
+              type: string
+              example: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
+              description: >-
+                A unique ID created by DriveWealth to identify a specific
+                Instrument that this Option is derived from.
             expirationDate:
               type: string
               example: '2018-09-18'
@@ -11051,14 +11144,14 @@ components:
       properties:
         symbol:
           type: string
-          example: AAPL220517P00016000
-          description: Option OSI.
+          example: AAPL
+          description: The Symbol of the underlying equity security.
         expiration:
           type: array
           example:
             - '2022-05-10'
             - '2022-05-11'
-          description: The date the Option Contract will expire
+          description: The date the Option Contract will expire.
           items:
             type: string
     OptionsList:
