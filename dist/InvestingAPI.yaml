@@ -4427,7 +4427,7 @@ paths:
       tags:
         - Subscriptions
       summary: List Subscriptions by User
-      description: Fetches all User's subscriptions.
+      description: Retrieves all User's Subscriptions by User
       parameters:
         - in: path
           name: userID
@@ -4438,7 +4438,7 @@ paths:
           description: The User's unique identifier.
       responses:
         '200':
-          description: Fetching User's uploaded Physical Documents was successful.
+          description: Retrieving all User's Subscription was Successful.
           content:
             application/json:
               schema:
