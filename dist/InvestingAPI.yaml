@@ -3801,23 +3801,23 @@ paths:
       tags:
         - Withdrawals
       summary: List all Withdrawals
-      description: Fetches a list of all Withdrawals for the firm.
+      description: Retrieves a list of all Withdrawals for the firm.
       parameters:
         - in: query
           name: status
           schema:
             $ref: '#/components/schemas/withdrawalStatus'
           required: true
-          description: Filters the Withdrawals by the current status of the Withdrawal.
+          description: The current status of the withdrawal; to filter by.
         - in: query
           name: type
           schema:
             $ref: '#/components/schemas/withdrawalTypes'
           required: true
-          description: Filters the Withdrawals by the type of withdrawal.
+          description: The type of withdrawal; to filter by.
       responses:
         '200':
-          description: Fetching a list of all Withdrawals for the firm was successful.
+          description: Retrieving a list of all Withdrawals for the firm was Successful.
           content:
             application/json:
               schema:
