@@ -1343,9 +1343,9 @@ paths:
             schema:
               $ref: '#/components/schemas/AcatsCreateRequestModel'
       description: >-
-        The ACATs API provides a set of endpoints and methods that allow
-        financial institutions to initiate, track, and manage the transfer of
-        customer accounts.
+        The Automated Customer Account Transfer Service (ACATS) is a system that
+        facilitates the transfer of securities from one trading account to
+        another at a different brokerage firm or bank.
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -8418,20 +8418,15 @@ components:
       type: object
       properties:
         source:
-          type: string
-          example: LKGE000001
-          description: >-
-            An account number to transer from. For some Transfer types, this
-            must be an account number at DriveWealth.
+          $ref: '#/components/schemas/accountNo'
         destination:
           type: string
           description: >-
-            Destination DriveWealth account number where all assets will be
-            transferred.
+            The DriveWealth destination account number where all assets will be
+            transferred to.
           example: LKKZ000004
         comment:
-          type: string
-          description: A generic comment to be saved with this Transfer.
+          $ref: '#/components/schemas/note'
         metadata:
           $ref: '#/components/schemas/metadata'
     GenericTransfer:
@@ -8484,24 +8479,22 @@ components:
         clearingNo:
           type: string
           example: DTCC-0052
-          description: DTCC clearing number of the broker
+          description: The DTCC clearing number of the broker.
         cash:
           type: number
-          description: >-
-            Cash to be moved from the source account. Only used for a partial
-            ACATS Transfer.
+          description: The amount of cash to be moved from the source account.
           default: 0
         positions:
           type: array
           minItems: 0
           description: >-
-            Positions to be moved from the source account. Only used for a
-            partial ACATS Transfer.
+            The positions to be moved from the source account to the destination
+            account.
           items:
             $ref: '#/components/schemas/AcatPositionModel'
     AcatsTransferEnumValues_SourceAccountType:
       type: string
-      description: Account type on source
+      description: The type of account the sources account is.
       enum:
         - INDIVIDUAL
         - CORPORATE
@@ -8511,7 +8504,7 @@ components:
         - IRA_MANAGED
     AcatsTransferEnumValues_AcatType:
       type: string
-      description: ACAT transfer Type
+      description: The type of ACAT transfer to be performed.
       enum:
         - FULL
         - PARTIAL
@@ -8575,9 +8568,8 @@ components:
         quantity:
           type: number
           description: >-
-            Quantity of shares held and to be transferred. If assets are moving
-            to or from an account outside of DriveWealth, only whole share
-            quantities can be transferred.
+            The quantity of shares to be transferred. Assets that are moving to
+            or from an account outside of DriveWealth, can only be whole shares.
           minimum: 1
       required:
         - quantity
