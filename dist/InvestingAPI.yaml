@@ -4078,7 +4078,7 @@ paths:
       tags:
         - Subscriptions
       summary: Delete Subscription
-      description: Cancels a User's Subscription by subscriptionID.
+      description: Removes a User's Subscription by Subscription.
       parameters:
         - in: path
           name: subscriptionID
@@ -4088,7 +4088,7 @@ paths:
           description: The unique identifier that identifies the user's subscription.
       responses:
         '201':
-          description: Cancel accepted.
+          description: User's Subscription removal was Received.
       security:
         - bearerAuth: []
           dwAppKey: []
