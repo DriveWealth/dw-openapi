@@ -9596,7 +9596,7 @@ components:
     signedAt:
       type: string
       format: timestamp
-      example: '2023-06-14T15:07:24.634Z'
+      example: '2023-06-14T15:07:24Z'
       description: >-
         Timestamp of when the customer acknowledged or declined the disclosure
         agreement
