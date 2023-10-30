@@ -4186,7 +4186,7 @@ paths:
       tags:
         - Users
       summary: Retrieve User
-      description: Fetches a user's profile by userID.
+      description: Retrieves a User profile by userID.
       parameters:
         - in: path
           name: userID
@@ -4197,7 +4197,7 @@ paths:
           description: Unique ID of the User to fetch.
       responses:
         '200':
-          description: Fetching a User is Successful.
+          description: Retrieving a User profile was Successful.
           content:
             application/json:
               schema:
