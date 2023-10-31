@@ -375,10 +375,10 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Retrieve Account
-      description: Fetch Account details using the unique accountID.
+      description: Retrieves Account details by accountID.
       responses:
         '200':
-          description: Fetch account details was Successful.
+          description: Retrieving Account details was Successful.
           content:
             application/json:
               schema:
