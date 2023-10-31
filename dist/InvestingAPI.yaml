@@ -112,10 +112,10 @@ paths:
             The unique identifier returned when a Trade Allocation request is
             made.
       summary: Retrieve Trade Allocation
-      description: Fetches the details of a Trade Allocation using the allocationID.
+      description: Retrieves Trade Allocation details by allocationID.
       responses:
         '200':
-          description: Fetch Trade Allocation details by allocationID was Successful.
+          description: Retrieving Trade Allocation details by allocationID was Successful.
           content:
             application/json:
               schema:
