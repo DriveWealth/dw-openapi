@@ -1810,7 +1810,9 @@ paths:
       tags:
         - Supported Countries
       summary: List all Supported Countries
-      description: Fetches a list of allowed countries, which users can be onboarded from.
+      description: >-
+        Retrieves a list of allowed countries for which users can be onboard
+        from.
       parameters:
         - in: query
           name: status
@@ -1826,7 +1828,7 @@ paths:
             countries inside it.
       responses:
         '200':
-          description: Fetching A List of Allowed Countries was Successful.
+          description: Retrieving a list of Supported Countries was Successful.
           content:
             application/json:
               schema:
