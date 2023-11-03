@@ -1207,7 +1207,7 @@ paths:
                     id: acats_41eb5bdd-8ce2-4471-8fc6-9892da089cd1
                     source: BROKER0001
                     destination: DWXR001004
-                    clearingNo: DTC
+                    clearingNo: '0001'
                     status:
                       name: PENDING
                       description: Asset transfer request is pending
@@ -1240,7 +1240,7 @@ paths:
                     id: acats_45dc50ac-3daa-484d-98cb-5264abb51d86
                     source: FOLIO123
                     destination: DWKN000094
-                    clearingNo: DTC-001
+                    clearingNo: '0001'
                     status:
                       name: STARTED
                       description: Asset transfer request has been initiated.
@@ -1259,7 +1259,7 @@ paths:
                   value:
                     source: FOLIO12345
                     destination: DWST000077
-                    clearingNo: DTCC-0052
+                    clearingNo: '0001'
                     sourceAccountType: INDIVIDUAL
                     type: FULL
                     cash: 0
@@ -1421,46 +1421,100 @@ paths:
               examples:
                 Successful ACATS Transfer:
                   value:
-                    id: acat_8c583260-ae31-11ed-afa1-0242ac120002
-                    source: FOLIO12345
-                    destination: DWST000077
-                    clearingNo: DTCC-0052
-                    sourceAccountType:
-                      name: SELF
-                      description: string
-                    type:
-                      name: PARTIAL
-                      description: Partial Acat Transfer
-                    cash: 1000
-                    positions:
-                      - symbol: AMZN
-                        quantity: 1
+                    id: acats_0a18eea2-c63d-447a-a0f1-1c7d9a08c9da
+                    source: TR6666
+                    destination: FWCT000005
+                    clearingNo: '1111'
                     status:
                       name: SUCCESSFUL
-                      description: Asset Transfer is successfull
-                    comment: string
+                      description: Asset transfer request has been successfully completed
+                    type:
+                      name: ACAT
+                      description: ACAT transfer
+                    acatType:
+                      name: PARTIAL
+                      description: Partial Acats Transfer
+                    sourceAccountType:
+                      name: INDIVIDUAL
+                      description: Individual Account
+                    partner:
+                      id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
+                      name: Stark House
+                    positions:
+                      - symbol: ACHN
+                        instrumentID: 27673f0e-2219-40b0-9ecc-91c87266efaf
+                        quantity: 1
+                      - symbol: SBSI
+                        instrumentID: 1c6c1625-8146-4dd3-a84b-c6a97cd74bcf
+                        quantity: 56
                     metadata: {}
-                    created: '2019-08-24T14:15:22Z'
-                    updated: '2019-08-24T14:15:22Z'
+                    auditDetails:
+                      - timestamp: '2023-10-20T13:02:50.970Z'
+                        status:
+                          name: STARTED
+                          description: Asset transfer request has been initiated.
+                        comment: Transfer request has been submitted in queue
+                      - timestamp: '2023-10-20T15:00:04.185Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        comment: TIF has been created
+                      - timestamp: '2023-11-02T00:01:19.340Z'
+                        status:
+                          name: SUCCESSFUL
+                          description: >-
+                            Asset transfer request has been successfully
+                            completed
+                        comment: Transfer Settled
+                    created: '2023-10-20T13:02:50.960Z'
+                    updated: '2023-11-02T00:01:19.340Z'
                 Failed ACATS Transfer:
                   value:
-                    id: acat_8c583260-ae31-11ed-afa1-0242ac120002
-                    source: FOLIO12345
-                    destination: DWST000077
-                    clearingNo: DTCC-0052
-                    sourceAccountType:
-                      name: Individual
-                      description: string
-                    type:
-                      name: Full
-                      description: string
+                    id: acats_d9faa000-9d97-4ab8-85f8-cbd856d31b79
+                    source: TR6666
+                    destination: FWRT000005
+                    clearingNo: '1111'
                     status:
-                      name: Failed
-                      description: Asset transfer is failed
-                    comment: transfer is failed to insufficient balance on the account.
-                    metadata: {}
-                    created: '2019-08-24T14:15:22Z'
-                    updated: '2019-08-24T14:15:22Z'
+                      name: FAILED
+                      description: Asset transfer is failed.
+                    type:
+                      name: ACAT
+                      description: ACAT transfer
+                    acatType:
+                      name: FULL
+                      description: Full Acats Transfer
+                    sourceAccountType:
+                      name: INDIVIDUAL
+                      description: Individual Account
+                    partner:
+                      id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
+                      name: Stark House
+                    positions: []
+                    metadata:
+                      customer_id: '12345'
+                    rejectionInfo:
+                      rejectionCode: ACCOUNT_NOT_MATCH
+                      rejectionReason: Account Title Mismatch
+                    auditDetails:
+                      - timestamp: '2023-08-28T11:30:26.367Z'
+                        status:
+                          name: STARTED
+                          description: Asset transfer request has been initiated.
+                        comment: Transfer request has been submitted in queue
+                      - timestamp: '2023-09-12T15:55:03.294Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        comment: Request has been submitted for ACAT transfer
+                      - timestamp: '2023-11-02T00:01:34.330Z'
+                        status:
+                          name: FAILED
+                          description: Asset transfer is failed.
+                        comment: >-
+                          Full Transfer Rejected. Contact Clearing Broker for
+                          further information
+                    created: '2023-08-28T11:30:25.805Z'
+                    updated: '2023-11-02T00:01:34.330Z'
                 Minor Graduation:
                   value:
                     id: grad_28d08c72-3d0f-4c6e-8961-2dc6491c28a8
@@ -1472,6 +1526,9 @@ paths:
                     type:
                       name: TEEN
                       description: Teen Account Transfer
+                    partner:
+                      id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
+                      name: Stark House
                     auditDetails:
                       - timestamp: '2023-07-26T14:05:18.518Z'
                         status:
@@ -1537,37 +1594,182 @@ paths:
                     - $ref: '#/components/schemas/ACATSTransfer'
                     - $ref: '#/components/schemas/MinorTransfer'
               examples:
-                List Assets Transfers:
+                List Assets Transfers [TEEN]:
                   value:
                     data:
-                      - id: acat_8c583260-ae31-11ed-afa1-0242ac120002
-                        source: FOLIO12345
-                        destination: DWST000077
-                        clearingNo: DTCC-0052
+                      - id: grad_ba9522d8-0f3a-43bd-bb16-9efc0ad1a913
+                        source: DWCW001118
+                        destination: DWYE001127
+                        status:
+                          name: SUCCESSFUL
+                          description: >-
+                            Asset transfer request has been successfully
+                            completed
+                        type:
+                          name: TEEN
+                          description: Teen Account Transfer
+                        partner:
+                          id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
+                          name: Stark House
+                        auditDetails:
+                          - timestamp: '2023-10-25T16:00:42.126Z'
+                            status:
+                              name: STARTED
+                              description: Asset transfer request has been initiated.
+                            comment: Transfer request has been submitted in queue
+                          - timestamp: '2023-10-25T16:00:42.257Z'
+                            status:
+                              name: PENDING
+                              description: Asset transfer request is pending
+                            comment: Transfer process started
+                          - timestamp: '2023-10-27T21:00:07.959Z'
+                            status:
+                              name: ON_HOLD
+                              description: Asset transfer request is on hold.
+                            comment: >-
+                              Transfer is on hold for DWCW001118. Settlement is
+                              not finished yet.
+                          - timestamp: '2023-10-28T14:00:02.453Z'
+                            status:
+                              name: SUCCESSFUL
+                              description: >-
+                                Asset transfer request has been successfully
+                                completed
+                            comment: Transfer Completed
+                        created: '2023-10-25T16:00:42.126Z'
+                        updated: '2023-10-28T14:00:02.453Z'
+                      - id: grad_47edac5a-57f0-456a-83ca-128205fcdf3d
+                        source: DWXG000976
+                        destination: DWHZ001105
+                        status:
+                          name: ON_HOLD
+                          description: Asset transfer request is on hold.
+                        type:
+                          name: TEEN
+                          description: Teen Account Transfer
+                        partner:
+                          id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
+                          name: Stark House
+                        auditDetails:
+                          - timestamp: '2023-10-29T04:00:56.167Z'
+                            status:
+                              name: STARTED
+                              description: Asset transfer request has been initiated.
+                            comment: Transfer request has been submitted in queue
+                          - timestamp: '2023-10-29T04:00:56.309Z'
+                            status:
+                              name: PENDING
+                              description: Asset transfer request is pending
+                            comment: Transfer process started
+                          - timestamp: '2023-11-01T21:00:02.207Z'
+                            status:
+                              name: ON_HOLD
+                              description: Asset transfer request is on hold.
+                            comment: >-
+                              Transfer is on hold for DWXG000976. Settlement is
+                              not finished yet.
+                        created: '2023-10-29T04:00:56.167Z'
+                        updated: '2023-11-01T21:00:02.207Z'
+                    nextPageOffset: >-
+                      25f77a3e-2a4b-48bf-bea2-1b8bcd541621#grad_47edac5a-57f0-456a-83ca-128205fcdf3d#2023-07-28T23:55:34.142Z
+                    prevPageOffset: ''
+                List Assets Transfers [ACAT]:
+                  value:
+                    data:
+                      - id: acats_d83e92cb-ca72-4d0d-9576-ede66ffcee2b
+                        source: TR6666
+                        destination: FWCT000005
+                        clearingNo: '1111'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        type:
+                          name: ACAT
+                          description: ACAT transfer
+                        acatType:
+                          name: PARTIAL
+                          description: Partial Acats Transfer
                         sourceAccountType:
                           name: INDIVIDUAL
                           description: Individual Account
-                        acatType:
-                          name: PARTIAL
-                          description: Partial Acat Transfer
-                        cash: 1000
+                        partner:
+                          id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
+                          name: Stark House
+                        cash: 12345.67
                         positions:
-                          - symbol: AMZN
-                            quantity: 1
+                          - symbol: SBSI
+                            instrumentID: 1c6c1625-8146-4dd3-a84b-c6a97cd74bcf
+                            quantity: 213
+                        metadata: {}
+                        auditDetails:
+                          - timestamp: '2023-10-20T13:18:42.383Z'
+                            status:
+                              name: STARTED
+                              description: Asset transfer request has been initiated.
+                            comment: Transfer request has been submitted in queue
+                          - timestamp: '2023-10-20T15:00:04.207Z'
+                            status:
+                              name: PENDING
+                              description: Asset transfer request is pending
+                            comment: TIF has been created
+                        created: '2023-10-20T13:18:42.347Z'
+                        updated: '2023-10-20T15:00:04.216Z'
+                      - id: acats_0a18eea2-c63d-447a-a0f1-1c7d9a08c9da
+                        source: TR6666
+                        destination: FWCT000005
+                        clearingNo: '1111'
                         status:
                           name: SUCCESSFUL
-                          description: Asset transfer is successfully completed.
-                        comment: string
+                          description: >-
+                            Asset transfer request has been successfully
+                            completed
+                        type:
+                          name: ACAT
+                          description: ACAT transfer
+                        acatType:
+                          name: PARTIAL
+                          description: Partial Acats Transfer
+                        sourceAccountType:
+                          name: INDIVIDUAL
+                          description: Individual Account
+                        partner:
+                          id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
+                          name: Stark House
+                        positions:
+                          - symbol: ACHN
+                            instrumentID: 27673f0e-2219-40b0-9ecc-91c87266efaf
+                            quantity: 1
+                          - symbol: SBSI
+                            instrumentID: 1c6c1625-8146-4dd3-a84b-c6a97cd74bcf
+                            quantity: 56
                         metadata: {}
-                        created: '2019-08-24T14:15:22Z'
-                        updated: '2019-08-24T14:15:22Z'
-                      - id: acats_41eb5bdd-8ce2-4471-8fc6-9892da089cd1
-                        source: BROKER0001
-                        destination: DWXR001004
-                        clearingNo: DTC
+                        auditDetails:
+                          - timestamp: '2023-10-20T13:02:50.970Z'
+                            status:
+                              name: STARTED
+                              description: Asset transfer request has been initiated.
+                            comment: Transfer request has been submitted in queue
+                          - timestamp: '2023-10-20T15:00:04.185Z'
+                            status:
+                              name: PENDING
+                              description: Asset transfer request is pending
+                            comment: TIF has been created
+                          - timestamp: '2023-11-02T00:01:19.340Z'
+                            status:
+                              name: SUCCESSFUL
+                              description: >-
+                                Asset transfer request has been successfully
+                                completed
+                            comment: Transfer Settled
+                        created: '2023-10-20T13:02:50.960Z'
+                        updated: '2023-11-02T00:01:19.340Z'
+                      - id: acats_d9faa000-9d97-4ab8-85f8-cbd856d31b79
+                        source: TR6666
+                        destination: FWRT000005
+                        clearingNo: '1111'
                         status:
-                          name: STARTED
-                          description: Asset transfer request is received
+                          name: FAILED
+                          description: Asset transfer is failed.
                         type:
                           name: ACAT
                           description: ACAT transfer
@@ -1577,25 +1779,37 @@ paths:
                         sourceAccountType:
                           name: INDIVIDUAL
                           description: Individual Account
+                        partner:
+                          id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
+                          name: Stark House
                         positions: []
-                        metadata: {}
-                        created: '2023-07-28T23:56:10.491Z'
-                        updated: '2023-07-28T23:56:10.667Z'
-                      - id: grad_8c583260-ae31-11ed-afa1-0242ac120002
-                        source: DWST000076
-                        destination: DWST000077
-                        type:
-                          name: TEEN
-                          description: Teen Account Migration
-                        status:
-                          name: PENDING
-                          description: Account transfer request is Pending.
-                        comment: Minor assets transfer
-                        metadata: {}
-                        created: '2023-02-28T22:50:02.073327862Z'
-                        updated: '2023-02-28T22:50:02.073327862Z'
+                        metadata:
+                          customer_id: '12345'
+                        rejectionInfo:
+                          rejectionCode: ACCOUNT_NOT_MATCH
+                          rejectionReason: Account Title Mismatch
+                        auditDetails:
+                          - timestamp: '2023-08-28T11:30:26.367Z'
+                            status:
+                              name: STARTED
+                              description: Asset transfer request has been initiated.
+                            comment: Transfer request has been submitted in queue
+                          - timestamp: '2023-09-12T15:55:03.294Z'
+                            status:
+                              name: PENDING
+                              description: Asset transfer request is pending
+                            comment: Request has been submitted for ACAT transfer
+                          - timestamp: '2023-11-02T00:01:34.330Z'
+                            status:
+                              name: FAILED
+                              description: Asset transfer is failed.
+                            comment: >-
+                              Full Transfer Rejected. Contact Clearing Broker
+                              for further information
+                        created: '2023-08-28T11:30:25.805Z'
+                        updated: '2023-11-02T00:01:34.330Z'
                     nextPageOffset: >-
-                      80f9b672-120d-4b73-9cc9-42fb3262c4b9#acats_a2a787f0-8e4b-4c39-9653-2da92820cc3e#2023-07-28T23:55:34.142Z
+                      25f77a3e-2a4b-48bf-bea2-1b8bcd541621#acats_d9faa000-9d97-4ab8-85f8-cbd856d31b79#2023-08-28T11:30:25.805Z
                     prevPageOffset: ''
       security:
         - bearerAuth: []
@@ -1616,7 +1830,16 @@ paths:
             schema:
               $ref: '#/components/schemas/CancelRebillRequest'
             examples:
-              Create Cancel Rebill:
+              'Create Cancel ':
+                value:
+                  orderNo: IKJL0000001
+                  type: CANCEL
+                  reason: FRAUD
+                  approvedBy: John Doe
+                  comment: Fraud detected.
+                  metadata:
+                    - {}
+              Create Price Adjustment:
                 value:
                   orderNo: IKJL0000001
                   type: PRICE_ADJUSTMENT
@@ -1624,6 +1847,16 @@ paths:
                   adjustedPrice: 22.99
                   approvedBy: John Doe
                   comment: Incorrect price during execution.
+                  metadata:
+                    - {}
+              Create Commission Adjustment:
+                value:
+                  orderNo: IKJL0000001
+                  type: COMMISSION_ADJUSTMENT
+                  reason: PARTNER_TECHNICAL_ERROR
+                  adjustedCommission: 2.99
+                  approvedBy: John Doe
+                  comment: Incorrect commission during execution.
                   metadata:
                     - {}
       responses:
@@ -2040,9 +2273,7 @@ paths:
                   sellQuantity: 10
               properties:
                 accountNo:
-                  type: string
-                  description: The account number of the user where the order was placed
-                  example: DWPH000003
+                  $ref: '#/components/schemas/accountNo'
                 sellSymbol:
                   type: string
                   description: >-
@@ -2064,8 +2295,6 @@ paths:
                   example: '100.00'
                 quantity:
                   type: number
-                  x-stoplight:
-                    id: o5gffisgzll9y
                   description: >-
                     This is the total quantity being sold of the sellSymbol. The
                     proceeds, less any fees, will be used to purchase the
@@ -2141,14 +2370,14 @@ paths:
                   example: CANCEL
               required:
                 - method
-  /exchanges/{exchangeID}:
+  /exchanges/{exchangeIdentifier}:
     parameters:
       - schema:
           type: string
-        name: exchangeID
+        name: exchangeIdentifier
         in: path
         required: true
-        description: The ID of an Exchange
+        description: The Exchange ID (id) or Exchange Number (exchangeNo)
     get:
       tags:
         - Exchanges
@@ -2177,7 +2406,7 @@ paths:
                     userID: b25f0d36-b4e4-41f8-b3d9-9249e46402cd
                     accountID: b25f0d36-b4e4-41f8-b3d9-9249e46402cd.1403540676095
                     accountNo: DWZR000001
-                    created: '2019-03-28T22:40:03.240Z'
+                    createdWhen: '2019-03-28T22:40:03.240Z'
                 properties:
                   id:
                     type: string
@@ -2187,9 +2416,14 @@ paths:
                     description: The specific exchange number
                   status:
                     type: string
-                    description: >-
-                      The state of the exchange. Will either be NEW, REJECTED,
-                      CANCELED, PENDING_CANCELED or FILLED
+                    description: The state of the exchange.
+                    enum:
+                      - NEW
+                      - FILLED
+                      - REJECTED
+                      - PENDING_CANCEL
+                      - CANCELED
+                      - FILLED
                   sellSymbol:
                     type: string
                     description: >-
@@ -2214,23 +2448,15 @@ paths:
                     description: The order number corresponding to the buy transaction
                   sellAveragePrice:
                     type: number
-                    x-stoplight:
-                      id: myibv7zvlsh82
                     description: The price the sell order was filled at
                   sellCumulativeQuantity:
                     type: number
-                    x-stoplight:
-                      id: u929j5us7cs03
                     description: The total quantity the sell was for
                   buyAveragePrice:
                     type: number
-                    x-stoplight:
-                      id: 79xsrkrk39eyj
                     description: The price the buy order was filled at
                   buyCumulativeQuantity:
                     type: number
-                    x-stoplight:
-                      id: i610e6sd2p1ks
                     description: The total quantity the buy was for
                   amountCash:
                     type: number
@@ -2245,24 +2471,36 @@ paths:
                       exchange
                   orderExpires:
                     type: string
-                    x-stoplight:
-                      id: kzv42hvg44791
                     description: The date the exchange expires
                   createdBy:
                     type: string
-                    description: Who the orders were created by
+                    description: The user that created the exchange
                   userID:
                     type: string
-                    description: The id of the user by whom the order was placed
+                    description: The id of the user by whom the exchange was placed
                   accountID:
                     type: string
-                    description: The account id of the user where the order was placed
+                    description: The account id of the user where the exchange was placed
                   accountNo:
                     type: string
-                    description: The account number of the user where the order was placed
-                  created:
+                    description: >-
+                      The account number of the user where the exchange was
+                      placed
+                  createdWhen:
                     type: string
-                    description: The time the order was created
+                    description: The time the exchange was created
+                  cancelledWhen:
+                    type: string
+                    description: The date and time the exchange was cancelled
+                  cancelledBy:
+                    type: string
+                    description: The user that cancelled the exchange.
+                  rejectedWhen:
+                    type: string
+                    description: The timestamp when the exchange was rejected.
+                  rejectedReason:
+                    type: string
+                    description: Reason exchange was rejected
                 required:
                   - id
                   - exchangeNo
@@ -2333,29 +2571,6 @@ paths:
             application/json:
               schema:
                 type: object
-                x-examples:
-                  Example 1:
-                    accountID: b25f0d36-b4e4-41f8-b3d9-9249e46402cd.1403540676095
-                    accountNo: DWBG000052
-                    tradingType: CASH
-                    updated: '2021-04-23T18:41:32.440Z'
-                    exchanges:
-                      - id: GC.f7590a52-75c7-4f3a-92c7-6b03e02dc11f
-                        exchangeNo: ICDU023727
-                        status: PENDING
-                        sellSymbol: VTSMX
-                        sellOrderId: GC.f7590a52-75c7-4f3a-92c7-6b03e02d112
-                        sellOrderNo: EFXM000203
-                        buySymbol: VTSAX
-                        buyOrderId: GC.f7590a52-75c7-4f3a-92c7-6b03e02d223
-                        buyOrderNo: EFXM002102
-                        amountCash: 1000
-                        fees: 0
-                        createdBy: b25f0d36-b4e4-41f8-b3d9-9249e46402cd
-                        userID: b25f0d36-b4e4-41f8-b3d9-9249e46402cd
-                        accountID: b25f0d36-b4e4-41f8-b3d9-9249e46402cd.1403540676095
-                        accountNo: DWZR000001
-                        created: '2019-03-28T22:40:03.240Z'
                 properties:
                   accountID:
                     type: string
@@ -2383,87 +2598,74 @@ paths:
                           description: The specific exchange number
                         status:
                           type: string
-                          description: >-
-                            The state of the exchange. Will either be NEW,
-                            REJECTED, CANCELED, PENDING_CANCELED or FILLED
+                          description: The state of the exchange.
+                          enum:
+                            - NEW
+                            - FILLED
+                            - REJECTED
+                            - PENDING_CANCEL
+                            - CANCELED
+                            - FILLED
                         sellSymbol:
                           type: string
                           description: >-
                             This will be the ticker of the mutual fund you will
-                            be liquidating
+                            be liquidating.
                         sellOrderId:
                           type: string
-                          description: The order ID corresponding to the sell transaction
+                          description: The order ID corresponding to the sell transaction.
                         sellOrderNo:
                           type: string
-                          description: >
+                          description: >-
                             The order number corresponding to the sell
-                            transaction
+                            transaction.
                         buySymbol:
                           type: string
                           description: >-
                             This will be the ticker of the mutual fund you will
-                            be purchasing with the proceeds of the liquidation
+                            be purchasing with the proceeds of the liquidation.
                         buyOrderId:
                           type: string
-                          description: The order ID corresponding to the buy transaction
+                          description: The order ID corresponding to the buy transaction.
                         buyOrderNo:
                           type: string
                           description: >-
                             The order number corresponding to the buy
-                            transaction
+                            transaction.
                         sellAveragePrice:
                           type: number
-                          x-stoplight:
-                            id: zlgj7j1ipiytx
-                          description: The price the sell order was filled at
+                          description: The price the sell order was filled at.
                         sellCumulativeQuantity:
                           type: number
-                          x-stoplight:
-                            id: eef5qs7b3b2fj
-                          description: The total quantity the sell was for
+                          description: The total quantity the sell was for.
                         buyCumulativeQuantity:
                           type: number
-                          x-stoplight:
-                            id: hhdh8g6882a2i
-                          description: The total quantity the buy was for
+                          description: The total quantity the buy was for.
                         buyAveragePrice:
                           type: number
-                          x-stoplight:
-                            id: 3a2acythsk8ry
-                          description: The price the buy order was filled at
+                          description: The price the buy order was filled at.
                         amountCash:
                           type: number
                           description: >-
                             This is the total notional amount you exchange from
-                            the sellSymbol to the buySymbol. This field is
-                            populated if quantity is null
+                            the sellSymbol to the buySymbol.
                         fees:
                           type: number
                           description: >-
                             The total fees for both the buy and sell order of
-                            the exchange
+                            the exchange.
                         orderExpires:
                           type: string
-                          x-stoplight:
-                            id: fn5yw65m5fryx
-                          description: The date the exchange expires
+                          description: The timestamp the exchange expires.
                         createdBy:
                           type: string
                           description: Who the orders were created by
                         userID:
-                          type: string
-                          description: The id of the user by whom the order was placed
+                          $ref: '#/components/schemas/userID'
                         accountID:
-                          type: string
-                          description: >-
-                            The account id of the user where the order was
-                            placed
+                          $ref: '#/components/schemas/accountID'
                         accountNo:
-                          type: string
-                          description: >-
-                            The account number of the user where the order was
-                            placed
+                          $ref: '#/components/schemas/accountNo'
                         created:
                           type: string
                           description: The time the order was created
@@ -2615,9 +2817,14 @@ paths:
                         description: The specific exchange number
                       status:
                         type: string
-                        description: >-
-                          The state of the exchange. Will either be NEW,
-                          REJECTED, CANCELED, PENDING_CANCELED or FILLED
+                        description: The state of the exchange.
+                        enum:
+                          - NEW
+                          - FILLED
+                          - REJECTED
+                          - PENDING_CANCEL
+                          - CANCELED
+                          - FILLED
                       sellSymbol:
                         type: string
                         description: >-
@@ -2642,57 +2849,43 @@ paths:
                         description: The order number corresponding to the buy transaction
                       sellAveragePrice:
                         type: number
-                        x-stoplight:
-                          id: 1sxfecr526i3b
-                        description: The price the sell order was filled at
+                        description: The price the sell order was filled at.
                       sellCumulativeQuantity:
                         type: number
-                        x-stoplight:
-                          id: 4uf8am7ir2v2d
-                        description: The total quantity the sell was for
+                        description: The total quantity the sell was for.
                       buyAveragePrice:
                         type: number
-                        x-stoplight:
-                          id: zwwfbqcjd3r9j
-                        description: The price the buy order was filled at
+                        description: The price the buy order was filled at.
                       buyCumulativeQuantity:
                         type: number
-                        x-stoplight:
-                          id: yzcmpmrlptdqm
-                        description: The total quantity the buy was for
+                        description: The total quantity the buy was for.
                       amountCash:
                         type: integer
                         description: >-
                           This is the total notional amount you exchange from
-                          the sellSymbol to the buySymbol. This field is
-                          populated if quantity is null
+                          the sellSymbol to the buySymbol.
                       fees:
                         type: integer
                         description: >-
                           The total fees for both the buy and sell order of the
-                          exchange
+                          exchange.
                       createdBy:
                         type: string
-                        description: Who the orders were created by
+                        description: The user, who created the order.
                       userID:
-                        type: string
-                        description: The id of the user by whom the order was placed
+                        $ref: '#/components/schemas/userID'
                       accountID:
-                        type: string
-                        description: The account id of the user where the order was placed
+                        $ref: '#/components/schemas/accountID'
                       accountNo:
-                        type: string
-                        description: >-
-                          The account number of the user where the order was
-                          placed
+                        $ref: '#/components/schemas/accountNo'
                       created:
                         type: string
-                        description: The time the order was created
+                        example: '2019-03-29T20:00:00.000Z'
+                        description: The timestamp the order was created.
                       orderExpires:
                         type: string
-                        x-stoplight:
-                          id: yq2n1ert8r0a1
-                        description: The date the exchange expires
+                        example: '2019-03-29T20:00:00.000Z'
+                        description: The timestamp the exchange expires.
                 required:
                   - accountID
                   - accountNo
@@ -6241,6 +6434,8 @@ components:
           items:
             oneOf:
               - $ref: '#/components/schemas/patternDayTradesObj'
+        accountEquityBreakdown:
+          $ref: '#/components/schemas/accountEquityBreakdownObj'
     MarginRes:
       type: object
       properties:
@@ -6525,18 +6720,40 @@ components:
     mutualFunds:
       type: object
       properties:
-        mfDivCapGainReinvestment:
+        dividendReinvestment:
           type: boolean
           example: true
-          description: If set to `true` the dividends are reinvested.
-        mfDivCapGainReinvestmentOptInWhen:
+          description: True, if dividends are reinvested.
+        dividendReinvestmentOptInWhen:
           type: string
           example: '2022-12-11T22:28:21.810Z'
-          description: Date when the account is opted in for dividend reinvestment
-        mfDivCapGainReinvestmentOptOutWhen:
+          description: The timestamp when the account has opted for dividend reinvestment.
+          readOnly: true
+        dividendReinvestmentOptOutWhen:
           type: string
           example: '2022-12-11T22:28:21.810Z'
-          description: Date when the account is opted out of dividend reinvestment
+          description: >-
+            The timestamp when the account has opted out of dividend
+            reinvestment.
+          readOnly: true
+        capitalGainsReinvestment:
+          type: boolean
+          example: true
+          description: True, if capital gains are reinvested.
+        capitalGainsReinvestmentOptInWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: >-
+            The timestamp when the account has opted for capital gains
+            reinvestment.
+          readOnly: true
+        capitalGainsReinvestmentOptOutWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: >-
+            The timestamp when the account has opted out of capital gains
+            reinvestment
+          readOnly: true
     AccountFeatureFixedIncome:
       type: object
       description: Account features related to Fixed Income
@@ -8083,6 +8300,21 @@ components:
             on 90-Restriction. You will receive an email notification with more
             details.
           description: A description of the violation.
+    accountEquityBreakdownObj:
+      type: object
+      properties:
+        longMarketValue:
+          type: number
+          example: 30000
+          description: The current long market value.
+        debitBalance:
+          type: number
+          example: 2000
+          description: The current debit balance.
+        accountEquity:
+          type: number
+          example: 28000
+          description: The current total account equity (longMarketValue - debitBalance).
     instrumentCUSIP:
       description: >
         CUSIP stands for `Committee on Uniform Securities Identification
@@ -8416,6 +8648,22 @@ components:
         - FAILED
         - SUCCESSFUL
         - ON_HOLD
+    AcatRejectionCode:
+      type: string
+      description: The ACAT rejection reason.
+      enum:
+        - UNKNOWN
+        - SSN_NOT_MATCH
+        - ACCOUNT_NOT_MATCH
+        - DOC_REQUIRED
+        - ACCOUNT_FLAT
+        - BROKER_NOT_MATCH
+        - DUPLICATE_REQUEST
+        - ACCOUNT_IN_TRANSIT
+        - BROKER_REJECTED
+        - MISSING_AUTH_SIGN
+        - MISSING_FUND
+        - SYMBOL_NOT_SUPPORTED
     GenericTransferRequest:
       type: object
       properties:
@@ -8480,8 +8728,10 @@ components:
       properties:
         clearingNo:
           type: string
-          example: DTCC-0052
+          example: '0001'
           description: The DTCC clearing number of the broker.
+          minLength: 1
+          maxLength: 4
         cash:
           type: number
           description: The amount of cash to be moved from the source account.
@@ -8548,6 +8798,13 @@ components:
               $ref: '#/components/schemas/AcatsTransferEnumValues_AcatType'
             description:
               type: string
+        rejectionInfo:
+          type: object
+          properties:
+            rejectionCode:
+              $ref: '#/components/schemas/AcatRejectionCode'
+            rejectionReason:
+              type: string
     MinorCreateRequestModel:
       type: object
       allOf:
@@ -8601,6 +8858,7 @@ components:
           enum:
             - CANCEL
             - PRICE_ADJUSTMENT
+            - COMMISION_ADJUSTMENT
           description: The adjustment classification.
         reason:
           type: string
@@ -8621,9 +8879,15 @@ components:
           description: >-
             The *updated* price that should be set; from the original
             transaction.
+        adjustedCommission:
+          type: number
+          example: 2.49
+          description: >-
+            The *updated* commission that should be set; from the original
+            transaction.
         comment:
           type: string
-          description: Comment on the reason for Cancellation or a price adjustment.
+          description: The comment on the reason for Cancellation or an Adjustment.
           minLength: 1
           maxLength: 100
         metadata:
@@ -8681,6 +8945,7 @@ components:
           enum:
             - CANCEL
             - PRICE_ADJUSTMENT
+            - COMMISSION_ADJUSTMENT
           description: The type of Cancel Rebill.
         description:
           type: string
@@ -8731,11 +8996,15 @@ components:
           $ref: '#/components/schemas/orderNo'
         accountNo:
           $ref: '#/components/schemas/accountNo'
+        accountID:
+          $ref: '#/components/schemas/accountID'
         errorAccountNo:
           $ref: '#/components/schemas/accountNo'
           description: >-
             Error Account against which the Cancel rebill transaction was
             booked.
+        errorAccountID:
+          $ref: '#/components/schemas/accountID'
         type:
           $ref: '#/components/schemas/CancelRebillType'
         reason:
@@ -8755,25 +9024,23 @@ components:
           type: number
           example: 100.03
           description: New price when adjusting the price of original transaction.
+        adjustedCommission:
+          type: number
+          example: 2.49
+          description: >-
+            The new commission when adjusting the commission of original
+            transaction.
         status:
           $ref: '#/components/schemas/CancelRebillStatus'
         statusComment:
           type: string
           description: Comment while approving rejecting the Cancel Rebill transaction.
-        createdBy:
-          type: string
-          description: The user identifier who initiated the Cancel Rebill transaction.
-        created:
-          type: string
-          description: The date when the Cancel Rebill transaction was initiated.
         approvedBy:
           type: string
-          description: The user who approved the Cancel Rebill Request.
+          description: The approver of the Cancel Rebill Request.
+          example: John Doe
           minLength: 1
           maxLength: 50
-        updatedBy:
-          type: string
-          description: The User who updated the Cancel rebill transaction.
         updated:
           type: string
           description: The last updated date of the Cancel Rebill transaction.
@@ -8814,7 +9081,7 @@ components:
             5730ee28-78cb-4736-9c99-ede6dc1084a3#cxl_rbl_9ee1379f-2d18-433f-a2b4-0d523afe4007
         count:
           type: integer
-          example: 50
+          example: 1
     CancelRebillUpdateRequest:
       type: array
       items:
@@ -9900,6 +10167,12 @@ components:
             services. Its Investment Management segment provides a range of
             investment strategies and products to a diverse group of clients.
           description: A comprehensive description of the Instrument in English.
+        marketTier:
+          type: string
+          example: Q
+          enum:
+            - Q
+            - G
         sector:
           type: string
           example: Financial Services
