@@ -8496,6 +8496,7 @@ components:
         - CCSAL
         - SLIP
         - DIVM
+        - PTP_WITHHOLDING
     Transaction:
       type: object
       properties:
