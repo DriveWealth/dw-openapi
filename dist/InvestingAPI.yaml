@@ -4674,7 +4674,7 @@ components:
         useClientFunds:
           type: boolean
           example: true
-          description: Required for making allocations using client funds.
+          description: True, if allocations should use client funds.
         comment:
           type: string
           example: Suds boapi test to 1st
