@@ -4892,11 +4892,9 @@ components:
         isInstrumentTargetsChanged:
           type: boolean
           example: false
-          description: Description coming soon.
         instrumentTargetsChanged:
           type: boolean
           example: false
-          description: Description coming soon.
     portfolioReq:
       type: object
       required:
@@ -4961,11 +4959,9 @@ components:
         isFundTargetsChanged:
           type: boolean
           example: false
-          description: Description coming soon.
         fundsTargetsChanged:
           type: boolean
           example: false
-          description: Description coming soon.
     portfolioReqHoldings:
       type: object
       required:
@@ -5072,11 +5068,11 @@ components:
         reviewOnly:
           type: boolean
           example: true
-          description: Provides review of a rebalance prior to it occurring only if forceRebalance is set to false.
+          description: True, if a review should occur without a forced rebalance.
         forceRebalance:
           type: boolean
           example: true
-          description: Forces a rebalance outside of the rebalancing schedule
+          description: True, if a forces rebalance should occur.
         subAccounts:
           type: array
           description: A list of user's accountIDs to be rebalanced.
