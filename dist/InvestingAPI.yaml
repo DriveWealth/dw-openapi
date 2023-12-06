@@ -2041,7 +2041,7 @@ paths:
                   accountNo: DWFS001102
                   amount: 100.25
                   currency: USD
-                  type: INSTANT_FUNDING
+                  type: BULK_FUNDING
       responses:
         '200':
           description: Creating a User's Account Deposit was successful.
@@ -2980,10 +2980,7 @@ paths:
       tags:
         - Instruments
       summary: Search debt Instruments
-      description: |-
-        Filter Instruments using the provided filter criteria and return the list of matching Instruments.
-
-        For now, this API only works with debt instruments, but will expand in the future.
+      description: Filters, Instruments using the provided filter criteria and return the list of matching.
       operationId: filterInstruments
       requestBody:
         content:
@@ -2993,21 +2990,21 @@ paths:
             examples:
               InBetweenOperatorSample:
                 value:
-                  - field: debtData.spRating
+                  - field: spRating
                     operator: '><'
                     value1: A
                     value2: AAA
               MultipleFiltersSample:
                 value:
-                  - field: debtData.askYieldToMaturity
+                  - field: couponRate
                     operator: '><'
-                    value1: '-3.14'
+                    value1: '3.14'
                     value2: '6'
-                  - field: debtData.maturityDate
+                  - field: maturityDate
                     operator: '><'
                     value1: '2023-08-24'
                     value2: '2025-02-12'
-                  - field: debtData.maturityDate
+                  - field: maturityDate
                     operator: '><'
                     value1: '2028-01-24'
                     value2: '2032-04-25'
@@ -3021,28 +3018,30 @@ paths:
               examples:
                 InstrumentsFilterSuccess:
                   value:
-                    - id: 206b06c2-6d46-4515-9340-678cb131f2cc
-                      ISIN: US105756BB58
-                      status: ACTIVE
-                      symbol: AAPL
-                      name: Apple Inc
-                      enableExtendedHoursNotionalStatus: INACTIVE
+                    - id: 2dd415f4-16f0-4df9-9a33-610f1531cb55
+                      name: Amazon.com, Inc. 1.5% 2030-06-03
                       instrumentType: DEBT
-                      debtData:
-                        couponRate: 8.25
-                        maturityDate: '2034-01-20'
-                        spRating: AAA
-                    - id: 104b06c2-6d46-4126-9340-678cb131f2dg
-                      ISIN: US145756BB12
                       status: ACTIVE
-                      symbol: MSFT
-                      name: Microsoft Inc
-                      enableExtendedHoursNotionalStatus: INACTIVE
+                      payFrequency: SEMI_ANNUALLY
+                      couponRate: 1.5
+                      maturityDate: '2030-06-03'
+                      spRating: AA
+                      bondType: CORPORATE_BOND
+                      domicileCountry: US
+                      ISIN: US023135BS49
+                      CUSIP: 023135BS4
+                    - id: f8e3a175-5dfc-4d9b-bd1a-7db0e8b48703
+                      name: Amazon.com, Inc. 3.8% 2024-12-05
                       instrumentType: DEBT
-                      debtData:
-                        couponRate: 8.25
-                        maturityDate: '2034-01-20'
-                        spRating: AAA
+                      status: ACTIVE
+                      payFrequency: SEMI_ANNUALLY
+                      couponRate: 3.8
+                      maturityDate: '2024-12-05'
+                      spRating: AA
+                      bondType: CORPORATE_BOND
+                      domicileCountry: US
+                      ISIN: US023135AN60
+                      CUSIP: 023135AN6
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -8728,9 +8727,9 @@ components:
       enum:
         - ACH
         - WIRE
-        - INSTANT_FUNDING
+        - BULK_FUNDING
         - CASH_PROMOTION
-        - CASH_TRANSFER_DEPOSITS
+        - CASH_TRANSFER
     iraContribution:
       type: string
       example: CURRENT_YEAR
@@ -9272,11 +9271,14 @@ components:
     Instruments:
       type: array
       items:
-        oneOf:
+        anyOf:
           - $ref: '#/components/schemas/InstrumentInList'
           - $ref: '#/components/schemas/DebtInstrumentDetails'
     InstrumentInList:
       type: object
+      required:
+        - id
+        - status
       properties:
         id:
           $ref: '#/components/schemas/instrumentID'
@@ -9306,6 +9308,7 @@ components:
             - ADR
             - ALTERNATIVE_ASSET
             - MUTUAL_FUND
+            - INTEREST_RATE
         status:
           type: string
           example: ACTIVE
@@ -9322,6 +9325,20 @@ components:
           example: true
           default: false
           description: The ability to trade options for this equity instrument.
+        CUSIP:
+          $ref: '#/components/schemas/instrumentCUSIP'
+        payFrequency:
+          $ref: '#/components/schemas/PayFrequency'
+        couponRate:
+          $ref: '#/components/schemas/CouponRate'
+        maturityDate:
+          $ref: '#/components/schemas/MaturityDate'
+        spRating:
+          $ref: '#/components/schemas/SpRating'
+        bondType:
+          $ref: '#/components/schemas/BondType'
+        domicileCountry:
+          $ref: '#/components/schemas/country'
     InstrumentBase:
       type: object
       properties:
@@ -10236,6 +10253,26 @@ components:
           type: string
           example: '0.15315'
           description: Return on equity of the instrument measured as a fraction, multiply by 100 to get percentage value. ROE is a measure of financial performance calculated by dividing net income by shareholders' equity.
+        percentchangeMTD:
+          type: number
+          example: 2.3
+          description: The price percentage change for the instrument Month to Date.
+        percentchangeYTD:
+          type: number
+          example: 10.11
+          description: The price percentage change for the instrument Year to Date.
+        percentchange13week:
+          type: number
+          example: 6.67
+          description: The price percentage change for the instrument in last 13 Weeks.
+        percentchange26week:
+          type: number
+          example: 8.26
+          description: The price percentage change for the instrument in last 26 Weeks.
+        percentchange52week:
+          type: number
+          example: 12.1
+          description: The price percentage change for the instrument in last 52 Weeks.
     OptionInstrumentDetails:
       type: object
       allOf:
@@ -10290,7 +10327,7 @@ components:
         url:
           type: string
           example: http://investor.apple.com
-          description: URL for the prospectus of the Instrument.
+          description: The URL to the investor information page or the prospectus.
         image:
           type: string
           example: http://syscdn.drivewealth.net/images/symbols/ms.png
@@ -10334,10 +10371,6 @@ components:
                 - AZ
               items:
                 type: string
-            settlementDays:
-              type: integer
-              description: Number of days for the instrument to settle.
-              example: 1
             purchaseCutOff:
               type: string
               description: The cutoff time to accept a buy order and execute the same day.
@@ -10500,8 +10533,38 @@ components:
               example: 0
             mergedSecurity:
               type: string
-              description: If Fund Status Code equal to "closed - merged", the Security ID of the fund to which it was merged.
+              description: The fund status code equal to closed - merged, the Security ID of the fund to which it was merged.
               example: '922908306'
+            prospectusUrl:
+              type: string
+              description: The link to the fund prospectus.
+              example: https://app.allfunds.com/docs/legal/fund/....
+            managementFee:
+              type: number
+              description: The fund management fee.
+              example: 0.15
+            domicile:
+              type: string
+              description: The fund ISO 2 domicile code.
+              example: GB
+            summaryRiskIndicator:
+              type: integer
+              description: The fund risk reward indicator.
+              minimum: 1
+              maximum: 7
+              enum:
+                - 1
+                - 2
+                - 3
+                - 4
+                - 5
+                - 6
+                - 7
+              example: 3
+            UCITS:
+              type: boolean
+              description: True, if the investment funds regulated at European Union level.
+              example: true
     DebtInstrumentDetails:
       type: object
       allOf:
@@ -10533,183 +10596,206 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OptionInstrumentDetails'
+    PayFrequency:
+      description: The anticipated frequency of scheduled interest payments under the Bonds.
+      type: string
+      enum:
+        - ANNUALLY
+        - SEMI_ANNUALLY
+        - QUARTERLY
+        - MONTHLY
+        - WEEKLY
+        - DAILY
+        - EVERY_X_DAYS
+        - EVERY_X_MONTHS
+        - EVERY_X_WEEKS
+        - EVERY_X_YEARS
+        - AT_MATURITY
+        - SINGLE_DATE
+        - SINGLE_INTEREST_PAYMENT
+        - FLEXIBLE
+        - NOT_APPLICABLE
+      example: SEMI_ANNUALLY
+      readOnly: true
+    CouponRate:
+      description: The annual rate of interest currently applicable to the instrument.
+      type: number
+      format: double
+      example: 0.05
+      readOnly: true
+    MaturityDate:
+      description: The date on which the principal amount of the debt instrument becomes due.
+      type: string
+      format: date
+      example: '2022-05-10'
+      readOnly: true
+    SpRating:
+      description: The long term S&P Rating of the issuer.
+      type: string
+      example: AAA
+      readOnly: true
+    BondType:
+      description: The type of bond.
+      type: string
+      enum:
+        - OTHER
+        - CORPORATE_BOND
+        - GOVERNMENT/AGENCY_BOND
+        - US_MUNICIPAL_BOND
+        - COLLATERALIZED_MORTGAGE_OBLIGATION/ASSET-BACKED_SECURITY
+        - MORTGAGE-BACKED_SECURITY
+        - MONEY_MARKET
+        - COMMON_EQUITY
+        - PREFERRED_EQUITY
+        - RIGHT
+        - WARRANT
+        - OPTION
+        - FUTURE
+        - SWAP
+        - CURRENCY
+        - COMMODITY
+        - INDEX
+        - MUTUAL_FUND/UNIT_INVESTMENT_TRUST
+        - MONEY_MARKET_FUND
+        - EXCHANGE_TRADED_FUND
+        - HYBRID
+        - NON-US_MORTGAGE-BACKED_SECURITY
+        - COMPOSITE_UNIT
+        - DEBT/EQUITY_HYBRID
+        - STRATEGY
+        - OVER-THE-COUNTER_(OTC)
+        - BANK_LOAN
+        - MBS_GENERIC
+      example: CORPORATE_BOND
+      readOnly: true
     DebtReferenceData:
       type: object
       properties:
-        debtData:
-          type: object
-          properties:
-            payFrequencyDescription:
-              description: |
-                The anticipated frequency of scheduled interest payments under the Bonds.
-              type: string
-              enum:
-                - UNKNOWN
-                - SEMIANNUALLY
-                - MONTHLY
-                - ANNUALLY
-                - WEEKLY
-                - QUARTERLY
-                - EVERY_2_YEARS
-                - EVERY_3_YEARS
-                - EVERY_4_YEARS
-                - EVERY_5_YEARS
-                - EVERY_7_YEARS
-                - EVERY_8_YEARS
-                - BIWEEKLY
-                - CHANGEABLE
-                - DAILY
-                - TERM_MODE
-                - INTEREST_AT_MATURITY
-                - BIMONTHLY
-                - EVERY_13_WEEKS
-                - IRREGULAR
-                - EVERY_28_DAYS
-                - EVERY_35_DAYS
-                - EVERY_26_WEEKS
-                - NOT_APPLICABLE
-                - TIED_TO_PRIME
-                - ONE_TIME
-                - EVERY_10_YEARS
-                - FREQUENCY_TO_BE_DETERMINED
-                - MANDATORY_PUT
-                - EVERY_52_WEEKS
-                - WHEN_INTEREST_ADJUSTS-COMMERCIAL_PAPER
-                - ZERO_COUPON
-                - CERTAIN_YEARS_ONLY
-                - UNDER_CERTAIN_CIRCUMSTANCES
-                - EVERY_15_YEARS
-                - CUSTOM
-                - SINGLE_INTEREST_PAYMENT
-              readOnly: true
-            couponRate:
-              description: |
-                The annual rate of interest currently applicable to the instrument.
-              type: number
-              format: double
-              readOnly: true
-            maturityDate:
-              description: |
-                The date on which the principal amount of the debt instrument becomes due.
-              type: string
-              format: date
-              readOnly: true
-            spRating:
-              description: |
-                The long term S&P Rating of the issuer.
-              type: string
-              readOnly: true
-            minimumInvestmentAmount:
-              description: |
-                Minimum initial investment in the security.
-              type: integer
-              format: int64
-              readOnly: true
-            incrementalInvestmentAmount:
-              description: |
-                Minimum additional investment in the security.
-              type: integer
-              format: int64
-              readOnly: true
-            issueDate:
-              description: |
-                The date on which the instrument was first made available to the market.
-              type: string
-              format: date
-              readOnly: true
-            datedDate:
-              description: |
-                The date of a Bond Issue from which Interest begins to accrue.
-              type: string
-              format: date
-              readOnly: true
-            issueAmount:
-              description: |
-                The total value of the security at issue.
-              type: integer
-              format: int64
-              readOnly: true
-            issuePrice:
-              description: |
-                The nominal value associated with a financial instrument at the time of issuance.
-              type: number
-              format: double
-              readOnly: true
-            debtTypeDescription:
-              type: string
-              description: |
-                The description for the type fixed income instrument.
-              enum:
-                - NONE
-                - BANK_LOAN
-                - ASSET-BACKED_SECURITY_(ABS)
-                - BOND
-                - CERTIFICATE_OF_DEPOSIT_(CD)
-                - DEMAND_NOTE
-                - EMPLOYEE_STOCK_OWNERSHIP_PLAN_(ESOP)
-                - FHLMC_REFERENCE_NOTES
-                - GUARANTEED_INVESTMENT_CERTIFICATE_(GIC)
-                - SCHULDSCHEIN
-                - INCOME
-                - MORTGAGE-BACKED_SECURITY_(MBS)
-                - BANKER'S_ACCEPTANCE
-                - COLLATERALISED_LOAN_OBLIGATION_(CLO)
-                - COLLATERALIZED_MORTGAGE_OBLIGATION_(CMO)
-                - NOTE
-                - COLLATERALISED_BOND_OBLIGATION_(CBO)
-                - COMMERCIAL_PAPER
-                - PFANDBRIEF
-                - PROMISSORY_NOTES
-                - STRUCTURED_ASSETS
-                - TRUST_CERTIFICATE
-                - PARTICIPATION_UNIT
-                - SAVINGS_BOND
-                - PASS_THRU_CERTIFICATES
-                - UNKNOWN
-                - STRIP
-                - ANNUITY
-                - BILL
-                - CERTIFICATE
-                - DEPOSIT_NOTE
-                - EQUIPMENT_TRUST_CERTIFICATE
-                - FNMA_BENCHMARK_ISSUES
-                - MORTGAGE/UK_DEBENTURE
-                - SCHATZANWEISUNGEN
-                - DISCOUNT_NOTE
-                - PERMANENT_INTEREST_BEARING_SECURITY
-                - OTHER_MONEY_MARKETS
-                - LOAN_NOTE
-                - MERCHANT_MARINE
-                - MORTGAGE_NOTE
-                - COLLATERALIZED_DEBT_OBLIGATION_(CDO)
-                - PRIVATE_PLACEMENT
-                - EXCHANGE_TRADED_NOTE
-                - PREMIUM_BOND
-                - SECURITY
-                - UNIT
-                - SAVINGS_NOTES
-                - PARTICIPATION_CERTIFICATES
-                - DISCOUNT_DEBENTURE
-                - DEBENTURE_-_UNSECURED
-                - EXCHANGE_TRADED_COMMODITY
-                - ASSET-BACKED_COMMERCIAL_PAPER
-                - SUKUK
-                - DEBENTURE_-_SECURED
-                - LETTER_OF_CREDIT
-                - GLOBAL_DEPOSITORY_NOTE
-              readOnly: true
-            coupon:
-              $ref: '#/components/schemas/Coupon'
-            issuer:
-              $ref: '#/components/schemas/Issuer'
+        payFrequency:
+          $ref: '#/components/schemas/PayFrequency'
+        couponRate:
+          $ref: '#/components/schemas/CouponRate'
+        maturityDate:
+          $ref: '#/components/schemas/MaturityDate'
+        spRating:
+          $ref: '#/components/schemas/SpRating'
+        minimumInvestmentAmount:
+          description: The minimum initial investment in the security.
+          type: integer
+          format: int64
+          example: 1000
+          readOnly: true
+        incrementalInvestmentAmount:
+          description: The minimum additional investment in the security.
+          type: integer
+          format: int64
+          example: 1000
+          readOnly: true
+        issueDate:
+          description: The date on which the instrument was first made available to the market.
+          type: string
+          format: date
+          example: '2018-05-10'
+          readOnly: true
+        datedDate:
+          description: The date of a Bond Issue from which Interest begins to accrue.
+          type: string
+          format: date
+          example: '2018-05-10'
+          readOnly: true
+        issueAmount:
+          description: The total value of the security at issue.
+          type: number
+          format: double
+          example: 1000000
+          readOnly: true
+        issuePrice:
+          description: The nominal value associated with a financial instrument at the time of issuance.
+          type: number
+          format: double
+          example: 100
+          readOnly: true
+        accruedInterest:
+          description: The amount of interest that has accumulated since the last coupon payment.
+          type: number
+          format: double
+          example: 0.05
+          readOnly: true
+        bondType:
+          $ref: '#/components/schemas/BondType'
+        debtType:
+          type: string
+          description: The description for the type fixed income instrument.
+          enum:
+            - NONE
+            - BANK_LOAN
+            - ASSET-BACKED_SECURITY_(ABS)
+            - BOND
+            - CERTIFICATE_OF_DEPOSIT_(CD)
+            - DEMAND_NOTE
+            - EMPLOYEE_STOCK_OWNERSHIP_PLAN_(ESOP)
+            - FHLMC_REFERENCE_NOTES
+            - GUARANTEED_INVESTMENT_CERTIFICATE_(GIC)
+            - SCHULDSCHEIN
+            - INCOME
+            - MORTGAGE-BACKED_SECURITY_(MBS)
+            - BANKER'S_ACCEPTANCE
+            - COLLATERALISED_LOAN_OBLIGATION_(CLO)
+            - COLLATERALIZED_MORTGAGE_OBLIGATION_(CMO)
+            - NOTE
+            - COLLATERALISED_BOND_OBLIGATION_(CBO)
+            - COMMERCIAL_PAPER
+            - PFANDBRIEF
+            - PROMISSORY_NOTES
+            - STRUCTURED_ASSETS
+            - TRUST_CERTIFICATE
+            - PARTICIPATION_UNIT
+            - SAVINGS_BOND
+            - PASS_THRU_CERTIFICATES
+            - UNKNOWN
+            - STRIP
+            - ANNUITY
+            - BILL
+            - CERTIFICATE
+            - DEPOSIT_NOTE
+            - EQUIPMENT_TRUST_CERTIFICATE
+            - FNMA_BENCHMARK_ISSUES
+            - MORTGAGE/UK_DEBENTURE
+            - SCHATZANWEISUNGEN
+            - DISCOUNT_NOTE
+            - PERMANENT_INTEREST_BEARING_SECURITY
+            - OTHER_MONEY_MARKETS
+            - LOAN_NOTE
+            - MERCHANT_MARINE
+            - MORTGAGE_NOTE
+            - COLLATERALIZED_DEBT_OBLIGATION_(CDO)
+            - PRIVATE_PLACEMENT
+            - EXCHANGE_TRADED_NOTE
+            - PREMIUM_BOND
+            - SECURITY
+            - UNIT
+            - SAVINGS_NOTES
+            - PARTICIPATION_CERTIFICATES
+            - DISCOUNT_DEBENTURE
+            - DEBENTURE_-_UNSECURED
+            - EXCHANGE_TRADED_COMMODITY
+            - ASSET-BACKED_COMMERCIAL_PAPER
+            - SUKUK
+            - DEBENTURE_-_SECURED
+            - LETTER_OF_CREDIT
+            - GLOBAL_DEPOSITORY_NOTE
+          example: BOND
+          readOnly: true
+        coupon:
+          $ref: '#/components/schemas/Coupon'
+        issuer:
+          $ref: '#/components/schemas/Issuer'
     Coupon:
-      description: |
-        A coupon or coupon payment is the annual interest rate paid on a bond, expressed as a percentage of the face value and paid from issue date until maturity.
+      description: A coupon or coupon payment is the annual interest rate paid on a bond, expressed as a percentage of the face value and paid from issue date until maturity.
       type: object
       properties:
         couponType:
-          description: |
-            The method by which the coupon rate of the instrument is determined
+          description: The method by which the coupon rate of the instrument is determined.
           type: string
           enum:
             - UNKNOWN
@@ -10744,18 +10830,18 @@ components:
             - RANGE
             - DIGITAL
             - RESET
+          example: FIXED_RATE
           readOnly: true
         currentRateDate:
-          description: |
-            The annual rate of interest currently applicable to the instrument
+          description: The annual rate of interest currently applicable to the instrument.
           type: string
           format: date
           minLength: 0
           maxLength: 10
+          example: '2018-05-10'
           readOnly: true
         dayCount:
-          description: |
-            The method of calculating interest accrual associated with the instrument
+          description: The method of calculating interest accrual associated with the instrument.
           type: string
           enum:
             - UNKNOWN_INTEREST_CALCULATION_METHOD
@@ -10790,77 +10876,67 @@ components:
             - 7/360
             - 30/360_WITH_GROSS_UP
             - NOT_APPLICABLE
+          example: 30/360
           readOnly: true
         benchmark:
-          description: |
-            Description that identifies the index against which the interest rate for an Index Linked Bond is reset
+          description: The identifier the index against which the interest rate for an Index Linked Bond is reset.
           type: string
+          example: US CPI
           readOnly: true
         benchmarkFormula:
-          description: |
-            The multiple in the floating rate formula that is applied to the benchmark in order to calculate the reset rate on a floating rate instrument.
+          description: The multiple in the floating rate formula that is applied to the benchmark in order to calculate the reset rate on a floating rate instrument.
           type: string
+          example: '1.5'
           readOnly: true
         nextResetDate:
-          description: |
-            The date of the next insterest rate reset of the instrument
+          description: The date of the next interest rate reset of the instrument
           type: string
           format: date
+          example: '2018-05-10'
           readOnly: true
         minimumRate:
-          description: |
-            Minimum interest rate that an instrument will pay
+          description: The minimum interest rate that an instrument will pay.
           type: number
           format: double
+          example: 0.05
           readOnly: true
         maximumRate:
-          description: |
-            Maximum interest rate that an instrument will pay
+          description: The maximum interest rate that an instrument will pay.
           type: number
           format: double
+          example: 0.05
           readOnly: true
         firstCouponDate:
-          description: |
-            The date on which the first payment of interest is made.
+          description: The date on which the first payment of interest is made.
           type: string
           format: date
+          example: '2018-05-10'
           readOnly: true
         nextCouponDate:
-          description: |
-            The next date on which a payment of interest will be made.
+          description: The next date on which a payment of interest will be made.
           type: string
           format: date
+          example: '2018-05-10'
           readOnly: true
         finalCouponDate:
-          description: |
-            The date on which the final interest payment is scheduled to be made to owners of the security.
+          description: The date on which the final interest payment is scheduled to be made to owners of the security.
           type: string
           format: date
+          example: '2018-05-10'
           readOnly: true
     Issuer:
-      description: |
-        The entity name (in the XML/Web Service) or organization_id (in the Database) of the insurer who has been contracted to provide payments to bondholders in the event of a default by the issuer. 
-        In the Database, the entity name can be looked up by using the organization_id in conjunction with the Organization_Master.primary_name field'
+      description: The entity name (in the XML/Web Service) or organization_id (in the Database) of the insurer who has been contracted to provide payments to bondholders in the event of a default by the issuer. In the Database, the entity name can be looked up by using the organization_id in conjunction with the Organization_Master.primary_name field'
       type: object
       properties:
         primaryName:
-          description: |
-            A field containing the root symbol assigned by an exchange to the derivative product.
+          description: A field containing the root symbol assigned by an exchange to the derivative product.
           type: string
           example: Coca Cola Corp
           readOnly: true
         country:
-          description: |
-            The ISO standard country code identifier individual countries.
-          type: string
-          example: USA
-          readOnly: true
+          $ref: '#/components/schemas/country'
         domicileCountry:
-          description: |
-            ISO standard code of the country of domicile of the Competent Authority of the issuer of the security identified.
-          type: string
-          example: USA
-          readOnly: true
+          $ref: '#/components/schemas/country'
     FilterCriterion:
       type: object
       required:
@@ -10869,20 +10945,33 @@ components:
         - value1
       properties:
         field:
-          description: Name of the field to be filtered on
+          description: The name of the field to be filtered on.
           type: string
-          example: debtData.spRating
+          example: spRating
+          enum:
+            - ISIN
+            - CUSIP
+            - payFrequency
+            - spRating
+            - couponRate
+            - maturityDate
+            - spRating
+            - bidPrice
+            - askPrice
+            - askYieldToMaturity
+            - bidYieldToMaturity
+            - status
+            - bondType
+            - issuer.primaryName
+            - issuer.domicileCountry
+            - issuer.country
+            - coupon.dayCount
+            - coupon.couponType
+            - coupon.nextCouponDate
+            - minimumInvestmentAmount
+            - incrementalInvestmentAmount
         operator:
-          description: |
-            The filter operator
-            `= equal to`
-            `!= not equal to`
-            `< less than`
-            `<= less than or equal to`
-            `> greater than`
-            `>= greater than or equal to`
-            `>< in between`
-            `() contains` 
+          description: 'Filters, operator`= equal to``!= not equal to``< less than``<= less than or equal to``> greater than``>= greater than or equal to``>< in between``() contains` '
           type: string
           enum:
             - '='
@@ -10902,8 +10991,7 @@ components:
           type: string
           example: A
     FilterCriteria:
-      description: |
-        Filter Criteria. Criterion with different field names are ANDed. Criteron with same field names are ORed.
+      description: The filter criteria, Criterion with different field names are ANDed. Criterion with same field names are ORed.
       type: array
       items:
         $ref: '#/components/schemas/FilterCriterion'
@@ -10933,6 +11021,10 @@ components:
         - FTSE All Share Index
         - Denmark-OMX-Copenhagen-All-Share-Index
         - ASE Main General Index
+    country:
+      type: string
+      example: US
+      description: The ISO standard country alpha-2 code.
     instrumentStatus:
       type: string
       example: ACTIVE
@@ -11311,7 +11403,7 @@ components:
     dccs:
       type: boolean
       example: true
-      description: If set to true, the DCC&S system will be used to transact this Order. Typically, this is used for Mutual Fund purchases in a US tax-advantaged account.
+      description: True, when the Mutual Fund HSA is classified as Defined Contribution Clearing and Settlement (DCC&S) order.
     UploadUserPhysicalDocument:
       type: object
       properties:
@@ -12113,9 +12205,8 @@ components:
       enum:
         - ACH
         - WIRE
-        - INSTANT_FUNDING
         - CASH_TRANSFER
-        - CASH_TRANSFER_WITHDRAWALS
+        - BULK_FUNDING
     withdrawalID:
       type: string
       example: ZYNN000001-1672169822525-RIUIN
