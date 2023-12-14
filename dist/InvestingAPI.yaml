@@ -4585,14 +4585,12 @@ paths:
               - PREVIOUS
           required: false
           example: NEXT
-          description: DESCRIPTION COMING SOON...
         - in: query
           name: offset
           schema:
             type: string
           required: false
           example: '2022-12-08T18:36:40.609Z'
-          description: DESCRIPTION COMING SOON...
       responses:
         '200':
           description: Fetching A List Of Autopilot Runs By userID was Successful.
@@ -4846,7 +4844,6 @@ components:
         child:
           type: string
           example: null
-          description: Description coming soon.
         lowerBound:
           type: number
           example: 0.01
@@ -4871,7 +4868,6 @@ components:
         type:
           type: string
           example: FUND
-          description: Description coming soon
         clientFundID:
           $ref: '#/components/schemas/clientFundID'
         description:
@@ -5010,7 +5006,6 @@ components:
         child:
           type: string
           example: null
-          description: Description coming soon.
         lowerBound:
           type: number
           example: 0.01
@@ -5129,7 +5124,6 @@ components:
         reviewOnly:
           type: boolean
           example: true
-          description: Description coming soon.
         orders:
           type: object
           description: An object containing the details of submitted orders for the re-balance.
@@ -5157,7 +5151,6 @@ components:
             cleanedUp:
               type: string
               example: null
-              description: Description coming soon.
         allocations:
           type: object
           description: An object containing the details of the allocations in a re-balance.
@@ -6830,7 +6823,6 @@ components:
     transactionCode:
       type: string
       example: JOURNAL
-      description: DESCRIPTION COMING SOON...
       enum:
         - JOURNAL
         - FEE_ACH
@@ -8525,11 +8517,9 @@ components:
         fpslProhibited:
           type: boolean
           example: false
-          description: DESCRIPTION COMING SOON...
         supportDomicile:
           type: boolean
           example: false
-          description: DESCRIPTION COMING SOON...
         taxTreatyCountry:
           type: boolean
           example: false
@@ -8606,7 +8596,6 @@ components:
         category:
           type: string
           example: DEPOSIT
-          description: DESCRIPTION COMING SOON...
         currency:
           $ref: '#/components/schemas/currency'
         amount:
@@ -8642,7 +8631,6 @@ components:
         batch:
           type: boolean
           example: true
-          description: DESCRIPTION COMING SOON...
         recurring:
           type: object
           properties:
@@ -8679,7 +8667,6 @@ components:
         category:
           type: string
           example: DEPOSIT
-          description: DESCRIPTION COMING SOON...
         amount:
           type: number
           example: 250.25
@@ -8908,11 +8895,9 @@ components:
         freeTradeBalance:
           type: number
           example: 0
-          description: DESCRIPTION COMING SOON...
         gfvPdtExempt:
           type: boolean
           example: false
-          description: DESCRIPTION COMING SOON...
         buyingPowerOverride:
           type: boolean
           example: false
@@ -8970,11 +8955,9 @@ components:
     batch:
       type: boolean
       example: true
-      description: DESCRIPTION COMING SOON...
     transactionCodeType:
       type: string
       example: CSR
-      description: DESCRIPTION COMING SOON...
       enum:
         - CSR
         - CSD
@@ -9004,7 +8987,6 @@ components:
     updatedBy:
       type: string
       example: SYSTEM
-      description: DESCRIPTION COMING SOON...
       enum:
         - SYSTEM REPORT SERVICE
         - INSTANT FUNDING BREAKDOWN JOB
@@ -12567,7 +12549,6 @@ components:
     category:
       type: string
       example: DEPOSIT
-      description: DESCRIPTION COMING SOON...
       enum:
         - DEPOSIT
         - WITHDRAWAL
@@ -13924,11 +13905,9 @@ components:
             foreignFindersFee:
               type: boolean
               example: false
-              description: DESCRIPTION COMING SOON...
             finderFee:
               type: boolean
               example: false
-              description: DESCRIPTION COMING SOON...
             privacyPolicy:
               type: boolean
               example: true
@@ -14103,7 +14082,6 @@ components:
         brandAmbassador:
           type: boolean
           example: false
-          description: DESCRIPTION COMING SOON...
         employerBusiness:
           type: string
           example: FINANCE
@@ -14128,7 +14106,6 @@ components:
         marginDefault:
           type: number
           example: 0
-          description: DESCRIPTION COMING SOON...
         maritalStatus:
           type: object
           properties:
@@ -14189,7 +14166,6 @@ components:
         badPasswordCount:
           type: boolean
           example: 0
-          description: DESCRIPTION COMING SOON...
         director:
           type: boolean
           example: false
@@ -14213,7 +14189,6 @@ components:
         jointEmployerIsBroker:
           type: boolean
           example: false
-          description: DESCRIPTION COMING SOON...
         investmentObjectives:
           type: object
           properties:
@@ -14424,7 +14399,6 @@ components:
                 code:
                   type: string
                   example: K102
-                  description: DESCRIPTION COMING SOON...
                 description:
                   type: string
                   example: User's PII not matched. Please revisit user's PII Info.
@@ -15006,8 +14980,6 @@ components:
               properties:
                 source:
                   type: string
-                  example: '*COMING SOON*'
-                  description: DESCRIPTION COMING SOON...
                 sourceType:
                   $ref: '#/components/schemas/bankAccountID'
             plan:
@@ -15226,11 +15198,9 @@ components:
     fundLowerBound:
       type: number
       example: 0.1
-      description: DESCRIPTION COMING SOON...
     fundUpperLowerBound:
       type: number
       example: 0.25
-      description: DESCRIPTION COMING SOON...
     triggerTypes:
       type: string
       example: TOTAL_DRIFT
@@ -15254,11 +15224,9 @@ components:
     portfolioLowerBound:
       type: number
       example: 0.1
-      description: DESCRIPTION COMING SOON...
     portfolioUpperLowerBound:
       type: number
       example: 0.25
-      description: DESCRIPTION COMING SOON...
     autoPilotRebalanceID:
       type: string
       example: ria_rebalance_721ff5c3-f6f2-48d8-aaa3-41a49a044f2c
