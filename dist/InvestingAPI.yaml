@@ -1390,6 +1390,9 @@ paths:
                     acatType:
                       name: PARTIAL
                       description: Partial Acats Transfer
+                    acatTransit:
+                      name: ACAT_IN
+                      description: Incoming Acats Transfer
                     sourceAccountType:
                       name: INDIVIDUAL
                       description: Individual Account
@@ -1639,6 +1642,9 @@ paths:
                         acatType:
                           name: PARTIAL
                           description: Partial Acats Transfer
+                        acatTransit:
+                          name: ACAT_IN
+                          description: Incomming Acats Transfer
                         sourceAccountType:
                           name: INDIVIDUAL
                           description: Individual Account
@@ -5454,8 +5460,16 @@ components:
               description: The userID associated with the account. This will be the userID of your customer.
             restricted:
               $ref: '#/components/schemas/restricted'
+              description: True, when the account cannot trade on unsettled funds.
+              deprecated: true
+            gfvRestricted:
+              $ref: '#/components/schemas/gfvRestricted'
             goodFaithViolations:
               $ref: '#/components/schemas/goodFaithViolations'
+            pdtRestricted:
+              $ref: '#/components/schemas/pdtRestricted'
+            patternDayTrader:
+              $ref: '#/components/schemas/patternDayTrader'
             patternDayTrades:
               $ref: '#/components/schemas/patternDayTrades'
             freeTradeBalance:
@@ -6419,6 +6433,18 @@ components:
       type: boolean
       example: false
       description: True if the account is flagged for an Automated Customer Account Transfer (ACATS).
+    gfvRestricted:
+      type: boolean
+      example: false
+      description: True, when the account cannot trade on unsettled funds.
+    pdtRestricted:
+      type: boolean
+      example: false
+      description: True, when the account is PDT restricted, and can only sell.
+    patternDayTrader:
+      type: boolean
+      example: false
+      description: True, when the account is designated as a Pattern Day Trader.
     wlpID:
       type: string
       example: TTC
@@ -7189,6 +7215,11 @@ components:
           type: number
           example: 0
           description: NEEDS DESCRIPTION
+        bodDTBP:
+          type: number
+          example: 10000
+          description: The Day Trading Buying Power (DTBP) in dollars at the beginning of day.
+          nullable: true
         patternDayTrader:
           type: boolean
           example: false
@@ -8086,6 +8117,12 @@ components:
       enum:
         - FULL
         - PARTIAL
+    AcatsTransitType:
+      type: string
+      description: The transit type of ACAT transfer to be performed.
+      enum:
+        - ACAT_IN
+        - ACAT_OUT
     AcatsCreateRequestModel:
       type: object
       title: AcatsRequestModel
@@ -8122,6 +8159,13 @@ components:
           properties:
             name:
               $ref: '#/components/schemas/AcatsType'
+            description:
+              type: string
+        acatTransit:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/AcatsTransitType'
             description:
               type: string
         rejectionInfo:
