@@ -3600,10 +3600,39 @@ paths:
           schema:
             $ref: '#/components/schemas/reconciliationID'
           required: true
-          description: he unique identifier of the reconciliation report.
+          description: The unique identifier of the reconciliation report.
       responses:
         '200':
           description: Fetching a firm's reconciliation details was successful.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ReconciliationDetails'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+    patch:
+      tags:
+        - Settlements
+      summary: Update Cashless Reconciliation
+      description: Updates a Cashless Reconciliation by reconciliationID.
+      parameters:
+        - in: path
+          name: reconciliationID
+          schema:
+            $ref: '#/components/schemas/reconciliationID'
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReconciliationUpdate'
+      responses:
+        '200':
+          description: Updating the Cashless Reconciliations was Successful.
           content:
             application/json:
               schema:
@@ -3778,8 +3807,8 @@ paths:
     get:
       tags:
         - Settlements
-      summary: List all bulk settlements
-      description: Fetches a list of daily settlement detail for a firm.
+      summary: List Bulk Settlements
+      description: Retrieves a list of daily Bulk Settlements details.
       parameters:
         - in: query
           name: from
@@ -3803,7 +3832,7 @@ paths:
           description: Filters the settlements by the category of the settlement.
       responses:
         '200':
-          description: Fetching a list of daily settlement details for a firm was successful.
+          description: Retrieving a list of daily Bulk Settlements details was Successful.
           content:
             application/json:
               schema:
@@ -3817,8 +3846,8 @@ paths:
     get:
       tags:
         - Settlements
-      summary: Retrieve bulk settlement details
-      description: Fetches a settlement by settlementID
+      summary: Retrieve Bulk Settlement details
+      description: Retrieves a Bulk Settlement by settlementID.
       parameters:
         - in: path
           name: settlementID
@@ -3828,7 +3857,35 @@ paths:
           description: The unique identifier that identifies the settlement report.
       responses:
         '200':
-          description: Fetching a settlement by settlementID was successful.
+          description: Retrieving a Bulk Settlement by settlementID was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettlementByID'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+    patch:
+      tags:
+        - Settlements
+      summary: Update Bulk Settlement
+      description: Updates a Bulk Settlement by settlementID.
+      parameters:
+        - in: path
+          name: settlementID
+          schema:
+            $ref: '#/components/schemas/settlementID'
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettlementUpdate'
+      responses:
+        '200':
+          description: Updating a Bulk Settlement by settlementID was Successful.
           content:
             application/json:
               schema:
@@ -11869,6 +11926,15 @@ components:
       items:
         oneOf:
           - $ref: '#/components/schemas/DailyReconciliation'
+    ReconciliationUpdate:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/reconciliationStatus'
+        statusComment:
+          type: string
+          example: Manually approving reconciliation for testing purposes.
+          description: A custom comment about the status.
     ReconciliationDetails:
       type: object
       properties:
@@ -12403,6 +12469,15 @@ components:
       items:
         oneOf:
           - $ref: '#/components/schemas/DailySettlementDetails'
+    SettlementUpdate:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/settlementStatus'
+        statusComment:
+          type: string
+          example: Updated settlement status for testing purposes.
+          description: A custom comment about the current status of the settlement.
     SettlementByID:
       type: object
       properties:
