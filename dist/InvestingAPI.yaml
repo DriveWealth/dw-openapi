@@ -316,7 +316,7 @@ paths:
       tags:
         - Accounts
       summary: Create Account
-      description: Create a new brokerage Account for a User.
+      description: Create a new brokerage Account.
       requestBody:
         content:
           application/json:
@@ -390,7 +390,7 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Update Account
-      description: Update an Account's information by using a User's Account ID.
+      description: Update an Account details by accountID.
       requestBody:
         content:
           application/json:
@@ -738,10 +738,10 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Retrieve Portfolio by Account
-      description: Fetch the status of a portfolio using the accountID.
+      description: Retrieve Portfolio details by accountID.
       responses:
         '200':
-          description: Fetching portfolio status details was successful.
+          description: Fetching Portfolio details was Successful.
           content:
             application/json:
               schema:
@@ -762,10 +762,10 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Retrieve Money by Account
-      description: Fetch a real time snapshot of cash balances of an account.
+      description: Retrieves a real time snapshot of cash balances by accountID.
       responses:
         '200':
-          description: Fetching cash balance details of an Account was successful.
+          description: Retrieving Money details was Successful.
           content:
             application/json:
               schema:
@@ -913,10 +913,10 @@ paths:
           example: '2019-09-18'
           description: End date and time of requested time frame of the accounts performance.
       summary: Retrieve Performance Metrics by Account
-      description: Fetch the daily realized and unrealized profit/loss for a specific account.
+      description: Retrieves daily realized and unrealized profit/loss metrics by accountID.
       responses:
         '200':
-          description: Fetching account performance details was successful.
+          description: Retrieving Performance Metrics by Account was Successful.
           content:
             application/json:
               schema:
@@ -1009,7 +1009,7 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Retrieve Margin Details by Account
-      description: Fetch a list of all margin information associated with an Account.
+      description: Retrieves a list of Margin details by accountID.
       responses:
         '200':
           description: Fetching an Account's margin details was successful.
@@ -1113,7 +1113,7 @@ paths:
       tags:
         - Accounts
       summary: Retrieve Account Position Lots
-      description: Retrieves Account Position Lots by Account Number
+      description: Retrieves Account Position Lots by accountID.
       parameters:
         - in: path
           name: accountID
@@ -1122,7 +1122,7 @@ paths:
           required: true
       responses:
         '200':
-          description: Retrieving an Account's Position Lots was successful.
+          description: Retrieving Account Position Lots by accountID was Successful.
           content:
             application/json:
               schema:
@@ -4257,7 +4257,7 @@ paths:
       tags:
         - Accounts
       summary: List Accounts by User
-      description: Fetches a list of all User's accounts at DriveWealth.
+      description: Retrieves a list of Accounts by userID.
       parameters:
         - in: path
           name: userID
