@@ -3546,7 +3546,7 @@ paths:
     get:
       tags:
         - Settlements
-      summary: List all cashless reconciliations
+      summary: List Cashless Reconciliations
       description: Fetches a list of daily reconciliations for a firm using cashless settlement.
       parameters:
         - in: query
@@ -3592,7 +3592,7 @@ paths:
     get:
       tags:
         - Settlements
-      summary: Retrieve cashless reconciliation
+      summary: Retrieve Cashless Reconciliation
       description: Fetches reconciliations details for a firm using cashless settlement.
       parameters:
         - in: path
@@ -3846,7 +3846,7 @@ paths:
     get:
       tags:
         - Settlements
-      summary: Retrieve Bulk Settlement details
+      summary: Retrieve Bulk Settlement
       description: Retrieves a Bulk Settlement by settlementID.
       parameters:
         - in: path
@@ -3899,8 +3899,8 @@ paths:
     post:
       tags:
         - Settlements
-      summary: Create DVP/RVP Report
-      description: Creates a job to generate a DVP/RVP Report
+      summary: Create DVP RVP Report
+      description: Creates a job to generate a DVP RVP Report.
       parameters:
         - in: path
           name: accountID
@@ -3927,8 +3927,8 @@ paths:
     get:
       tags:
         - Settlements
-      summary: List DVP/RVP Reports
-      description: Lists DVP/RVP reports.
+      summary: List DVP RVP Reports
+      description: Lists DVP RVP reports.
       parameters:
         - in: path
           name: accountID
@@ -3964,8 +3964,8 @@ paths:
           dwAppKey: []
   /accounts/{accountID}/reports/daily-trade-summary/{reportID}:
     get:
-      summary: Retrieve DVP/RVP
-      description: Retrieves a DVP/RVP by Report ID.
+      summary: Retrieve DVP RVP
+      description: Retrieves a DVP RVP by reportID.
       tags:
         - Settlements
       parameters:
@@ -11930,7 +11930,11 @@ components:
       type: object
       properties:
         status:
-          $ref: '#/components/schemas/reconciliationStatus'
+          type: string
+          example: SUCCESSFUL
+          description: The status to update the reconciliation report to.
+          enum:
+            - SUCCESSFUL
         statusComment:
           type: string
           example: Manually approving reconciliation for testing purposes.
@@ -12473,7 +12477,11 @@ components:
       type: object
       properties:
         status:
-          $ref: '#/components/schemas/settlementStatus'
+          type: string
+          example: SUCCESSFUL
+          description: The status to update the settlement to.
+          enum:
+            - SUCCESSFUL
         statusComment:
           type: string
           example: Updated settlement status for testing purposes.
