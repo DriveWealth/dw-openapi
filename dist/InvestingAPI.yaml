@@ -3647,7 +3647,7 @@ paths:
     get:
       tags:
         - Deposits
-      summary: Retrieve recurring deposit schedule
+      summary: Retrieve Recurring Deposits
       description: Fetches the details of a recurring deposit schedule by the recurringID.
       parameters:
         - in: path
@@ -3672,7 +3672,7 @@ paths:
     patch:
       tags:
         - Deposits
-      summary: Update recurring deposit schedule
+      summary: Update Recurring Deposit
       description: Updates a user's external bank account recurring deposit.
       parameters:
         - in: path
@@ -3702,7 +3702,7 @@ paths:
     delete:
       tags:
         - Deposits
-      summary: Delete recurring deposit schedule
+      summary: Delete Recurring Deposit
       description: Inactivates a user's external bank account recurring deposit.
       parameters:
         - in: path
@@ -4360,7 +4360,7 @@ paths:
     get:
       tags:
         - Deposits
-      summary: List recurring deposit schedules by User
+      summary: List Recurring Deposits by User
       description: Fetches all User's recurring deposit by userID.
       parameters:
         - in: path
