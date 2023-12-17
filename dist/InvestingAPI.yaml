@@ -4438,7 +4438,7 @@ paths:
     get:
       tags:
         - Trade Allocations
-      summary: List Trade Allocations by User
+      summary: List Trade Allocations by Advisor
       description: Fetches a list of an User's allocations.
       parameters:
         - in: path
