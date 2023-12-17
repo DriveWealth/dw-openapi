@@ -159,7 +159,7 @@ paths:
           required: true
           example: fund_3d7d00d1-f08e-4f52-9cbf-893c75cf77fe
           description: The unique identifier associated with the Fund.
-      summary: Get Fund details by fundID
+      summary: Retrieve Fund
       description: Fetch the details of a fund using the unique fundID.
       responses:
         '200':
@@ -265,7 +265,7 @@ paths:
           required: true
           example: 66304da9-3h6f-2234-935f-ac6b7933d706
           description: This is the parentIBID or userID of the registered investment advisor.
-      summary: Create Autopilot run
+      summary: Create Autopilot Run
       description: Create an Autopilot run for a users account.
       requestBody:
         content:
@@ -297,7 +297,7 @@ paths:
           required: true
           example: ria_rebalance_ebf7e878-e2d6-4b3d-a333-b8ff05b92b83
           description: The unique re-balance run identifier `rebalanceRunID` associated with a specific re-balance.
-      summary: Retrieve Autopilot run
+      summary: Retrieve Autopilot Run
       description: Fetch the details and run status for a re-balance using the unique rebalanceRunID.
       responses:
         '200':
@@ -669,7 +669,7 @@ paths:
     get:
       tags:
         - Orders
-      summary: Retrieve all Orders by Account
+      summary: List Orders by Account
       description: Fetch a list of all orders for a users account.
       parameters:
         - in: path
@@ -737,7 +737,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve portfolio status by Account
+      summary: Retrieve Portfolio by Account
       description: Fetch the status of a portfolio using the accountID.
       responses:
         '200':
@@ -761,7 +761,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve money details by Account
+      summary: Retrieve Money by Account
       description: Fetch a real time snapshot of cash balances of an account.
       responses:
         '200':
@@ -912,7 +912,7 @@ paths:
           required: false
           example: '2019-09-18'
           description: End date and time of requested time frame of the accounts performance.
-      summary: Retrieve performance by Account
+      summary: Retrieve Performance Metrics by Account
       description: Fetch the daily realized and unrealized profit/loss for a specific account.
       responses:
         '200':
@@ -960,7 +960,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve Violation by Account
+      summary: Retrieve Violations by Account
       description: Fetch the summary of all current account violations.
       responses:
         '200':
@@ -1008,7 +1008,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve margin details by Account
+      summary: Retrieve Margin Details by Account
       description: Fetch a list of all margin information associated with an Account.
       responses:
         '200':
@@ -1502,7 +1502,7 @@ paths:
           dwAppKey: []
   /asset-transfers:
     get:
-      summary: List all Transfers
+      summary: List Transfers
       tags:
         - Asset Transfer
       description: Lists all of your Transfers across all Accounts. This can be filtered by type of Transfer.
@@ -2089,7 +2089,7 @@ paths:
     get:
       tags:
         - Disclosures
-      summary: List all Disclosures
+      summary: List Disclosures
       description: Fetches a list of disclosures.
       responses:
         '200':
@@ -3279,7 +3279,7 @@ paths:
     get:
       tags:
         - Physical Documents
-      summary: Retrieve Physical Document URL by DocumentID
+      summary: Retrieve Physical Document URL by Document
       description: Fetches a user's physical document by documentID.
       parameters:
         - in: path
@@ -3728,7 +3728,7 @@ paths:
     post:
       tags:
         - Withdrawals
-      summary: Create Withdrawals
+      summary: Create Withdrawal
       description: Creates a withdrawal from a User's Account.
       requestBody:
         content:
@@ -3750,7 +3750,7 @@ paths:
     get:
       tags:
         - Withdrawals
-      summary: List all Withdrawals
+      summary: List Withdrawals
       description: Retrieves a list of all Withdrawals for the firm.
       parameters:
         - in: query
@@ -4230,7 +4230,7 @@ paths:
     get:
       tags:
         - Users
-      summary: Retrieve KYC status by User
+      summary: Retrieve KYC by User
       description: Fetches a user's profile details & kyc status by userID.
       parameters:
         - in: path
@@ -4537,7 +4537,7 @@ paths:
     get:
       tags:
         - Advisor Reports
-      summary: Retrieve beginning-of-day by Advisor
+      summary: Retrieve Beginning Of Day (BOD) by Advisor
       description: Fetches a list of sub accounts beginning of day holdings by userID
       parameters:
         - in: path
@@ -4615,7 +4615,7 @@ paths:
     get:
       tags:
         - AutoPilot
-      summary: List AutoPilot runs by Advisor
+      summary: List AutoPilot Runs by Advisor
       description: Fetches a list of autopilot runs by userID.
       parameters:
         - in: path
