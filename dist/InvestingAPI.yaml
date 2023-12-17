@@ -1959,7 +1959,7 @@ paths:
     post:
       tags:
         - Auth
-      summary: Create authentication token
+      summary: Create Authentication Token
       description: Creates an authentication token for an implementer to utilize for subsequent API requests.
       deprecated: true
       requestBody:
@@ -1979,7 +1979,7 @@ paths:
     post:
       tags:
         - Auth
-      summary: Create session token
+      summary: Create Session Token
       description: Creates a session token for an implementer to utilize for subsequent API requests.
       requestBody:
         content:
