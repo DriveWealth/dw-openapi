@@ -645,7 +645,7 @@ paths:
     get:
       tags:
         - Orders
-      summary: Retrieve pending Orders by Account
+      summary: Retrieve Orders by Account
       description: Fetch a list of pending orders for a users account.
       parameters:
         - in: path
@@ -785,7 +785,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: List monthly statements by Account
+      summary: List Statements by Account
       description: List all statement files for a particular account.
       responses:
         '200':
@@ -809,7 +809,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: List tax documents by Account
+      summary: List Tax Statements by Account
       description: Fetch a list of all the tax documents for a particular account.
       responses:
         '200':
@@ -833,7 +833,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: List trade confirmations by Account
+      summary: List Trade Confirmations by Account
       description: List all trade confirmation files for a particular account.
       responses:
         '200':
@@ -960,7 +960,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve violation summary by Account
+      summary: Retrieve Violation by Account
       description: Fetch the summary of all current account violations.
       responses:
         '200':
@@ -1032,7 +1032,7 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve transaction summary by Account
+      summary: Retrieve Transaction Summary by Account
       description: Fetch a list of all recent Account Transactions.
       responses:
         '200':
@@ -1839,7 +1839,7 @@ paths:
     get:
       tags:
         - Cancel Rebill
-      summary: Retrieve All Cancel Rebills
+      summary: List Cancel Rebills
       description: Get all the Cancel Rebills
       parameters:
         - name: from
@@ -1918,7 +1918,7 @@ paths:
     get:
       tags:
         - Cancel Rebill
-      summary: Retrieve Cancel Rebill by ID
+      summary: Retrieve Cancel Rebill
       description: Get Cancel Rebill details by ID.
       parameters:
         - name: id
@@ -1998,7 +1998,7 @@ paths:
     get:
       tags:
         - Supported Countries
-      summary: List all Supported Countries
+      summary: List Supported Countries
       description: Retrieves a list of allowed countries for which users can be onboard from.
       parameters:
         - in: query
@@ -2160,7 +2160,7 @@ paths:
     get:
       tags:
         - Disclosures
-      summary: List all Disclosures acknowledgments by User
+      summary: List Disclosures Acknowledgments by User
       description: Fetches a list of disclosures acknowledgments for the given user.
       parameters:
         - in: path
@@ -2628,7 +2628,7 @@ paths:
     get:
       tags:
         - Exchanges
-      summary: Retrieve Exchange history for an Account
+      summary: Retrieve Exchange History by Account
       responses:
         '200':
           description: OK
@@ -2773,7 +2773,7 @@ paths:
           required: false
           example: true
           description: The ability to trade options for this instrument; to filter by.
-      summary: List all Instruments
+      summary: List Instruments
       description: Fetch a list of all the available Instruments offered on the DriveWealth platform. This endpoint will return an array of over 6,500+ instrument objects.
       responses:
         '200':
@@ -2919,7 +2919,7 @@ paths:
           required: false
           example: expirationDate
           description: The expiration dates for the given underlying security; to filter by.
-      summary: Retrieve an Options chain
+      summary: Retrieve Options Chain
       description: Retrieves a list of Options chain based on query parameters.
       responses:
         '200':
@@ -2967,7 +2967,7 @@ paths:
           required: true
           example: AAPL
           description: Symbol or instrumentID of the underlying equity security.
-      summary: Retrieve option expiration dates
+      summary: Retrieve Option Expiration
       description: Retrieve option expiration dates for an underlying security.
       responses:
         '200':
@@ -2985,7 +2985,7 @@ paths:
     post:
       tags:
         - Instruments
-      summary: Search debt Instruments
+      summary: Search Instruments by Filter
       description: Filters, Instruments using the provided filter criteria and return the list of matching.
       operationId: filterInstruments
       requestBody:
@@ -3279,7 +3279,7 @@ paths:
     get:
       tags:
         - Physical Documents
-      summary: Retrieve URL for a Physical Document
+      summary: Retrieve Physical Document URL by DocumentID
       description: Fetches a user's physical document by documentID.
       parameters:
         - in: path
@@ -3997,7 +3997,7 @@ paths:
     get:
       tags:
         - Statements
-      summary: Retrieve document URL
+      summary: Retrieve Document URL by Account and FileKey
       description: 'Fetches a user''s generated account document: monthly statement, tax statement or trade confirmation.'
       parameters:
         - in: path
