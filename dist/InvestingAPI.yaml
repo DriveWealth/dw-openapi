@@ -8205,7 +8205,7 @@ components:
         sourceAccountType:
           $ref: '#/components/schemas/AcatsTransferEnumValues_SourceAccountType'
         acatType:
-          $ref: '#/components/schemas/AssetTransferType'
+          $ref: '#/components/schemas/AcatsType'
       required:
         - source
         - destination
@@ -11518,7 +11518,6 @@ components:
         - userID
         - type
         - document
-        - side
       properties:
         userID:
           $ref: '#/components/schemas/userID'
@@ -11545,6 +11544,10 @@ components:
         - WORK_PERMIT
         - VISA
         - RESIDENCE_PERMIT
+        - ACATS_IN
+        - ACATS_OUT
+        - TRANSFER_ON_DEATH
+        - BENEFICIARY_DOCUMENT
     physicalDocumentBase64:
       type: string
       example: data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/4QCMR
