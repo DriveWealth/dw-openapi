@@ -1,0 +1,5 @@
+git@github.com:Camilleva01/dw-openapi.git{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+  }
+}
