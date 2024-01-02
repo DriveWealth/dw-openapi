@@ -2754,13 +2754,6 @@ paths:
           required: false
           example: '20'
           description: TradingDays may be defined as 1-60 days in the past from the current date. If set do not use `dateStart` and `dateEnd` values.
-        - in: query
-          name: exch
-          schema:
-            type: string
-          required: false
-          example: bqt
-          description: The exch string which provides bqt data.
       summary: Retrieve Chart
       description: Fetch historical bars for a given instrument over a given time period.
       responses:
@@ -3347,7 +3340,7 @@ paths:
           example: 15MinDelayed
           description: The quote details will be 15 minutes delayed.
       summary: Retrieve Quote (referential feed)
-      description: Fetch the realtime or 15 minute delayed Referential quote details for a specific instrument.
+      description: Fetch the realtime or 15 minute delayed Referential quote details for a specific security.
       responses:
         '200':
           description: Fetch referential quote details was Successful.
@@ -3369,17 +3362,8 @@ paths:
                       close: 0
                       priorClose: 95.28
                       volume: 3973709
-                      askSize: 0
-                      bidSize: 0
-                      lastTradeExchange: DX
-                      bestBidExchange: 'N'
-                      bestAskExchange: Q
-                      lastTradeSize: 0
-                      tradeCount: 0
-                      quoteTimeStamp: ''
                       marketCondition: NORMAL
                       dataProvider: BATS
-                      timeOffset: 1702648455920
                 Option Quote:
                   value:
                     - symbol: AAPL230818C00177500
@@ -3466,7 +3450,7 @@ paths:
           example: MS
           description: The ticker symbol of the associated instrument.
       summary: Retrieve Quote (consolidated feed)
-      description: Fetch the NBBO quote details for a specific instrument.
+      description: Fetch the NBBO quote details for a specific security.
       responses:
         '200':
           description: Fetch NBBO quote details was Successful.
@@ -9381,10 +9365,6 @@ components:
           type: string
           example: 2022-11-10T15:00:00Z,86.87,87.96,86.78,87.91,95568|2022-11-10T16:00:00Z,87.875,87.96,86.9,87.36,107004|2022-11-10T17:00:00Z,87.41,88.09,87.27,88.03,85171|2022-11-10T18:00:00Z,88.03,88.12,87.755,87.755,44808|2022-11-10T19:00:00Z,87.74,88.35,87.74,88.28,45755|2022-11-10T20:00:00Z,88.27,88.47,88.12,88.46,44391|2022-11-10T21:00:00Z,88.44,88.98,88.4,88.79,177251|2022-11-11T15:00:00Z,89.15,90.22,89.13,90.19,65167|2022-11-11T16:00:00Z,90.15,91.68,89.81,91.35,122906|2022-11-11T17:00:00Z,91.47,91.51,90.01,90.26,60692|2022-11-11T18:00:00Z,90.22,90.31,89.895,90.28,34462|2022-11-11T19:00:00Z,90.28,90.9,90.28,90.9,33509|2022-11-11T20:00:00Z,90.93,91.44,90.91,91.38,72687|2022-11-11T21:00:00Z,91.37,91.37,90.7,90.79,123926|2022-11-14T15:00:00Z,90.11,90.62,89.97,90.23,28369|2022-11-14T16:00:00Z,90.4,90.62,90.02,90.45,50923|2022-11-14T17:00:00Z,90.47,90.63,90.05,90.33,37863|2022-11-14T18:00:00Z,90.4,90.9,90.27,90.86,34006|2022-11-14T19:00:00Z,90.85,91.345,90.85,91.345,28538|2022-11-14T20:00:00Z,91.33,91.35,90.7,90.77,40253|2022-11-14T21:00:00Z,90.72,90.85,89.79,89.82,52283|2022-11-15T15:00:00Z,91.06,91.83,90.77,91.49,67238|2022-11-15T16:00:00Z,91.5,91.69,91.06,91.06,67885|2022-11-15T17:00:00Z,91.01,91.35,90.9,90.97,36514|2022-11-15T18:00:00Z,91.02,91.06,90.68,90.89,33116|2022-11-15T19:00:00Z,90.88,90.96,89.39,90.03,68627|2022-11-15T20:00:00Z,89.99,90.82,89.82,90.585,71247|2022-11-15T21:00:00Z,90.63,90.71,90.2,90.485,81118|2022-11-16T15:00:00Z,90.22,90.34,89.81,89.89,34416|2022-11-16T16:00:00Z,89.915,90.31,89.42,89.43,55055|2022-11-16T17:00:00Z,89.43,89.83,89.08,89.83,40326|2022-11-16T18:00:00Z,89.82,90.08,89.6,89.86,24222|2022-11-16T19:00:00Z,89.77,89.77,89.56,89.56,22107|2022-11-16T20:00:00Z,89.54,89.82,89.47,89.77,28389|2022-11-16T21:00:00Z,89.75,89.91,89.43,89.82,65605|2022-11-17T15:00:00Z,88.6,88.76,87.58,87.58,27525|2022-11-17T16:00:00Z,87.56,88.24,87.53,87.83,77796|2022-11-17T17:00:00Z,87.81,88.46,87.78,88.43,49492|2022-11-17T18:00:00Z,88.59,89.06,88.52,89.05,25378|2022-11-17T19:00:00Z,89.07,89.07,88.75,88.78,21474|2022-11-17T20:00:00Z,88.79,88.9,88.56,88.68,27020|2022-11-17T21:00:00Z,88.66,88.97,88.37,88.95,62714|2022-11-18T15:00:00Z,90.27,90.28,89.49,89.55,21160|2022-11-18T16:00:00Z,89.57,89.57,89.16,89.21,44798|2022-11-18T17:00:00Z,89.23,89.46,89.06,89.17,28915|2022-11-18T18:00:00Z,89.18,89.18,88.6,88.82,38268|2022-11-18T19:00:00Z,88.85,89.23,88.81,88.94,19097|2022-11-18T20:00:00Z,89.0,89.39,89.0,89.2,45037|2022-11-18T21:00:00Z,89.19,89.53,88.96,89.23,93566
           description: 'The `data` attribute holds each chart value separated by a pipe ''|''. Each data set is preceded by the date, followed by the pricing data in the following order: Open, High, Low, Close, Volume.'
-        dataProvider:
-          type: string
-          example: COMPOSITE
-          description: The data provider for the historical data.
     Instruments:
       type: array
       items:
@@ -11624,15 +11604,15 @@ components:
         volume:
           type: number
           example: 2779731
-          description: The total trading volume of the instrument for the current day in quantity of shares.
+          description: The total trading volume of the security for the current day in quantity of shares.
         askSize:
           type: number
           example: 3
-          description: The ask size is the number of shares investors are trying to sell at a given price for a particular instrument.
+          description: The ask size is the number of shares investors are trying to sell at a given price for a particular security.
         bidSize:
           type: number
           example: 4
-          description: The bid size is the number of shares investors are trying to buy at a given price for a particular instrument.
+          description: The bid size is the number of shares investors are trying to buy at a given price for a particular security.
         change:
           type: number
           example: -1.33
@@ -11717,38 +11697,6 @@ components:
           type: number
           example: 2779731
           description: The total trading volume of the security for the current day in quantity of shares.
-        askSize:
-          type: number
-          example: 3
-          description: The ask size is the number of shares investors are trying to sell at a given price for a particular instrument.
-        bidSize:
-          type: number
-          example: 4
-          description: The bid size is the number of shares investors are trying to buy at a given price for a particular instrument.
-        lastTradeExchange:
-          type: string
-          example: DX
-          description: The last exchange the symbol was traded on.
-        bestBidExchange:
-          type: string
-          example: 'N'
-          description: The exchange that is offering the best bid for the current symbol.
-        bestAskExchange:
-          type: string
-          example: Q
-          description: The exchange that is offering best ask for the symbol.
-        lastTradeSize:
-          type: number
-          example: 2
-          description: The quantity of shares of the last trade.
-        tradeCount:
-          type: number
-          example: 29565
-          description: The number of trades placed for the symbol during the current trading day.
-        quoteTimeStamp:
-          type: number
-          example: '1671208571982'
-          description: The quote timestamp from market data
         marketCondition:
           type: string
           example: NORMAL
@@ -11757,10 +11705,6 @@ components:
             - NORMAL
             - TRADING_HALT
             - UNKNOWN
-        timeOffset:
-          type: number
-          example: '1671208571982'
-          description: The last updated time stamp as offset from reported platform time.
         dataProvider:
           type: string
           example: BATS
