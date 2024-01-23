@@ -1156,14 +1156,16 @@ paths:
                         currentMarketValue: 4.18
                         unrealizedPnL: 0.18
                         effectiveCostPerShare: 242.6155411
-                        legs:
-                          - created: '2022-08-25T10:07:47.235Z'
+                        taxLots:
+                          - id: 3db27e74626adac3be7b549f2bbc0ab2480852a7
+                            created: '2022-08-25T10:07:47.235Z'
                             initialQuantity: 0.01240767
                             openQuantity: 0.01240767
                             effectiveCostPerShare: 241.79
                             side: B
                             comment: SPLIT CAFB015132 TSLA...
-                          - created: '2023-09-25T15:28:12.120Z'
+                          - id: 3db27e74626adac3be7b549f2bbc0ab2480852a7
+                            created: '2023-09-25T15:28:12.120Z'
                             initialQuantity: 0.00407932
                             openQuantity: 0.00407932
                             effectiveCostPerShare: 245.14
@@ -3093,6 +3095,24 @@ paths:
                   symbol: SBUX
                   side: BUY
                   quantity: 2
+              Market Cash Order w/ Lot Disposition:
+                value:
+                  accountNo: DWFS001102
+                  orderType: MARKET
+                  symbol: SBUX
+                  side: SELL
+                  amountCash: 100
+                  lotDisposition:
+                    - taxLotID: 3db27e74626adac3be7b549f2bbc0ab2480852a7
+              Market Quantity Order w/ Lot Disposition:
+                value:
+                  accountNo: DWFS001102
+                  orderType: MARKET
+                  symbol: SBUX
+                  side: SELL
+                  quantity: 2
+                  lotDisposition:
+                    - taxLotID: 3db27e74626adac3be7b549f2bbc0ab2480852a7
               Limit GTC Order:
                 value:
                   accountNo: DWFS001102
@@ -6200,7 +6220,7 @@ components:
           type: number
           example: 1.09
           description: The effective cost per share of the position.
-        legs:
+        taxLots:
           type: array
           items:
             oneOf:
@@ -6208,6 +6228,8 @@ components:
     PositionLegs:
       type: object
       properties:
+        id:
+          $ref: '#/components/schemas/taxLotID'
         created:
           type: string
           example: '2017-06-16T15:35:30.617Z'
@@ -8055,6 +8077,10 @@ components:
       items:
         oneOf:
           - $ref: '#/components/schemas/Transaction'
+    taxLotID:
+      type: string
+      example: 3db27e74626adac3be7b549f2bbc0ab2480852a7
+      description: A unique tax lot identifier.
     AssetTransferType:
       type: string
       enum:
@@ -8674,7 +8700,7 @@ components:
         startDate:
           type: string
           example: '2017-09-18'
-          description: The start date of recurring deposit.
+          description: The start date of the recurring deposit. The date should be in the future and within 90 days.
         settlementProfileID:
           $ref: '#/components/schemas/settlementProfileID'
         originatorBankDetails:
@@ -10243,6 +10269,10 @@ components:
           type: string
           example: http://syscdn.drivewealth.net/images/symbols/ms.png
           description: A publicly hosted image of the instruments logo.
+        isPTP:
+          type: boolean
+          example: false
+          description: True, if the Instrument is a publicly traded partnership (PTP).
     EquityInstrumentDetails:
       type: object
       allOf:
@@ -11252,6 +11282,13 @@ components:
           $ref: '#/components/schemas/SalesCredit'
         dccs:
           $ref: '#/components/schemas/dccs'
+        lotDisposition:
+          $ref: '#/components/schemas/LotDisposition'
+    LotDisposition:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/TaxLot'
     CreateOrderResponse:
       type: object
       properties:
@@ -11317,6 +11354,11 @@ components:
           format: double
           example: 0.01
           description: Cost of the order.
+        ptpWithholdingFee:
+          type: number
+          format: double
+          example: 0.01
+          description: The publicly traded partnership (PTP) withholding fee for the order.
         createdBy:
           type: string
           example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
@@ -11501,6 +11543,11 @@ components:
       type: boolean
       example: true
       description: True, when the Mutual Fund HSA is classified as Defined Contribution Clearing and Settlement (DCC&S) order.
+    TaxLot:
+      type: object
+      properties:
+        taxLotID:
+          $ref: '#/components/schemas/taxLotID'
     UploadUserPhysicalDocument:
       type: object
       properties:
