@@ -2647,7 +2647,7 @@ paths:
       summary: Retrieve Exchange History by Account
       responses:
         '200':
-          description: OK
+          description: retrieving Exchange History by Account was Successful.
           content:
             application/json:
               schema:
