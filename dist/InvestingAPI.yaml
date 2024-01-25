@@ -7889,7 +7889,7 @@ components:
           description: The amount of cash requested for an order (fractional shares only).
         salesCredit:
           $ref: '#/components/schemas/SalesCredit'
-        cuurency:
+        currency:
           $ref: '#/components/schemas/currency'
     dividend:
       type: object
