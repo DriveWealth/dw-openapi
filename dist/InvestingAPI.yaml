@@ -8873,6 +8873,7 @@ components:
       enum:
         - BIWEEKLY
         - DAILY
+        - MONTHLY
         - MONTHLY_FIRST
         - MONTHLY_MIDDLE
         - QUARTERLY
