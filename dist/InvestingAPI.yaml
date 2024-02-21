@@ -809,6 +809,8 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
+        - $ref: '#/components/parameters/fromParams'
+        - $ref: '#/components/parameters/toParams'
       summary: List Tax Statements by Account
       description: Fetch a list of all the tax documents for a particular account.
       responses:
@@ -15493,3 +15495,20 @@ components:
       type: apiKey
       in: header
       name: dw-auth-token
+  parameters:
+    fromParams:
+      in: query
+      name: from
+      schema:
+        type: string
+      required: false
+      example: '2022-06-16'
+      description: The date to start the filter.
+    toParams:
+      in: query
+      name: to
+      schema:
+        type: string
+      required: false
+      example: '2022-07-16'
+      description: The date to end the filter.
