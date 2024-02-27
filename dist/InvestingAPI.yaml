@@ -2956,8 +2956,7 @@ paths:
                           rootId: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
                           expirationDate: '2018-09-18'
                           optionType: PUT
-                          strikePrice: '16.00'
-                          sharesPerContract: 100
+                          strikePrice: 16.5
                           deliverable: 100
                           multiplier: 100
                         id: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
@@ -10432,13 +10431,9 @@ components:
                 - CALL
                 - PUT
             strikePrice:
-              type: string
-              example: '16.00'
-              description: Strike price of the Option
-            sharesPerContract:
               type: number
-              example: 100
-              description: Number of underlying equity shares that this contract represents.
+              example: 16.5
+              description: The strike price of the option.
             deliverable:
               type: number
               example: 100
