@@ -1178,6 +1178,64 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
+  /accounts/{accountID}/options/positions:
+    get:
+      tags:
+        - Positions
+      parameters:
+        - in: path
+          name: accountID
+          schema:
+            $ref: '#/components/schemas/accountID'
+          required: true
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          example: expirationDate
+          description: The expiration date of options; to filter by.
+        - in: query
+          name: from
+          schema:
+            type: string
+          example: '2023-02-16'
+          description: The start date of the range of option's expiration.
+        - in: query
+          name: to
+          schema:
+            type: string
+          required: false
+          example: '2023-02-16'
+          description: The end date of the range of option's expiration.
+        - in: query
+          name: limit
+          schema:
+            type: number
+            default: 50
+          required: false
+          example: 10
+          description: The number of results to be returned.
+        - in: query
+          name: offset
+          schema:
+            type: string
+          required: false
+          example: 86572e14-84ae-4f0c-9533-3c9432637f8e.1627500314555#65d1aee9-9a6c-4720-9879-71c4fcf43060.2023-12-07T21:17:45.743Z
+          description: The identifier of the page.
+      summary: Retrieve Account Option Positions
+      description: Retrieves Account Option Positions
+      responses:
+        '200':
+          description: Retrieving Account Option Positions was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptPositionRes'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
   /asset-transfers/acats:
     post:
       tags:
@@ -2767,6 +2825,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Bars'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                Invalid request for daily bars:
+                  value:
+                    errorCode: B100
+                    message: The number of bars requested has exceeded the maximum allowed of 10 Years for Daily bars.
+                Invalid request for one minute bars:
+                  value:
+                    errorCode: B100
+                    message: The number of bars requested has exceeded the maximum allowed of 1 Month for 1 minute bars.
+                Invalid request for five minutes bars:
+                  value:
+                    errorCode: B100
+                    message: The number of bars requested has exceeded the maximum allowed of 2 Months for 5 minutes bars.
+                Invalid request for thirty minutes bars:
+                  value:
+                    errorCode: B100
+                    message: The number of bars requested has exceeded the maximum allowed of 1 Year for 30 minutes bars.
+                Invalid request for one hour bars:
+                  value:
+                    errorCode: B100
+                    message: The number of bars requested has exceeded the maximum allowed of 2 Years for 1 hour bars.
+                Invalid request for weekly bars:
+                  value:
+                    errorCode: B100
+                    message: The number of bars requested has exceeded the maximum allowed of 20 Years for Weekly bars.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                OneTick bars request exceeded:
+                  value:
+                    errorCode: OT002
+                    message: The Number of Bars request has exceeded the maximum allowed Bars.
+                Other OneTick Errors:
+                  value:
+                    errorCode: OT003
+                    message: Unable to retrieve bars data.
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -3096,15 +3210,6 @@ paths:
                   symbol: SBUX
                   side: BUY
                   quantity: 2
-              Market Cash Order w/ Lot Disposition:
-                value:
-                  accountNo: DWFS001102
-                  orderType: MARKET
-                  symbol: SBUX
-                  side: SELL
-                  amountCash: 100
-                  lotDisposition:
-                    - taxLotID: 3db27e74626adac3be7b549f2bbc0ab2480852a7
               Market Quantity Order w/ Lot Disposition:
                 value:
                   accountNo: DWFS001102
@@ -3112,7 +3217,7 @@ paths:
                   symbol: SBUX
                   side: SELL
                   quantity: 2
-                  lotDisposition:
+                  taxLotDisposition:
                     - taxLotID: 3db27e74626adac3be7b549f2bbc0ab2480852a7
               Limit GTC Order:
                 value:
@@ -3282,6 +3387,92 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/digitalAssetResponse'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /orders/options:
+    get:
+      tags:
+        - Orders
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+            example: LIQUIDATION
+            description: The Transaction Batch type.
+            enum:
+              - LIQUIDATION
+          required: true
+        - in: query
+          name: status
+          schema:
+            type: string
+            example: COMPLETED
+            description: The status of Transaction Batch.
+            enum:
+              - COMPLETED
+          required: true
+        - in: query
+          name: partnerIBID
+          schema:
+            $ref: '#/components/schemas/parentIBID'
+          required: true
+        - in: query
+          name: fromDate
+          schema:
+            $ref: '#/components/schemas/from'
+          required: false
+        - in: query
+          name: toDate
+          schema:
+            $ref: '#/components/schemas/to'
+          required: false
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          required: false
+          example: 20
+          description: The number of results to be returned.
+        - in: query
+          name: pageNo
+          schema:
+            type: integer
+          required: false
+          example: 1
+      summary: Retrieve Option Orders
+      description: Retrieves Options Orders.
+      responses:
+        '200':
+          description: Retrieving Option Orders was Successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: OPTIONS_LIQUIDATION
+                    description: The Transaction Batch type.
+                  pageNo:
+                    type: number
+                    example: 1
+                    description: The index (i.e. page number) of where the result set is located.
+                  totalPages:
+                    type: number
+                    example: 1
+                    description: he total amount of pages for the search result.
+                  pageSize:
+                    type: number
+                    example: 20
+                    description: The number of results.
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OptionsLiquidationResponse'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -6016,6 +6207,8 @@ components:
           $ref: '#/components/schemas/equityValue'
         optionsValue:
           $ref: '#/components/schemas/optionsValue'
+        debtValue:
+          $ref: '#/components/schemas/debtValue'
         positionsValue:
           $ref: '#/components/schemas/positionsValue'
         equityPositions:
@@ -6251,6 +6444,50 @@ components:
           $ref: '#/components/schemas/sideAbbreviated'
         comment:
           $ref: '#/components/schemas/note'
+    OptPosition:
+      type: object
+      properties:
+        accountID:
+          $ref: '#/components/schemas/accountID'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        costBasis:
+          type: number
+          example: 975.98
+          description: The cost basis of the position.
+        effectivePx:
+          type: number
+          example: 975.98
+          description: The effective price of the position.
+        instrumentID:
+          $ref: '#/components/schemas/instrumentID'
+        side:
+          $ref: '#/components/schemas/sideAbbreviated'
+        openQty:
+          type: number
+          example: 10
+          description: The quantity of shares owned by the account.
+        comment:
+          type: string
+          example: TOP
+          description: A comment describing the position
+    OptPositionRes:
+      type: object
+      properties:
+        data:
+          type: array
+          description: An array of the options positions in the account.
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/OptPosition'
+        nextPageOffset:
+          type: string
+          example: 86572e14-84ae-4f0c-9533-3c9432637f8e.1627500314555#65d1aee9-9a6c-4720-9879-71c4fcf43060.2023-12-07T21:17:45.743Z
+          description: The next page offset.
+        prevPageOffset:
+          type: string
+          example: 86572e14-84ae-4f0c-9533-3c9432637f8e.1627500314555#65d1aee9-9a6c-4720-9879-71c4fcf43060.2023-12-07T21:17:45.743Z
+          description: The previous page offset.
     userID:
       type: string
       example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
@@ -7565,6 +7802,11 @@ components:
       format: double
       example: 12345.67
       description: The current total market value of the account's open option positions.
+    debtValue:
+      type: number
+      format: double
+      example: 12345.67
+      description: The current total market value of the account's open debt positions.
     positionsValue:
       type: number
       format: double
@@ -8082,6 +8324,10 @@ components:
       type: string
       example: 3db27e74626adac3be7b549f2bbc0ab2480852a7
       description: A unique tax lot identifier.
+    parentIBID:
+      type: string
+      example: 80f9b672-120d-4b73-9cc9-42fb3262c4b9
+      description: The unique identifier of the firm.
     AssetTransferType:
       type: string
       enum:
@@ -8926,10 +9172,6 @@ components:
       type: string
       example: jj@drivewealth.dev
       description: The user's email address.
-    parentIBID:
-      type: string
-      example: 80f9b672-120d-4b73-9cc9-42fb3262c4b9
-      description: The unique identifier of the firm.
     firmName:
       type: string
       example: Tendies Trading Company
@@ -10382,6 +10624,10 @@ components:
           type: string
           example: '0.15315'
           description: Return on equity of the instrument measured as a fraction, multiply by 100 to get percentage value. ROE is a measure of financial performance calculated by dividing net income by shareholders' equity.
+        percentchangeWTD:
+          type: number
+          example: 2.31
+          description: The percentage change between the most recent market closing price and the closing price at the week start.
         percentchangeMTD:
           type: number
           example: 2.3
@@ -10390,6 +10636,10 @@ components:
           type: number
           example: 10.11
           description: The price percentage change for the instrument Year to Date.
+        percentchange4week:
+          type: number
+          example: 21.22
+          description: The price percentage change for the instrument in last 4 Weeks.
         percentchange13week:
           type: number
           example: 6.67
@@ -10402,6 +10652,30 @@ components:
           type: number
           example: 12.1
           description: The price percentage change for the instrument in last 52 Weeks.
+        percentchange5day:
+          type: number
+          example: 10.11
+          description: The 5 Day Price Percent Change is the percentage change in the company's stock price over the last 5 tradable (business) days.
+        percentchangeYTDrelsnp:
+          type: number
+          example: 9.11
+          description: The percentage change in price since the close of the last trading day of the previous year as compared to the change in price of the S&P 500 during that same period.
+        percentchange5weekrelsnp:
+          type: number
+          example: 16.62
+          description: The percentage change in price over the last four weeks as compared to the change in price of the S&P 500 during that same period
+        percentchange13weekrelsnp:
+          type: number
+          example: 5.67
+          description: The percentage change in price over the last thirteen weeks as compared to the change in price of the S&P 500 during that same period
+        percentchange26weekrelsnp:
+          type: number
+          example: 2.66
+          description: The percentage change in price over the last twenty six weeks as compared to the change in price of the S&P 500 during that same period.
+        percentchange52weekrelsnp:
+          type: number
+          example: 11.12
+          description: The percentage change in price over the last fifty two weeks as compared to the change in price of the S&P 500 during that same period.
     OptionInstrumentDetails:
       type: object
       allOf:
@@ -11276,7 +11550,7 @@ components:
           $ref: '#/components/schemas/SalesCredit'
         dccs:
           $ref: '#/components/schemas/dccs'
-        lotDisposition:
+        taxLotDisposition:
           $ref: '#/components/schemas/LotDisposition'
     LotDisposition:
       type: array
@@ -11533,15 +11807,136 @@ components:
         - REJECTED
         - CANCELED
         - PENDING_CANCEL
+    side:
+      type: string
+      example: BUY
+      description: The side of the order.
+      enum:
+        - BUY
+        - SELL
     dccs:
       type: boolean
       example: true
       description: True, when the Mutual Fund HSA is classified as Defined Contribution Clearing and Settlement (DCC&S) order.
+    OptionsLiquidationResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/orderID'
+        orderNo:
+          $ref: '#/components/schemas/orderNo'
+        type:
+          $ref: '#/components/schemas/orderTypes'
+        side:
+          $ref: '#/components/schemas/side'
+        status:
+          $ref: '#/components/schemas/localOrderStatus'
+        instrumentID:
+          $ref: '#/components/schemas/instrumentID'
+        ISIN:
+          $ref: '#/components/schemas/instrumentISIN'
+        CUSIP:
+          $ref: '#/components/schemas/instrumentCUSIP'
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+        averagePrice:
+          type: number
+          format: double
+          example: 160
+          description: The average price of the security being transacted in the order.
+        currency:
+          $ref: '#/components/schemas/currency'
+        totalOrderAmount:
+          type: number
+          format: double
+          example: 800
+          description: The total amount paid for the order.
+        cumulativeQuantity:
+          type: number
+          format: double
+          example: 5
+          description: The number of shares currently being transacted.
+        quantity:
+          type: number
+          format: double
+          example: 5
+          description: The total number of shares requested.
+        fees:
+          type: number
+          format: double
+          example: 0.01
+          description: The cost of the order.
+        ptpWithholdingFee:
+          type: number
+          format: double
+          example: 0.01
+          description: The publicly traded partnership (PTP) withholding fee for the order.
+        createdBy:
+          $ref: '#/components/schemas/userID'
+        userID:
+          $ref: '#/components/schemas/userID'
+        accountID:
+          $ref: '#/components/schemas/accountID'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        created:
+          type: string
+          example: '2019-02-14T18:56:07.411Z'
+          description: The time at which the order was created.
+        statusMessage:
+          type: object
+          properties:
+            errorCode:
+              type: object
+              example: '0802'
+              description: The error code produced.
+            message:
+              type: string
+              example: System market data unavailable
+              description: The description of the error code.
+            reason:
+              type: string
+              example: 0105 Order quantity exceeds quantity available for sale.  Cannot SELL SHORT. null
+              description: The reason for the error.
+        amountCash:
+          type: number
+          example: 800
+          description: The cash amount requested for the order.
+        OrderExpires:
+          type: string
+          example: null
+          description: The ending period of when the order will/has expired.
+        salesCredit:
+          $ref: '#/components/schemas/SalesCredit'
+        instrumentType:
+          $ref: '#/components/schemas/instrumentType'
+        dccs:
+          $ref: '#/components/schemas/dccs'
+        openQuantity:
+          $ref: '#/components/schemas/openQuantity'
+        availableForTradingQuantity:
+          $ref: '#/components/schemas/availableForTradingQuantity'
+        partnerIBID:
+          $ref: '#/components/schemas/parentIBID'
+        partnerName:
+          $ref: '#/components/schemas/wlpID'
     TaxLot:
       type: object
       properties:
         taxLotID:
           $ref: '#/components/schemas/taxLotID'
+    from:
+      type: string
+      format: date
+      pattern: yyyy-MM-dd
+      example: '2022-12-25'
+      description: A filter, the start date.
+    to:
+      type: string
+      format: date
+      pattern: yyyy-MM-dd
+      example: '2022-12-26'
+      description: A filter, the end date.
     UploadUserPhysicalDocument:
       type: object
       properties:
@@ -12755,18 +13150,6 @@ components:
         - PROCESSING
         - SUCCESSFUL
         - FAILED
-    from:
-      type: string
-      format: date
-      pattern: yyyy-MM-dd
-      example: '2022-12-25'
-      description: A filter, the start date.
-    to:
-      type: string
-      format: date
-      pattern: yyyy-MM-dd
-      example: '2022-12-26'
-      description: A filter, the end date.
     UserGeneratedAccountDocument:
       type: object
       properties:
