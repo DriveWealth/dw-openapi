@@ -3575,7 +3575,7 @@ paths:
                       priorClose: 95.28
                       volume: 3973709
                       marketCondition: NORMAL
-                      dataProvider: BATS
+                      dataProvider: NYSE
                 Option Quote:
                   value:
                     - symbol: AAPL230818C00177500
@@ -12244,8 +12244,8 @@ components:
             - UNKNOWN
         dataProvider:
           type: string
-          example: BATS
-          description: The exchange venue providing the quote
+          example: NYSE
+          description: The exchange venue providing the quote.
     BidPrice:
       type: object
       description: Bid Price
