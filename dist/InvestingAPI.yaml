@@ -3773,6 +3773,7 @@ paths:
       tags:
         - Settlements
       summary: List Cashless Reconciliations
+      deprecated: true
       description: Fetches a list of daily reconciliations for a firm using cashless settlement.
       parameters:
         - in: query
@@ -3818,6 +3819,7 @@ paths:
     get:
       tags:
         - Settlements
+      deprecated: true
       summary: Retrieve Cashless Reconciliation
       description: Fetches reconciliations details for a firm using cashless settlement.
       parameters:
@@ -3843,6 +3845,7 @@ paths:
     patch:
       tags:
         - Settlements
+      deprecated: true
       summary: Update Cashless Reconciliation
       description: Updates a Cashless Reconciliation by reconciliationID.
       parameters:
@@ -4034,6 +4037,7 @@ paths:
       tags:
         - Settlements
       summary: List Bulk Settlements
+      deprecated: true
       description: Retrieves a list of daily Bulk Settlements details.
       parameters:
         - in: query
@@ -4073,6 +4077,7 @@ paths:
       tags:
         - Settlements
       summary: Retrieve Bulk Settlement
+      deprecated: true
       description: Retrieves a Bulk Settlement by settlementID.
       parameters:
         - in: path
@@ -4096,6 +4101,7 @@ paths:
     patch:
       tags:
         - Settlements
+      deprecated: true
       summary: Update Bulk Settlement
       description: Updates a Bulk Settlement by settlementID.
       parameters:
@@ -4214,6 +4220,101 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DVPRVPDetails'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /settlements:
+    get:
+      tags:
+        - Settlements
+      summary: Retrieve Settlements
+      description: Retrieves a list of Settlements.
+      parameters:
+        - in: query
+          name: from
+          schema:
+            type: string
+          required: true
+          example: '2022-12-08'
+          description: The date to start from.
+        - in: query
+          name: to
+          schema:
+            type: string
+          required: true
+          example: '2022-12-25'
+          description: The date to end at.
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/singleSettlementStatus'
+          required: false
+          description: Filters, the settlements by the status.
+        - in: query
+          name: settlementProfileID
+          schema:
+            $ref: '#/components/schemas/settlementProfileID'
+          required: false
+          description: Filters, the settlements by the settlement profile.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+            maximum: 200
+          required: false
+          description: The number of items to return.
+        - in: query
+          name: offset
+          schema:
+            type: string
+            default: null
+          required: false
+          description: Used for pagination. Set this to the first/last id value of your payload to get the prev/next page of results respectively.
+        - in: query
+          name: direction
+          schema:
+            type: string
+            enum:
+              - prev
+              - next
+          required: false
+          description: The direction of the pagination.
+      responses:
+        '200':
+          description: Retrieving a list of Settlements was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleSettlementReports'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /settlements/{settlementID}:
+    get:
+      tags:
+        - Settlements
+      summary: Retrieve Settlement
+      description: Retrieves Settlement by settlementID.
+      parameters:
+        - in: path
+          name: settlementID
+          schema:
+            $ref: '#/components/schemas/singleSettlementID'
+          required: true
+      responses:
+        '200':
+          description: Retrieving Settlement by settlementID was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleSettlementByID'
+        '404':
+          description: The settlement for given settlementID doesn't exist.
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -13126,6 +13227,92 @@ components:
               format: url
               description: A json file of the trade breakdown of all the purchases and sale transactions.
               example: https://du2c4wzqz90h1.cloudfront.net/buySellTradesReport....
+    SingleSettlementDetails:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/singleSettlementID'
+        settlementDate:
+          $ref: '#/components/schemas/date'
+          description: The date for which the settlement was generated.
+        partnerID:
+          $ref: '#/components/schemas/parentIBID'
+        status:
+          $ref: '#/components/schemas/singleSettlementStatus'
+        totalAmount:
+          type: number
+          example: -14250
+          description: The total aggregated sum of all underlying accounts and transactions.
+        createdAt:
+          $ref: '#/components/schemas/created'
+          description: The date and time the settlement was created.
+        updatedAt:
+          $ref: '#/components/schemas/updated'
+          description: The date and time the settlement was last updated.
+        settlementProfileID:
+          $ref: '#/components/schemas/settlementProfileID'
+    SingleSettlementReports:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          example: 1
+          description: The amount of results on the page.
+        limit:
+          type: integer
+          example: 50
+          description: The maximum number of results per page.
+        settlements:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/SingleSettlementDetails'
+    SingleSettlementByID:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/singleSettlementID'
+        settlementDate:
+          $ref: '#/components/schemas/date'
+          description: The date the settlement was generated for.
+        status:
+          $ref: '#/components/schemas/singleSettlementStatus'
+        statusComment:
+          type: string
+          example: Finished processing breakdown
+          description: A custom comment about the current status of the settlement.
+        amount:
+          type: object
+          properties:
+            total:
+              type: number
+              example: 5000.45
+              description: The aggregated sum of all the transactions settling on the settlement date.
+            credits:
+              type: number
+              example: 6000.45
+              description: The aggregated sum of all the credit transactions settling on the settlement date.
+            debits:
+              type: number
+              example: -1000
+              description: The aggregated sum of all the debit transactions settling on the settlement date.
+        breakdownReport:
+          type: string
+          format: url
+          example: https://du2c4wzqz90h1.cloudfront.net/singleSettlementReport....
+          description: A breakdown of all the deposits or withdrawals across sub accounts over the course of the settlement date.
+        partnerID:
+          $ref: '#/components/schemas/partnerID'
+        settlementProfileID:
+          $ref: '#/components/schemas/settlementProfileID'
+        updatedBy:
+          $ref: '#/components/schemas/updatedBy'
+        createdAt:
+          $ref: '#/components/schemas/created'
+          description: The date and time of when the settlement was created.
+        updatedAt:
+          $ref: '#/components/schemas/updated'
+          description: The date and time of when the settlement was last updated.
     category:
       type: string
       example: DEPOSIT
@@ -13150,6 +13337,19 @@ components:
         - PROCESSING
         - SUCCESSFUL
         - FAILED
+    singleSettlementStatus:
+      type: string
+      example: PENDING
+      description: The current status of the settlement.
+      enum:
+        - PENDING
+        - APPROVED
+        - SUCCESSFUL
+        - REJECTED
+    singleSettlementID:
+      type: string
+      example: sett_63ccb073-a7b6-4b33-af77-5baec5cc4494_settle-profile-usa_20221224
+      description: A unique identifier that identifies the settlement.
     UserGeneratedAccountDocument:
       type: object
       properties:
