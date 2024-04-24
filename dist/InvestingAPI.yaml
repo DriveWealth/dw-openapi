@@ -12454,7 +12454,7 @@ components:
           $ref: '#/components/schemas/reconciliationID'
         date:
           type: string
-          example: '2022-12-25'
+          example: '2024-04-17'
           description: The date of when the reconciliation report was generated for.
         status:
           $ref: '#/components/schemas/reconciliationStatus'
@@ -12467,10 +12467,12 @@ components:
           example: 12001.01
           description: The total amount due or owed to the firm.
         created:
-          $ref: '#/components/schemas/created'
+          type: string
+          example: '2024-04-15T22:28:21.810Z'
           description: The date and time the reconciliation report was created.
         updated:
-          $ref: '#/components/schemas/updated'
+          type: string
+          example: '2024-04-17T22:28:21.810Z'
           description: The date and time the reconciliation report was last updated.
         updatedBy:
           $ref: '#/components/schemas/updatedBy'
@@ -12500,7 +12502,7 @@ components:
           $ref: '#/components/schemas/reconciliationID'
         date:
           type: string
-          example: '2022-12-25'
+          example: '2024-04-17'
           description: The date of when the reconciliation report was generated for.
         status:
           $ref: '#/components/schemas/reconciliationStatus'
@@ -12535,6 +12537,21 @@ components:
               type: number
               example: 0
               description: The total amount of other payments, that are owed to the firm.
+        transferAmounts:
+          type: object
+          properties:
+            currency:
+              type: string
+              example: USD
+              description: The currency in abbreviation form.
+            payablesToDW:
+              type: number
+              example: 1263.56
+              description: The total amount due to DriveWealth.
+            receivablesFromDW:
+              type: number
+              example: 0
+              description: The total amount owed to the partner firm.
         reconciliationBreakdown:
           type: string
           properties:
@@ -12545,10 +12562,12 @@ components:
         partnerID:
           $ref: '#/components/schemas/parentIBID'
         created:
-          $ref: '#/components/schemas/created'
+          type: string
+          example: '2024-04-15T22:28:21.810Z'
           description: The date and time when the reconciliation report was created.
         updated:
-          $ref: '#/components/schemas/updated'
+          type: string
+          example: '2024-04-17T22:28:21.810Z'
           description: The date and time when the reconciliation report was last updated.
         updatedBy:
           $ref: '#/components/schemas/updatedBy'
@@ -12564,7 +12583,7 @@ components:
         - FAILED
     reconciliationID:
       type: string
-      example: 2b37a45d-341e-48a2-b838-0f9912ac8598_20220118
+      example: 80f9b672-120d-4b73-9cc9-42fb3262c4b9_20240417
       description: The unique identifier of the reconciliation report.
     RecurringDeposit:
       type: object
