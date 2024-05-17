@@ -3190,11 +3190,8 @@ paths:
                   accountNo: DWFS001102
                   orderType: LIMIT
                   side: SELL
-                  ISIN: US459058GX53
+                  symbol: US459058GX53
                   quantity: 3
-                  salesCredit:
-                    currency: USD
-                    amount: 8
                   commission: 3.567
                   price: 4.5
                   currency: USD
@@ -3635,17 +3632,12 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/MarketQuoteRequest'
+              $ref: '#/components/schemas/MarketQuoteRequest'
             examples:
               MarketQuoteRequestSample:
                 value:
-                  - instrumentID: f6d3e213-4e6f-4ee3-8a9a-793027c62c57
-                    quantity: 3.14
-                    salesCredit:
-                      currency: USD
-                      amount: 8
+                  instrumentID: f6d3e213-4e6f-4ee3-8a9a-793027c62c57
+                  quantity: 3.14
         required: true
       responses:
         '200':
@@ -12248,6 +12240,9 @@ components:
     MarketQuoteRequest:
       type: object
       description: Trade Quote Request for Fixed Income Securities
+      required:
+        - instrumentID
+        - quantity
       properties:
         instrumentID:
           $ref: '#/components/schemas/instrumentID'
