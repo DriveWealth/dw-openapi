@@ -13445,7 +13445,7 @@ components:
             stateEstablished:
               type: string
               example: NJ
-              description: The state or provience where the trust was established.
+              description: The state or province where the trust was established.
             street1:
               type: string
               example: 15 Exchange Place
@@ -13457,7 +13457,7 @@ components:
               type: string
               example: NJ
               description: The institutuion physical city.
-            provience:
+            province:
               type: string
               example: New Jersey
               description: The institutuion physical state or province.
@@ -14291,10 +14291,10 @@ components:
               type: string
               example: Jersey City
               description: The User's current city, where they live.
-            provience:
+            province:
               type: string
               example: NJ
-              description: The User's current state/provience/territory, where they live.
+              description: The User's current state/province/territory, where they live.
             postalCode:
               type: string
               example: 7302
