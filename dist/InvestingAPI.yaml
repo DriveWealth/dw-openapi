@@ -240,7 +240,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/holdingsObject'
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Recession Proof
+                  description: A name given to the portfolio by the RIA.
+                clientPortfolioID:
+                  $ref: '#/components/schemas/clientPortfolioID'
+                description:
+                  type: string
+                  example: A portifolio description
+                  description: A short description for the portfolio.
+                holdings:
+                  type: array
+                  description: An array of objects that hold the type of Funds in the Portfolio.
+                  items:
+                    $ref: '#/components/schemas/portfolioReqHoldings'
+                triggers:
+                  $ref: '#/components/schemas/portfolioTriggers'
       responses:
         '200':
           description: Edit a portfolio by portfolioID was Successful.
