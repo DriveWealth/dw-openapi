@@ -1142,6 +1142,60 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
+  /accounts/{accountID}/position-details:
+    get:
+      tags:
+        - Accounts
+      summary: Retrieve Account Position Lots
+      description: Retrieves Account Position Lots by accountID.
+      parameters:
+        - in: path
+          name: accountID
+          schema:
+            $ref: '#/components/schemas/accountID'
+          required: true
+      responses:
+        '200':
+          description: Retrieving Account Position Lots by accountID was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountPositionLots'
+              examples:
+                Account Lots:
+                  value:
+                    accountID: 0d1d686c-abe3-4203-82e5-62f1bd8266f3.1654094651810
+                    accountNo: XYRR000001
+                    positions:
+                      - instrumentID: 5b85fabb-d57c-44e6-a7f6-a3efc760226c
+                        symbol: TSLA
+                        currency: USD
+                        costBasis: 4
+                        quantity: 0.01648699
+                        currentMarketPrice: 253.76
+                        currentMarketValue: 4.18
+                        unrealizedPnL: 0.18
+                        effectiveCostPerShare: 242.6155411
+                        taxLots:
+                          - id: 3db27e74626adac3be7b549f2bbc0ab2480852a7
+                            created: '2022-08-25T10:07:47.235Z'
+                            initialQuantity: 0.01240767
+                            openQuantity: 0.01240767
+                            effectiveCostPerShare: 241.79
+                            side: B
+                            comment: SPLIT CAFB015132 TSLA...
+                          - id: 3db27e74626adac3be7b549f2bbc0ab2480852a7
+                            created: '2023-09-25T15:28:12.120Z'
+                            initialQuantity: 0.00407932
+                            openQuantity: 0.00407932
+                            effectiveCostPerShare: 245.14
+                            side: B
+                            comment: TSLA FRACK part TSLA KI...
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
   /accounts/{accountID}/options/positions:
     get:
       tags:
@@ -6426,6 +6480,56 @@ components:
           items:
             oneOf:
               - $ref: '#/components/schemas/transactionObj'
+    AccountPositionLots:
+      type: object
+      properties:
+        accountID:
+          $ref: '#/components/schemas/accountID'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        positions:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/PositionLots'
+    PositionLots:
+      type: object
+      properties:
+        instrumentID:
+          $ref: '#/components/schemas/instrumentID'
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+        currency:
+          $ref: '#/components/schemas/currency'
+        costBasis:
+          type: number
+          example: 19
+          description: The cost basis of the position.
+        quantity:
+          type: number
+          example: 0.16707001
+          description: The total amount of securities held in this position.
+        currentMarketPrice:
+          type: number
+          example: 90.16
+          description: The current market price of the instrument.
+        currentMarketValue:
+          type: number
+          example: 15.06
+          description: The average price of the the total position.
+        unrealizedPnL:
+          type: number
+          example: -3.94
+          description: The unrealized profit/loss of the position.
+        effectiveCostPerShare:
+          type: number
+          example: 1.09
+          description: The effective cost per share of the position.
+        taxLots:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/PositionLegs'
     PositionLegs:
       type: object
       properties:
