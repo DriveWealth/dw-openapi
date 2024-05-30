@@ -14594,6 +14594,11 @@ components:
           example: INVESTOR_PROFILE_INFO
         data:
           type: object
+          required:
+            - annualIncome
+            - networthTotal
+            - investmentExperience
+            - riskTolerance
           properties:
             investmentExperience:
               type: string
