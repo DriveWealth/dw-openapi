@@ -6191,6 +6191,10 @@ components:
               items:
                 oneOf:
                   - $ref: '#/components/schemas/cashSettlementTime'
+            cashPendingSettlement:
+              type: number
+              description: The amount of unsettled cash not included in cash available to trade.
+              example: 500
             pendingPaymentsAmount:
               type: number
               example: 0
