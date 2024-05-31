@@ -78,7 +78,7 @@ paths:
       tags:
         - Trade Allocations
       summary: Create Trade Allocation
-      description: Create an allocation of securities to a User's Account.
+      description: Create a Trade Allocation.
       requestBody:
         content:
           application/json:
@@ -87,7 +87,7 @@ paths:
         required: true
       responses:
         '200':
-          description: The creation of a Trade Allocation was Successful.
+          description: Creating a Trade Allocation was Successful.
           content:
             application/json:
               schema:
@@ -110,10 +110,10 @@ paths:
           example: JL.allocation.SomeRIACompany.9d6def3b-14d7-4934-8a64-57d443e67ce6
           description: The unique identifier returned when a Trade Allocation request is made.
       summary: Retrieve Trade Allocation
-      description: Retrieves Trade Allocation details by allocationID.
+      description: Retrieves Trade Allocation by allocationID.
       responses:
         '200':
-          description: Retrieving Trade Allocation details by allocationID was Successful.
+          description: Retrieving Trade Allocation by allocationID was Successful.
           content:
             application/json:
               schema:
@@ -128,7 +128,7 @@ paths:
       tags:
         - Funds
       summary: Create Fund
-      description: Create a Fund containing a collection of securities.
+      description: Creates a Fund.
       requestBody:
         content:
           application/json:
@@ -137,7 +137,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Creating a fund was Successful
+          description: Creating a Fund was Successful
           content:
             application/json:
               schema:
@@ -160,7 +160,7 @@ paths:
           example: fund_3d7d00d1-f08e-4f52-9cbf-893c75cf77fe
           description: The unique identifier associated with the Fund.
       summary: Retrieve Fund
-      description: Fetch the details of a fund using the unique fundID.
+      description: Retrieves a Fund by fundID.
       responses:
         '200':
           description: Fetch fund details was Successful.
@@ -178,7 +178,7 @@ paths:
       tags:
         - Portfolios
       summary: Create Portfolio
-      description: Create a Portfolio to hold an allocation of funds.
+      description: Creates a Portfolio.
       requestBody:
         content:
           application/json:
@@ -187,7 +187,7 @@ paths:
         required: true
       responses:
         '200':
-          description: The creation of a Portfolio was Successful.
+          description: Creating a Portfolio was Successful.
           content:
             application/json:
               schema:
@@ -202,7 +202,7 @@ paths:
       tags:
         - Portfolios
       summary: Retrieve Portfolio
-      description: Get the details of a specific Portfolio using the portfolioID.
+      description: Retrieves a Portfolio by portfolioID.
       parameters:
         - in: path
           name: portfolioID
@@ -213,7 +213,7 @@ paths:
           description: A unique identifier associated with a specific Portfolio.
       responses:
         '200':
-          description: Fetch a portfolio by portfolioID was Successful.
+          description: Retrieving a Portfolio by portfolioID was Successful.
           content:
             application/json:
               schema:
@@ -227,7 +227,7 @@ paths:
       tags:
         - Portfolios
       summary: Update Portfolio
-      description: Edit the holdings of an existing portfolio using the portfolioID.
+      description: Updates a Profolio by portfolioID.
       parameters:
         - in: path
           name: portfolioID
@@ -250,7 +250,7 @@ paths:
                   $ref: '#/components/schemas/clientPortfolioID'
                 description:
                   type: string
-                  example: A portifolio description
+                  example: A portifolio description.
                   description: A short description for the portfolio.
                 holdings:
                   type: array
@@ -261,7 +261,7 @@ paths:
                   $ref: '#/components/schemas/portfolioTriggers'
       responses:
         '200':
-          description: Edit a portfolio by portfolioID was Successful.
+          description: Updating a Portfolio by portfolioID was Successful.
           content:
             application/json:
               schema:
@@ -284,7 +284,7 @@ paths:
           example: 66304da9-3h6f-2234-935f-ac6b7933d706
           description: This is the parentIBID or userID of the registered investment advisor.
       summary: Create Autopilot Run
-      description: Create an Autopilot run for a users account.
+      description: Create an Autopilot Run.
       requestBody:
         content:
           application/json:
@@ -293,7 +293,7 @@ paths:
         required: true
       responses:
         '200':
-          description: The creation of an autopilot run was Successful.
+          description: Creating an Autopilot Run was Successful.
           content:
             application/json:
               schema:
@@ -316,10 +316,10 @@ paths:
           example: ria_rebalance_ebf7e878-e2d6-4b3d-a333-b8ff05b92b83
           description: The unique re-balance run identifier `rebalanceRunID` associated with a specific re-balance.
       summary: Retrieve Autopilot Run
-      description: Fetch the details and run status for a re-balance using the unique rebalanceRunID.
+      description: Retrieves an Autopilot Run by rebalanceRunID.
       responses:
         '200':
-          description: Fetch autopilot run details by rebalanceRunID was Successful.
+          description: Retrieving an Autopilot Run by rebalanceRunID was Successful.
           content:
             application/json:
               schema:
