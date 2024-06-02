@@ -663,8 +663,8 @@ paths:
     get:
       tags:
         - Orders
-      summary: Retrieve Orders by Account
-      description: Fetch a list of pending orders for a users account.
+      summary: List Account Orders
+      description: Retrives a list of Account Orders by accountID.
       parameters:
         - in: path
           name: accountID
@@ -673,7 +673,7 @@ paths:
           required: true
       responses:
         '200':
-          description: Fetching a list of pending Orders was successful.
+          description: Retrieving a list of Account Orders was Successful.
           content:
             application/json:
               schema:
