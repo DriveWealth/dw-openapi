@@ -163,7 +163,7 @@ paths:
       description: Retrieves a Fund by fundID.
       responses:
         '200':
-          description: Fetch fund details was Successful.
+          description: Retrieving a Fund by fundID was Successful.
           content:
             application/json:
               schema:
@@ -245,7 +245,7 @@ paths:
                 name:
                   type: string
                   example: Recession Proof
-                  description: A name given to the portfolio by the RIA.
+                  description: A name given to the Portfolio by the RIA.
                 clientPortfolioID:
                   $ref: '#/components/schemas/clientPortfolioID'
                 description:
@@ -2254,7 +2254,7 @@ paths:
     get:
       tags:
         - Disclosures
-      summary: List Disclosures Acknowledgments by User
+      summary: List Disclosures Acknowledgments
       description: Fetches a list of disclosures acknowledgments for the given user.
       parameters:
         - in: path
@@ -2722,10 +2722,10 @@ paths:
     get:
       tags:
         - Exchanges
-      summary: Retrieve Exchange History by Account
+      summary: Retrieve Exchange History
       responses:
         '200':
-          description: retrieving Exchange History by Account was Successful.
+          description: Retrieving Exchange History by Account was Successful.
           content:
             application/json:
               schema:
@@ -4334,8 +4334,8 @@ paths:
     get:
       tags:
         - Statements
-      summary: Retrieve Document URL by Account and FileKey
-      description: 'Fetches a user''s generated account document: monthly statement, tax statement or trade confirmation.'
+      summary: Retrieve Statement
+      description: Retrieves an Account Statement (Monthly, Trade Confirms, Tax Forms, etc.) by accountID and fileKey.
       parameters:
         - in: path
           name: accountID
@@ -4349,7 +4349,7 @@ paths:
           required: true
       responses:
         '200':
-          description: Fetching a User's generated account document was successful.
+          description: Retrieving an Account Statement was Successful.
           content:
             application/json:
               schema:
@@ -4567,8 +4567,8 @@ paths:
     get:
       tags:
         - Users
-      summary: Retrieve KYC by User
-      description: Fetches a user's profile details & kyc status by userID.
+      summary: Retrieve KYC
+      description: Retrives a User KYC by userID.
       parameters:
         - in: path
           name: userID
@@ -5202,26 +5202,26 @@ components:
         name:
           type: string
           example: TECH
-          description: A name given to the fund by the RIA.
+          description: A name given to the Fund by the RIA.
         clientFundID:
           $ref: '#/components/schemas/clientListID'
         description:
           type: string
           example: Top 10 US Tech
-          description: A short description for the fund.
+          description: A short description for the Fund.
         holdings:
           type: array
-          description: An array of objects that hold the type of securities in a fund.
+          description: An array of objects that hold the type of securities in a Fund.
           items:
             $ref: '#/components/schemas/holdingsObject'
         triggers:
           type: array
-          description: An array of objects that hold information on when to trigger a rebalance in a fund.
+          description: An array of objects that hold information on when to trigger a rebalance in a Fund.
           items:
             $ref: '#/components/schemas/triggersObject'
     triggersObject:
       type: object
-      description: An object that holds the details of when to trigger a rebalance of the fund.
+      description: An object that holds the details of when to trigger a rebalance of the Fund.
       required:
         - type
         - child
@@ -5258,13 +5258,13 @@ components:
         id:
           type: string
           example: fund_3d7d00d1-f09e-4f86-9cbf-893c75cf77fe
-          description: The unique identifier associated with the fund.
+          description: The unique identifier associated with the Fund.
         userID:
           $ref: '#/components/schemas/managedAccountsUserID'
         name:
           type: string
           example: TECH
-          description: A name given to the fund by the RIA.
+          description: A name given to the Fund by the RIA.
         type:
           type: string
           example: FUND
@@ -5273,10 +5273,10 @@ components:
         description:
           type: string
           example: Top 10 US Tech
-          description: A short description for the fund.
+          description: A short description for the Fund.
         holdings:
           type: array
-          description: An array of objects that hold the type of securities in a fund.
+          description: An array of objects that hold the type of securities in a Fund.
           items:
             $ref: '#/components/schemas/holdingsObject'
         triggers:
@@ -5305,7 +5305,7 @@ components:
         name:
           type: string
           example: Recession Proof
-          description: A name given to the portfolio by the RIA.
+          description: A name given to the Portfolio by the RIA.
         clientPortfolioID:
           $ref: '#/components/schemas/clientPortfolioID'
         description:
@@ -5314,7 +5314,7 @@ components:
           description: A short description for the portfolio.
         holdings:
           type: array
-          description: An array of objects that hold a list of funds in a portfolio.
+          description: An array of objects that hold a list of Funds in a portfolio.
           items:
             $ref: '#/components/schemas/portfolioReqHoldings'
         triggers:
@@ -5332,13 +5332,13 @@ components:
         name:
           type: string
           example: Recession Proof
-          description: A name given to the portfolio by the RIA.
+          description: A name given to the Portfolio by the RIA.
         clientPortfolioID:
           $ref: '#/components/schemas/clientPortfolioID'
         description:
           type: string
           example: A portifolio description
-          description: A short description for the portfolio.
+          description: A short description for the Portfolio.
         holdings:
           type: array
           description: An array of objects that hold the type of Funds in the Portfolio.
@@ -5348,7 +5348,7 @@ components:
           $ref: '#/components/schemas/managedAccountsUserID'
         triggers:
           type: array
-          description: An array of objects that hold information on when to trigger a rebalance in the portfolio.
+          description: An array of objects that hold information on when to trigger a rebalance in the Portfolio.
           items:
             $ref: '#/components/schemas/portfolioTriggers'
         isFundTargetsChanged:
@@ -5366,24 +5366,21 @@ components:
         type:
           type: string
           example: FUND
-          description: The type of asset in a portfolio.
+          description: The type of asset in a Portfolio.
           enum:
             - FUND
             - CASH_RESERVE
         id:
           type: string
           example: fund_3d9d00d1-f06e-4f86-9cbf-893c75cf77fe
-          description: |-
-            The unique fundID. 
-
-             *⚠️ Not required if type is CASH_RESERVE.
+          description: The unique fundID.
         target:
           type: number
           example: 0.95
-          description: The percentage of a fund within a portfolio.
+          description: The percentage of a Fund within a Portfolio.
     portfolioTriggers:
       type: object
-      description: An object that holds the details of when to trigger a rebalance of a portfolio.
+      description: An object that holds the details of when to trigger a rebalance of a Portfolio.
       required:
         - type
         - child
@@ -5402,7 +5399,7 @@ components:
         maxAllowed:
           type: number
           example: 0.05
-          description: The maximum allowed drift for the portfolio.
+          description: The maximum allowed drift for the Portfolio.
         child:
           type: string
           example: null
@@ -5416,20 +5413,20 @@ components:
           description: The highest bound range of the drift parameter.
     portfolioResHoldingsObject:
       type: object
-      description: An array of objects that hold details of a fund in a portfolio.
+      description: An array of objects that hold details of a Fund in a Portfolio.
       properties:
         id:
           type: string
           example: fund_3d9d00d1-f06e-4f86-9cbf-893c75cf77fe
-          description: The unique fundID.
+          description: The unique FundID.
         name:
           type: string
           example: TECH
-          description: A name given to the fund by the RIA.
+          description: A name given to the Fund by the RIA.
         type:
           type: string
           example: FUND
-          description: The type of asset in the portfolio.
+          description: The type of asset in the Portfolio.
           enum:
             - FUND
             - CASH_RESERVE
@@ -5438,14 +5435,14 @@ components:
         description:
           type: string
           example: Top 10 US Tech
-          description: A short description for the fund.
+          description: A short description for the Fund.
         target:
           type: number
           example: 0.95
-          description: The percentage of a fund within a portfolio.
+          description: The percentage of a Fund within a Portfolio.
         holdings:
           type: array
-          description: A list of the securities held in a fund.
+          description: A list of the securities held in a Fund.
           items:
             $ref: '#/components/schemas/holdingsObject'
         triggers:
