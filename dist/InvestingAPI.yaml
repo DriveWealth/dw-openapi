@@ -334,7 +334,7 @@ paths:
       tags:
         - Accounts
       summary: Create Account
-      description: Create a new brokerage Account.
+      description: Creates a trading Account.
       requestBody:
         content:
           application/json:
@@ -364,7 +364,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Account creation was Successful.
+          description: Creating an Account was Successful.
           content:
             application/json:
               schema:
@@ -385,7 +385,7 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Retrieve Account
-      description: Retrieves Account details by accountID.
+      description: Retrieves an Account details by accountID.
       responses:
         '200':
           description: Retrieving Account details was Successful.
@@ -408,7 +408,7 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Update Account
-      description: Update an Account details by accountID.
+      description: Updates an Account details by accountID.
       requestBody:
         content:
           application/json:
@@ -424,7 +424,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Update account details was Successful.
+          description: Updating an Account details by accountID was Successful.
           content:
             application/json:
               schema:
@@ -525,8 +525,8 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Create Beneficiaries
-      description: Create a new set of Beneficiaries or contingent Beneficiaries on an existing Account.
+      summary: Create Account Beneficiaries
+      description: Creates an Account Beneficiary by accountID.
       requestBody:
         content:
           application/json:
@@ -535,7 +535,7 @@ paths:
         required: true
       responses:
         '200':
-          description: Beneficiary creation was successful.
+          description: Creating an Account Beneficiary was Successful.
           content:
             application/json:
               schema:
@@ -577,11 +577,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Delete Beneficiaries
-      description: Removes all Beneficiaries from an account.
+      summary: Delete Account Beneficiaries
+      description: Removes all Accounts Beneficiaries by accountID.
       responses:
         '202':
-          description: Beneficiaries has been recorded for deletion.
+          description: Removing all Account Beneficiaries was Accepted.
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -597,11 +597,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve Virtual Bank Account
-      description: Retrieves an Account, Virtual Bank Account details by accountID.
+      summary: Retrieve Account Virtual Bank Account
+      description: Retrieves an Account Virtual Bank Account details by accountID.
       responses:
         '200':
-          description: Retrieving Virtual Bank Account by accountID was Successful.
+          description: Retrieving Virtual Bank Account details by accountID was Successful.
           content:
             application/json:
               schema:
@@ -687,8 +687,8 @@ paths:
     get:
       tags:
         - Orders
-      summary: List Orders by Account
-      description: Fetch a list of all orders for a users account.
+      summary: List Account Orders
+      description: Retrieves a list of Account Orders by accountID.
       parameters:
         - in: path
           name: accountID
@@ -735,7 +735,7 @@ paths:
           description: The direction of pagination.
       responses:
         '200':
-          description: Fetching Order history was successful
+          description: Retrieving a list of Account Orders was Successful
           content:
             application/json:
               schema:
@@ -779,8 +779,8 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve Money by Account
-      description: Retrieves a real time snapshot of cash balances by accountID.
+      summary: Retrieve Account Cash
+      description: Retrieves an Account Cash details by accountID.
       responses:
         '200':
           description: Retrieving Money details was Successful.
@@ -803,11 +803,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: List Statements by Account
-      description: List all statement files for a particular account.
+      summary: List Account Statements
+      description: Retrives a list of Account Statements by accountID.
       responses:
         '200':
-          description: Fetching a list of Statements for an Account was successful.
+          description: Retrieving a list of Account Statements by accountID was Successful.
           content:
             application/json:
               schema:
@@ -829,11 +829,11 @@ paths:
           required: true
         - $ref: '#/components/parameters/fromParams'
         - $ref: '#/components/parameters/toParams'
-      summary: List Tax Statements by Account
-      description: Fetch a list of all the tax documents for a particular account.
+      summary: List Account Tax Statements
+      description: Retrieves a list of Account Tax Statements by accountID.
       responses:
         '200':
-          description: Fetching a list of tax documents for an Account was successful.
+          description: Retrieving a list of  Account Tax Statements by accountID was Successful.
           content:
             application/json:
               schema:
@@ -867,11 +867,11 @@ paths:
           required: false
           example: '2019-09-18'
           description: Filter, the date to which to end the search.
-      summary: List Trade Confirmations by Account
-      description: List all trade confirmation files for a particular account.
+      summary: List Account Trade Confirmations
+      description: Retrieves a list of Account Trade Confirmations by accountID.
       responses:
         '200':
-          description: Fetching a list of trade confirmations was successful.
+          description: Retrieving a list of Account Trade Confirmations by accountID was Successful.
           content:
             application/json:
               schema:
@@ -891,12 +891,12 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve summary by Account
-      description: Fetch an account summary with the balance, orders, positions, violations and transactions of a particular Account.
+      summary: Retrieve Account Summary
+      description: Retrieves an Account Summary details by accountID.
       deprecated: true
       responses:
         '200':
-          description: Fetching account summary details was successful.
+          description: Retrieving Account Summary details by accountID was Successful.
           content:
             application/json:
               schema:
@@ -946,11 +946,11 @@ paths:
           required: false
           example: '2019-09-18'
           description: End date and time of requested time frame of the accounts performance.
-      summary: Retrieve Performance Metrics by Account
-      description: Retrieves daily realized and unrealized profit/loss metrics by accountID.
+      summary: Retrieve Account Performance
+      description: Retrieves realtime Account Performance details by accountID.
       responses:
         '200':
-          description: Retrieving Performance Metrics by Account was Successful.
+          description: Retrieving realtime Account Performance details by accountID was Successful.
           content:
             application/json:
               schema:
@@ -970,11 +970,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: List Positions by Account
-      description: Fetch a list of all the equity positions related to an account.
+      summary: List Account Positions
+      description: Retrives a list of Account Positions by accountID
       responses:
         '200':
-          description: Fetching an Account's Positions was successful.
+          description: Retrieving an Account's Positions by accountID was Successful.
           content:
             application/json:
               schema:
@@ -994,11 +994,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve Violations by Account
-      description: Fetch the summary of all current account violations.
+      summary: Retrieve Account Violations Summary
+      description: Retrives Account Violations Summary details by accountID.
       responses:
         '200':
-          description: Fetching an Account's violation summary was Successful.
+          description: Retrieving an Account Violations Summary details by accountID was Successful.
           content:
             application/json:
               schema:
@@ -1018,11 +1018,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: List Violations by Account
-      description: Fetch a list of all current Account Violations.
+      summary: List Account Violations
+      description: Retrives a list of Account Violations by accountID.
       responses:
         '200':
-          description: Fetching a list of Violations for an Account was successful.
+          description: Retrieving a list of Account Violations by accountID was Successful.
           content:
             application/json:
               schema:
@@ -1042,11 +1042,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve Margin Details by Account
-      description: Retrieves a list of Margin details by accountID.
+      summary: Retrieve Account Margin
+      description: Retrieves Account Margin details by accountID.
       responses:
         '200':
-          description: Fetching an Account's margin details was successful.
+          description: Retrieving an Account Margin details by accountID was Successful.
           content:
             application/json:
               schema:
@@ -1066,11 +1066,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: Retrieve Transaction Summary by Account
-      description: Fetch a list of all recent Account Transactions.
+      summary: Retrieve Account Transaction Summary
+      description: Retrives an Account Transaction Summary details by accountID.
       responses:
         '200':
-          description: Fetching transaction summary details was successful.
+          description: Retrieving Account Transaction Summary details was Successful.
           content:
             application/json:
               schema:
@@ -1128,11 +1128,11 @@ paths:
           required: false
           example: prev
           description: The direction of pagination
-      summary: List Transactions by Account
-      description: Fetch a list of all Account Transactions in a given time range
+      summary: List Account Transactions
+      description: Retrieves a list of Account Transactions by accountID.
       responses:
         '200':
-          description: Fetching an Account's Transactions was successful.
+          description: Retrieving a list of Account Transactions was Successful.
           content:
             application/json:
               schema:
@@ -1146,8 +1146,8 @@ paths:
     get:
       tags:
         - Accounts
-      summary: Retrieve Account Position Lots
-      description: Retrieves Account Position Lots by accountID.
+      summary: Retrieve Account Lots
+      description: Retrieves an Account Lots details by accountID.
       parameters:
         - in: path
           name: accountID
@@ -1156,7 +1156,7 @@ paths:
           required: true
       responses:
         '200':
-          description: Retrieving Account Position Lots by accountID was Successful.
+          description: Retrieving Account Lots details by accountID was Successful.
           content:
             application/json:
               schema:
@@ -1934,7 +1934,7 @@ paths:
       tags:
         - Cancel Rebill
       summary: List Cancel Rebills
-      description: Get all the Cancel Rebills
+      description: Retrieves a list of Cancel Rebills.
       parameters:
         - name: from
           in: query
@@ -1998,7 +1998,7 @@ paths:
             example: next
       responses:
         '200':
-          description: Retrieving Cancel Rebills was Successful.
+          description: Retrieving a list of Cancel Rebills was Successful.
           content:
             application/json:
               schema:
@@ -2008,14 +2008,14 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
-  /asset-transfers/cancel-rebills/{id}:
+  /asset-transfers/cancel-rebills/{cancelRebillID}:
     get:
       tags:
         - Cancel Rebill
       summary: Retrieve Cancel Rebill
-      description: Get Cancel Rebill details by ID.
+      description: Retrieves Cancel Rebill details by cancelRebillID.
       parameters:
-        - name: id
+        - name: cancelRebillID
           in: path
           description: The identifier of the Cancel Rebill.
           required: true
@@ -2122,7 +2122,7 @@ paths:
       tags:
         - Deposits
       summary: Create Deposit
-      description: Creates a Deposit for a User's Account.
+      description: Creates a Deposit.
       requestBody:
         content:
           application/json:
@@ -2159,7 +2159,7 @@ paths:
       tags:
         - Deposits
       summary: Retrieve Deposit
-      description: Fetches a deposit by the unique Deposit identifier.
+      description: Retrieves Deposit details by depositID.
       parameters:
         - in: path
           name: depositID
@@ -2169,7 +2169,7 @@ paths:
           description: A unique identifier for the user's account deposit.
       responses:
         '200':
-          description: Fetching a Deposit was successful.
+          description: Retrieving a Deposit by depositID was Successful.
           content:
             application/json:
               schema:
@@ -2184,7 +2184,7 @@ paths:
       tags:
         - Disclosures
       summary: List Disclosures
-      description: Fetches a list of disclosures.
+      description: Retrieves a list of Disclosures.
       responses:
         '200':
           description: Fetching A List of Disclosures was Successful.
@@ -2202,7 +2202,7 @@ paths:
       tags:
         - Disclosures
       summary: Retrieve Disclosure
-      description: Fetches a disclosure's details by disclosureID.
+      description: Retrives a Disclosure details by disclosureID.
       parameters:
         - in: path
           name: disclosureID
@@ -2225,8 +2225,8 @@ paths:
     post:
       tags:
         - Disclosures
-      summary: Create Disclosure Acknowledgment
-      description: Creates a user's disclosure acknowledgment.
+      summary: Create User Disclosure Acknowledgment
+      description: Creates a User Disclosure Acknowledgment by userID.
       parameters:
         - in: path
           name: userID
@@ -2241,7 +2241,7 @@ paths:
               $ref: '#/components/schemas/CreateAcknowledgmentInput'
       responses:
         '200':
-          description: Creating a disclosure acknowledgment was successful.
+          description: Creating a User Disclosure Acknowledgment was Successful.
           content:
             application/json:
               schema:
@@ -2254,8 +2254,8 @@ paths:
     get:
       tags:
         - Disclosures
-      summary: List Disclosures Acknowledgments
-      description: Fetches a list of disclosures acknowledgments for the given user.
+      summary: List User Disclosures Acknowledgments
+      description: Retrieves a list of User Disclosures Acknowledgments by userID.
       parameters:
         - in: path
           name: userID
@@ -2264,7 +2264,7 @@ paths:
           required: true
       responses:
         '200':
-          description: Fetching A List of Disclosure Acknowledgments was Successful.
+          description: Retrieving a list of User Disclosure Acknowledgments was Successful.
           content:
             application/json:
               schema:
@@ -2278,10 +2278,11 @@ paths:
     post:
       tags:
         - Exchanges
-      summary: Create Exchange
+      summary: Create Instrument Exchange
+      description: Creates an Instrument Exchange. The ability to sale of a held instrument and purchase of another.
       responses:
         '200':
-          description: Creating an Exchange was successful
+          description: Creating an Exchange was Successful.
           content:
             application/json:
               schema:
@@ -2340,7 +2341,6 @@ paths:
                   amountCash: 100
                   quantity: 10
         description: ''
-      description: Exchanges allow for the simultaneous sale of a held security and purchase of another. This can be used with Mutual Funds, as they only trade once per day.
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -2349,7 +2349,7 @@ paths:
     patch:
       tags:
         - Exchanges
-      summary: Update Exchange
+      summary: Update Instrument Exchange
       responses:
         '200':
           description: OK
@@ -2372,7 +2372,7 @@ paths:
                   value:
                     id: IC.0e352bb7-9869-4233-9861-1173544efedd
                     exchangeNo: ICDU023727
-      description: When an exchange is placed but has not yet been executed (order pending), the order can still be cancelled. This will automatically cancel the underlying buy and sell orders as well. It also produces an exchange.completed event for the exchange and order.completed events for the underlying buy and sell orders.
+      description: Updates an Instrument Exchange.
       requestBody:
         content:
           application/json:
@@ -2554,10 +2554,10 @@ paths:
     get:
       tags:
         - Exchanges
-      summary: List Exchanges by Account
+      summary: List Account Instrument Exchanges.
       responses:
         '200':
-          description: OK
+          description: Retrieving a list of Account Instrument Exchanges by accountID was Successful.
           content:
             application/json:
               schema:
@@ -2705,7 +2705,7 @@ paths:
                         accountID: b25f0d36-b4e4-41f8-b3d9-9249e46402cd.1403540676095
                         accountNo: DWZR000001
                         created: '2019-03-28T22:40:03.240Z'
-      description: To retrieve all pending exchanges for an account the below endpoint can be used. In addition the underlying buy and sell trades which make up the exchange order will be available through the existing account summary endpoint.
+      description: Retrives a list of Account Instrument Exchanges by accountID.
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -2722,10 +2722,11 @@ paths:
     get:
       tags:
         - Exchanges
-      summary: Retrieve Exchange History
+      summary: Retrieve Account Instrument Exchange History
+      description: Retrieves a list of Account Instrument Exchange History by accountID.
       responses:
         '200':
-          description: Retrieving Exchange History by Account was Successful.
+          description: Retrieving Account Instrument Exchange History was Successful.
           content:
             application/json:
               schema:
@@ -2781,7 +2782,6 @@ paths:
                         accountID: b25f0d36-b4e4-41f8-b3d9-9249e46402cd.1403540676095
                         accountNo: DWZR000001
                         created: '2019-03-28T22:40:03.240Z'
-      description: 'To retrieve ALL exchanges for an account the below endpoint can be used. In addition the underlying buy and sell trades which make up the exchange order will be available through the existing account summary endpoint. '
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -2924,10 +2924,10 @@ paths:
           example: true
           description: The ability to trade options for this instrument; to filter by.
       summary: List Instruments
-      description: Fetch a list of all the available Instruments offered on the DriveWealth platform. This endpoint will return an array of over 6,500+ instrument objects.
+      description: Retrives a list of Instruments.
       responses:
         '200':
-          description: Fetching all Instruments was successful.
+          description: Retrieving a list of Instruments was Successful.
           content:
             application/json:
               schema:
@@ -2957,7 +2957,7 @@ paths:
           example: Fundamentals
           description: This query parameter will add an additional property; `fundamentalDataModel` to the response object for an Equity Instrument only. This data consists of financial data model specs for a specific Instrument.
       summary: Retrieve Instrument
-      description: Fetch the details of a specific Instrument.
+      description: Retrieves an Instrument details by symbol or instrumentID.
       responses:
         '200':
           description: Fetching Instrument details was successful.
@@ -3069,11 +3069,11 @@ paths:
           required: false
           example: expirationDate
           description: The expiration dates for the given underlying security; to filter by.
-      summary: Retrieve Options Chain
-      description: Retrieves a list of Options chain based on query parameters.
+      summary: Retrieve Instrument Options Chain
+      description: Retrieves an Instrument Options Chain by symbol or instrumentID.
       responses:
         '200':
-          description: Retrieving Options chain was Successful.
+          description: Retrieving an Instrument Options Chain by symbol or instrumentID was Successful.
           content:
             application/json:
               schema:
@@ -3116,11 +3116,11 @@ paths:
           required: true
           example: AAPL
           description: Symbol or instrumentID of the underlying equity security.
-      summary: Retrieve Option Expiration
-      description: Retrieve option expiration dates for an underlying security.
+      summary: Retrieve Instrument Option Expiration
+      description: Retrieve an Instrument Option Expiration details by symbol or instrumentID.
       responses:
         '200':
-          description: Retrieving all Options ExpirationDates based on Equity Symbol or Equity InstrumentID was successful
+          description: Retrieving an Instrument Option Expiration details by symbol or instrumentID was Successful
           content:
             application/json:
               schema:
@@ -3134,8 +3134,8 @@ paths:
     post:
       tags:
         - Instruments
-      summary: Search Instruments by Filter
-      description: Filters, Instruments using the provided filter criteria and return the list of matching.
+      summary: Search Instruments
+      description: Searches Instruments based on the filter criteria provided.
       operationId: filterInstruments
       requestBody:
         content:
@@ -3165,7 +3165,7 @@ paths:
                     value2: '2032-04-25'
       responses:
         '200':
-          description: Filtering was successful and zero or more instruments are available
+          description: Searching Instruments by filter criteria was Successful.
           content:
             application/json:
               schema:
@@ -3207,7 +3207,7 @@ paths:
       tags:
         - Orders
       summary: Create Order
-      description: Create an Order to buy or sell a security.
+      description: Create an Order.
       requestBody:
         content:
           application/json:
@@ -3272,7 +3272,7 @@ paths:
         required: true
       responses:
         '200':
-          description: The Order creation was successful.
+          description: Creating an Order was Successful.
           content:
             application/json:
               schema:
@@ -3293,7 +3293,7 @@ paths:
             $ref: '#/components/schemas/orderID'
           required: true
       summary: Retrieve Order
-      description: Fetch the status of an Order.
+      description: Retrieves an Order details by orderID.
       responses:
         '200':
           description: Fetching Order status was successful.
@@ -3316,7 +3316,7 @@ paths:
             $ref: '#/components/schemas/orderID'
           required: true
       summary: Update Order
-      description: Updates an Order in progress.
+      description: Updates an Order by orderID.
       requestBody:
         content:
           application/json:
@@ -3339,8 +3339,8 @@ paths:
     get:
       tags:
         - Orders
-      summary: Retrieve Order By OrderNo
-      description: Retrieves an Order by OrderNo
+      summary: Retrieve Order by Order Number
+      description: Retrieves an Order by OrderNo.
       parameters:
         - in: path
           name: orderNo
@@ -3497,8 +3497,8 @@ paths:
     post:
       tags:
         - Physical Documents
-      summary: Create Physical Document
-      description: 'Uploads a User''s Physical Document, such as: a driver license, passport or government id.'
+      summary: Upload Physical Document
+      description: Uploads a Physical Document.
       requestBody:
         content:
           application/json:
@@ -3506,7 +3506,7 @@ paths:
               $ref: '#/components/schemas/UploadUserPhysicalDocumentReq'
       responses:
         '200':
-          description: Physical Document uploading was successful.
+          description: Uploading a Physical Document was Successful.
           content:
             application/json:
               schema:
@@ -3520,8 +3520,8 @@ paths:
     get:
       tags:
         - Physical Documents
-      summary: Retrieve Physical Document URL by Document
-      description: Fetches a user's physical document by documentID.
+      summary: Retrieve Physical Document URL
+      description: Retrieves a Physical Document by documentID.
       parameters:
         - in: path
           name: documentID
@@ -3531,7 +3531,7 @@ paths:
           description: The unique identifier of the document.
       responses:
         '201':
-          description: Fetching a user's Physical Document URL was successful.
+          description: Retrieving a Physical Document URL by documentID was Successful.
           content:
             application/json:
               schema:
@@ -3887,7 +3887,7 @@ paths:
       tags:
         - Deposits
       summary: Retrieve Recurring Deposits
-      description: Fetches the details of a recurring deposit schedule by the recurringID.
+      description: Retrieves Recurring Deposits details by recurringID.
       parameters:
         - in: path
           name: recurringID
@@ -3912,7 +3912,7 @@ paths:
       tags:
         - Deposits
       summary: Update Recurring Deposit
-      description: Updates a user's external bank account recurring deposit.
+      description: Updates Recurring Deposit details by recurringID.
       parameters:
         - in: path
           name: recurringID
@@ -3942,7 +3942,7 @@ paths:
       tags:
         - Deposits
       summary: Delete Recurring Deposit
-      description: Inactivates a user's external bank account recurring deposit.
+      description: Deactivates Recurring Deposit details by recurringID.
       parameters:
         - in: path
           name: recurringID
@@ -3953,7 +3953,7 @@ paths:
           description: A unique identifier for the user's recurring bank deposit.
       responses:
         '200':
-          description: Inactivating a User's recurring deposit schedule was successful.
+          description: Deactivating Recurring Deposit was Successful.
           content:
             application/json:
               schema:
@@ -3968,7 +3968,7 @@ paths:
       tags:
         - Withdrawals
       summary: Create Withdrawal
-      description: Creates a withdrawal from a User's Account.
+      description: Creates a Withdrawal.
       requestBody:
         content:
           application/json:
@@ -3990,7 +3990,7 @@ paths:
       tags:
         - Withdrawals
       summary: List Withdrawals
-      description: Retrieves a list of all Withdrawals for the firm.
+      description: Retrieves a list of Withdrawals.
       parameters:
         - in: query
           name: status
@@ -4006,7 +4006,7 @@ paths:
           description: The type of withdrawal; to filter by.
       responses:
         '200':
-          description: Retrieving a list of all Withdrawals for the firm was Successful.
+          description: Retrieving a list of Withdrawals was Successful.
           content:
             application/json:
               schema:
@@ -4021,7 +4021,7 @@ paths:
       tags:
         - Withdrawals
       summary: Retrieve Withdrawal
-      description: Fetches a User's Withdrawal by redemptionID.
+      description: Retrieves a Withdrawal by redemptionID.
       parameters:
         - in: path
           name: redemptionID
@@ -4032,7 +4032,7 @@ paths:
           description: A unique identifier for the user's account redemption/withdrawal.
       responses:
         '200':
-          description: Fetching a User's Withdrawal by redemptionID was successful.
+          description: Retrieving a Withdrawal by redemptionID was Successful.
           content:
             application/json:
               schema:
@@ -4408,7 +4408,7 @@ paths:
       tags:
         - Users
       summary: Create User
-      description: Create a User's profile on the DriveWealth platform.
+      description: Creates a User.
       requestBody:
         content:
           application/json:
@@ -4416,7 +4416,7 @@ paths:
               $ref: '#/components/schemas/UsersReq'
       responses:
         '200':
-          description: User is Successfully Created.
+          description: Creating a User was Successful.
           content:
             application/json:
               schema:
@@ -4432,7 +4432,7 @@ paths:
       tags:
         - Users
       summary: Retrieve User
-      description: Retrieves a User profile by userID.
+      description: Retrieves a User details by userID.
       parameters:
         - in: path
           name: userID
@@ -4443,7 +4443,7 @@ paths:
           description: Unique ID of the User to fetch.
       responses:
         '200':
-          description: Retrieving a User profile was Successful.
+          description: Retrieving a User was Successful.
           content:
             application/json:
               schema:
@@ -4457,7 +4457,7 @@ paths:
       tags:
         - Users
       summary: Update User
-      description: Update a user's profile by userID.
+      description: Updates a User details by userID.
       parameters:
         - in: path
           name: userID
@@ -4593,8 +4593,8 @@ paths:
     get:
       tags:
         - Accounts
-      summary: List Accounts by User
-      description: Retrieves a list of Accounts by userID.
+      summary: List User Accounts
+      description: Retrieves a list of User Accounts by userID.
       parameters:
         - in: path
           name: userID
@@ -4605,7 +4605,7 @@ paths:
           description: Unique ID of the User to fetch their accounts at DriveWealth.
       responses:
         '200':
-          description: Fetching User Accounts was Successful.
+          description: Retrieving a list of User Accounts by userID was Successful.
           content:
             application/json:
               schema:
@@ -4619,8 +4619,8 @@ paths:
     get:
       tags:
         - Linked Bank Accounts
-      summary: List Linked Bank Accounts by User
-      description: Fetches a list of all external bank accounts stored at DriveWealth.
+      summary: List User Linked Bank Accounts
+      description: Retrieves a list of User Linked Bank Accounts by userID.
       parameters:
         - in: path
           name: userID
@@ -4631,7 +4631,7 @@ paths:
           description: Unique ID of the User to fetch their stored bank accounts.
       responses:
         '200':
-          description: Fetching User's stored Bank Accounts is successful.
+          description: Retrieving a list of User Linked Bank Accounts was Successful.
           content:
             application/json:
               schema:
@@ -4645,8 +4645,8 @@ paths:
     get:
       tags:
         - Physical Documents
-      summary: List Physical Documents by User
-      description: Fetches a list of all User's uploaded physical documents.
+      summary: List User Physical Documents
+      description: Retrieves a list of Users Physical Documents by userID.
       parameters:
         - in: path
           name: userID
@@ -4657,7 +4657,7 @@ paths:
           description: The User's unique identifier.
       responses:
         '200':
-          description: Fetching User's Uploaded Physical Documents Was Successful.
+          description: Retrieving a list of Users Physical Documents by userID was Successful.
           content:
             application/json:
               schema:
@@ -4697,8 +4697,8 @@ paths:
     get:
       tags:
         - Deposits
-      summary: List Recurring Deposits by User
-      description: Fetches all User's recurring deposit by userID.
+      summary: List User Recurring Deposits
+      description: Retrieves a list of User Recurring Deposits by userID.
       parameters:
         - in: path
           name: userID
@@ -4723,8 +4723,8 @@ paths:
     get:
       tags:
         - Deposits
-      summary: List Deposits by User
-      description: Fetches a list of Deposits by userID.
+      summary: List User Deposits
+      description: Retrieves a list of User Deposits by userID.
       parameters:
         - in: path
           name: userID
@@ -4735,7 +4735,7 @@ paths:
           description: The User's unique identifier.
       responses:
         '200':
-          description: Fetching All User's Deposits was Successful.
+          description: Retrieving a list User Deposits by userID was Successful.
           content:
             application/json:
               schema:
@@ -4749,8 +4749,8 @@ paths:
     get:
       tags:
         - Withdrawals
-      summary: List Withdrawals by User
-      description: Fetches a list of all redemptions by the User's identifier.
+      summary: List User Withdrawals
+      description: Retrieves a list of User Withdrawals by userID.
       parameters:
         - in: path
           name: userID
@@ -4761,7 +4761,7 @@ paths:
           description: The User's unique identifier.
       responses:
         '200':
-          description: Fetches A List Of All Redemptions by userID was Successful.
+          description: Retrieving a list of User Withdrawals by userID was Successful.
           content:
             application/json:
               schema:
