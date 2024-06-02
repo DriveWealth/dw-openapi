@@ -621,11 +621,11 @@ paths:
           schema:
             $ref: '#/components/schemas/accountID'
           required: true
-      summary: List Deposits by Account
-      description: Fetch all Deposits associated with a specific Account.
+      summary: List Account Deposits
+      description: Retrieves a list of Account Deposits by accountID.
       responses:
         '200':
-          description: Fetching a list of an Account's Deposits was successful.
+          description: Retrieving a list of Account Deposits was Successful.
           content:
             application/json:
               schema:
