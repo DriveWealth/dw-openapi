@@ -3431,29 +3431,29 @@ paths:
               - COMPLETED
           required: true
         - in: query
-          name: partnerIBID
+          name: partnerID
           schema:
             $ref: '#/components/schemas/parentIBID'
           required: true
         - in: query
-          name: fromDate
+          name: from
           schema:
             $ref: '#/components/schemas/from'
           required: false
         - in: query
-          name: toDate
+          name: to
           schema:
             $ref: '#/components/schemas/to'
           required: false
         - in: query
-          name: pageSize
+          name: limit
           schema:
             type: integer
           required: false
           example: 20
           description: The number of results to be returned.
         - in: query
-          name: pageNo
+          name: offset
           schema:
             type: integer
           required: false
@@ -3468,26 +3468,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  type:
-                    type: string
-                    example: OPTIONS_LIQUIDATION
-                    description: The Transaction Batch type.
-                  pageNo:
-                    type: number
-                    example: 1
-                    description: The index (i.e. page number) of where the result set is located.
-                  totalPages:
-                    type: number
-                    example: 1
-                    description: he total amount of pages for the search result.
-                  pageSize:
-                    type: number
-                    example: 20
-                    description: The number of results.
-                  results:
+                  data:
                     type: array
                     items:
                       $ref: '#/components/schemas/OptionsLiquidationResponse'
+                  nextPageOffset:
+                    type: string
+                    example: '100'
+                    description: The next page offset.
+                  prevPageOffset:
+                    type: string
+                    example: '0'
+                    description: The previous page offset.
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -6556,7 +6548,7 @@ components:
           $ref: '#/components/schemas/sideAbbreviated'
         comment:
           $ref: '#/components/schemas/note'
-    OptPosition:
+    Position:
       type: object
       properties:
         accountID:
@@ -6571,6 +6563,18 @@ components:
           type: number
           example: 975.98
           description: The effective price of the position.
+        execID:
+          type: string
+          example: '170638430890297892000'
+          description: The execution ID of the position.
+        initPx:
+          type: number
+          example: 975.98
+          description: The initial price of the position.
+        initQty:
+          type: number
+          example: 0.01
+          description: The initial quantity of the position.
         instrumentID:
           $ref: '#/components/schemas/instrumentID'
         side:
@@ -6583,6 +6587,39 @@ components:
           type: string
           example: TOP
           description: A comment describing the position
+    Instrument:
+      type: object
+      properties:
+        rootSymbol:
+          type: string
+          example: AAPL
+          description: The ticker symbol of the underlying Instrument from which this Option is derived.
+        rootId:
+          $ref: '#/components/schemas/rootId'
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+        optionType:
+          $ref: '#/components/schemas/optionType'
+        marketPrice:
+          type: number
+          example: 16.5
+          description: The market price of the option.
+        strikePrice:
+          type: number
+          example: 16.5
+          description: The strike price of the option.
+    OptPosition:
+      type: object
+      properties:
+        expirationDate:
+          type: string
+          example: '2018-09-18'
+          description: The date the Option contract will expire.
+          format: date
+        position:
+          $ref: '#/components/schemas/Position'
+        instrument:
+          $ref: '#/components/schemas/Instrument'
     OptPositionRes:
       type: object
       properties:
@@ -8436,6 +8473,17 @@ components:
       type: string
       example: 3db27e74626adac3be7b549f2bbc0ab2480852a7
       description: A unique tax lot identifier.
+    rootId:
+      type: string
+      example: 3fb1e8a9-f7d5-4d90-95e2-43e7326b5636
+      description: A unique ID created by DriveWealth to identify a specific Instrument that this Option is derived from.
+    optionType:
+      type: string
+      example: PUT
+      description: The type of Option.
+      enum:
+        - CALL
+        - PUT
     parentIBID:
       type: string
       example: 80f9b672-120d-4b73-9cc9-42fb3262c4b9
@@ -12028,10 +12076,8 @@ components:
           $ref: '#/components/schemas/openQuantity'
         availableForTradingQuantity:
           $ref: '#/components/schemas/availableForTradingQuantity'
-        partnerIBID:
-          $ref: '#/components/schemas/parentIBID'
-        partnerName:
-          $ref: '#/components/schemas/wlpID'
+        partner:
+          $ref: '#/components/schemas/parentIBIDObject'
     TaxLot:
       type: object
       properties:
