@@ -3508,7 +3508,7 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
-  /{documentID}/url:
+  /documents/{documentID}/url:
     get:
       tags:
         - Physical Documents
