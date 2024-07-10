@@ -6659,6 +6659,9 @@ components:
         - CUSTODIAL
         - CUSTODIAL_MANAGED
         - RESERVED
+        - HSA_SELF
+        - HSA_ADVISORY
+        - HSA_RIA_MANAGED
     tradingType:
       type: string
       example: CASH
@@ -6786,6 +6789,9 @@ components:
             - TRUST_SELF
             - TRUST_ADVISORY
             - TRUST_RIA_MANAGED
+            - HSA_SELF
+            - HSA_ADVISORY
+            - HSA_RIA_MANAGED
         description:
           type: string
           example: Self Directed Account
@@ -9398,6 +9404,9 @@ components:
             - CUSTODIAL
             - CUSTODIAL_MANAGED
             - RESERVED
+            - HSA_SELF
+            - HSA_ADVISORY
+            - HSA_RIA_MANAGED
         tradingType:
           type: object
           properties:
@@ -14641,11 +14650,6 @@ components:
           example: INVESTOR_PROFILE_INFO
         data:
           type: object
-          required:
-            - annualIncome
-            - networthTotal
-            - investmentExperience
-            - riskTolerance
           properties:
             investmentExperience:
               type: string
@@ -15343,6 +15347,9 @@ components:
             - CUSTODIAL
             - CUSTODIAL_MANAGED
             - RESERVED
+            - HSA_SELF
+            - HSA_ADVISORY
+            - HSA_RIA_MANAGED
         tradingType:
           type: string
           example: CASH
