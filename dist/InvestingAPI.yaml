@@ -3269,6 +3269,24 @@ paths:
                   currency: USD
                   timeInForce: DAY
                   limitType: YIELD
+              Order With Commission:
+                value:
+                  accountNo: DWFS001102
+                  orderType: LIMIT
+                  side: SELL
+                  symbol: AAPL
+                  quantity: 3
+                  commission: 3.5
+                  price: 4.5
+              Order With CommissionRate:
+                value:
+                  accountNo: DWFS001102
+                  orderType: LIMIT
+                  side: SELL
+                  symbol: AAPL
+                  quantity: 3
+                  commissionRate: 0.3
+                  price: 4.5
         required: true
       responses:
         '200':
@@ -3277,6 +3295,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateOrderResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                  message:
+                    type: string
+                  errorDetails:
+                    type: object
+                    properties:
+                      field:
+                        type: string
+                        description: Json field name in request body
+                      type:
+                        type: string
+                        enum:
+                          - STRING
+                          - ARRAY
+                          - INT
+                          - DECIMAL
+                          - BOOL
+                          - TEXT
+                          - UUID
+                          - DATE
+                          - MAP
+                          - OBJECT
+                        description: DataType of the field
+              examples:
+                Both Commission and CommissionRate are present in the request:
+                  value:
+                    errorCode: E032
+                    message: Invalid or missing parameters in the request body. Refer to the API documentation for details.
+                    errorDetails:
+                      detail: Cannot specify both 'commission' and 'commissionRate'. Provide either 'commission' or 'commissionRate'
+                      field: commission/commissionRate
+                      type: DECIMAL
+                CommissionRate decimal places more than 4:
+                  value:
+                    errorCode: E032
+                    message: Invalid or missing parameters in the request body. Refer to the API documentation for details.
+                    errorDetails:
+                      detail: Commission rate should not exceed 4 decimal places
+                      field: commissionRate
+                      type: DECIMAL
+                Invalid commissionRate range:
+                  value:
+                    errorCode: E032
+                    message: Invalid or missing parameters in the request body. Refer to the API documentation for details.
+                    errorDetails:
+                      detail: Commission rate should be between 0.0001 and 1.0
+                      field: commissionRate
+                      type: DECIMAL
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -3764,7 +3838,7 @@ paths:
                           quantity: 10000
                           yield: 4.799
                           side: buy
-                          dateTime: '2017-07-21T17:32:28Z'
+                          date: '2017-07-21T17:32:28Z'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -7572,6 +7646,7 @@ components:
         - MARKET
         - LIMIT
         - STOP
+        - STOP_LIMIT
         - MARKET_IF_TOUCHED
     fundID:
       type: string
@@ -9908,6 +9983,8 @@ components:
           $ref: '#/components/schemas/instrumentStatus'
         ISIN:
           $ref: '#/components/schemas/instrumentISIN'
+        CUSIP:
+          $ref: '#/components/schemas/instrumentCUSIP'
         settlementDays:
           type: integer
           description: Number of days for the instrument to settle
@@ -11137,7 +11214,9 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/InstrumentBase'
-        - $ref: '#/components/schemas/DebtReferenceData'
+      properties:
+        debtData:
+          $ref: '#/components/schemas/DebtReferenceData'
     ExpirationDateList:
       type: object
       properties:
@@ -11277,7 +11356,7 @@ components:
           format: double
           example: 1000000
           readOnly: true
-        issuePrice:
+        issuePricePercent:
           description: The nominal value associated with a financial instrument at the time of issuance.
           type: number
           format: double
@@ -11354,10 +11433,87 @@ components:
             - GLOBAL_DEPOSITORY_NOTE
           example: BOND
           readOnly: true
+        sector:
+          type: string
+          example: FINANCE_AND_INSURANCE
+          description: The categorization of the sector pertaining to the Instrument.
+          enum:
+            - AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+            - MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION
+            - UTILITIES
+            - CONSTRUCTION
+            - MANUFACTURING
+            - MANUFACTURING
+            - MANUFACTURING
+            - WHOLESALE_TRADE
+            - RETAIL_TRADE
+            - RETAIL_TRADE
+            - TRANSPORTATION_AND_WAREHOUSING
+            - TRANSPORTATION_AND_WAREHOUSING
+            - INFORMATION
+            - FINANCE_AND_INSURANCE
+            - REAL_ESTATE_AND_RENTAL_AND_LEASING
+            - PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES
+            - MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES
+            - ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES
+            - EDUCATIONAL_SERVICES
+            - HEALTH_CARE_AND_SOCIAL_ASSISTANCE
+            - ARTS_ENTERTAINMENT_AND_RECREATION
+            - ACCOMMODATION_AND_FOOD_SERVICES
+            - OTHER_SERVICES_EXCEPT_PUBLIC_ADMINISTRATION
+            - PUBLIC_ADMINISTRATION
+        duration:
+          description: The duration of the bond.
+          type: number
+          format: double
+          example: '10.5'
+          readOnly: true
+          nullable: true
+        nextCallDate:
+          description: The next call date of the bond.
+          type: string
+          format: date
+          example: '2018-05-10'
+          readOnly: true
+          nullable: true
+        debtRankType:
+          description: The debt rank type of the bond.
+          type: string
+          example: SENIOR
+          readOnly: true
+          enum:
+            - UNKNOWN
+            - SECOND_MORTGAGE
+            - 'FIRST_MORTGAGE '
+            - JUNIOR
+            - MEZZANINE
+            - SENIOR_SUBORDINATED
+            - SUBORDINATED
+            - THIRD_MORTGAGE
+            - UNSUBORDINATED
+            - JUNIOR_SUBORDINATED
+            - SENIOR
+            - NOT_APPLICABLE
+            - TIER_I
+            - LOWER_TIER_II
+            - UPPER_TIER_II
+            - TIER_III
+            - SENIOR_SECURED
+            - ALTERNATIVE_ADDITIONAL_TIER_I
+            - SENIOR_NON_PREFERRED
+        spRatingType:
+          type: string
+          example: INVESTMENT_GRADE
+          description: The spRating type of the bond.
+          enum:
+            - INVESTMENT_GRADE
+            - HIGH_YIELD
         coupon:
           $ref: '#/components/schemas/Coupon'
         issuer:
           $ref: '#/components/schemas/Issuer'
+        indicators:
+          $ref: '#/components/schemas/Indicators'
     Coupon:
       description: A coupon or coupon payment is the annual interest rate paid on a bond, expressed as a percentage of the face value and paid from issue date until maturity.
       type: object
@@ -11505,6 +11661,55 @@ components:
           $ref: '#/components/schemas/country'
         domicileCountry:
           $ref: '#/components/schemas/country'
+    Indicators:
+      description: Indicators that provide additional information about the security
+      example:
+        convertibleIndicator: true
+        dtcIndicator: true
+        oidIndicator: true
+        callIndicator: true
+        putIndicator: true
+        traceEligible: true
+        defaultIndicator: true
+        sinkIndicator: true
+        tipsIndicator: true
+      properties:
+        callIndicator:
+          description: Indicates whether the security is callable.
+          readOnly: true
+          type: boolean
+        convertibleIndicator:
+          description: Indicates whether the security is convertible.
+          readOnly: true
+          type: boolean
+        defaultIndicator:
+          description: Indicates whether the security is in default.
+          readOnly: true
+          type: boolean
+        dtcIndicator:
+          description: Indicates whether the security is eligible for DTC settlement.
+          readOnly: true
+          type: boolean
+        oidIndicator:
+          description: Indicates whether the security is an original issue discount.
+          readOnly: true
+          type: boolean
+        putIndicator:
+          description: Indicates whether the security is puttable.
+          readOnly: true
+          type: boolean
+        sinkIndicator:
+          description: Indicates whether the security is sinkable.
+          readOnly: true
+          type: boolean
+        tipsIndicator:
+          description: Indicates whether the security is a Treasury Inflation Protected Security.
+          readOnly: true
+          type: boolean
+        traceEligible:
+          description: Indicates whether the security is TRACE eligible.
+          readOnly: true
+          type: boolean
     FilterCriterion:
       type: object
       required:
@@ -11681,6 +11886,13 @@ components:
           format: double
           example: 4
           description: A USD amount to charge as commission for an Order. This defaults to using an Account's assigned Commission Schedule if unset. For example, `4` will result in a $4.00 commission charge, regardless of the assigned Commission Schedule.
+        commissionRate:
+          type: number
+          format: BigDecimal
+          description: The commission rate is a percentage charge to the total amount of the order.
+          example: 0.3
+          minimum: 0.0001
+          maximum: 1
         clientNotes:
           type: string
           example: Manual limit order.
@@ -11960,6 +12172,17 @@ components:
       type: number
       example: 1
       description: The number of units that can currently be traded by the Account holder.
+    commissionOverrideType:
+      type: string
+      enum:
+        - NO_OVERRIDE
+        - RAW_COMMISSION
+      example: RAW_COMMISSION
+      description: The type of commission override applied to the order
+    commissionOverrideDesc:
+      type: string
+      example: Standard Commission
+      description: The description of commission override applied to the order
     amountCash:
       type: number
       format: double
@@ -12397,7 +12620,7 @@ components:
           format: double
           example: 4.793
           description: Trade yield
-        dateTime:
+        date:
           type: string
           format: date-time
           description: Asset's trade time.
@@ -12468,7 +12691,7 @@ components:
               size: 10000
               yield: 4.799
               side: buy
-              dateTime: '2017-07-21T17:32:28Z'
+              date: '2017-07-21T17:32:28Z'
       properties:
         id:
           type: string
