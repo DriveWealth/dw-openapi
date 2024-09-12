@@ -3351,6 +3351,22 @@ paths:
                       detail: Commission rate should be between 0.0001 and 1.0
                       field: commissionRate
                       type: DECIMAL
+        '403':
+          description: Account restricted to make day trades
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                Account is restricted from making day trades:
+                  value:
+                    errorCode: A051
+                    message: 'Account has been restricted. Check account status and notes for details. Forbidden: Account is restricted from making day trades. accountID=<accountID>'
       security:
         - bearerAuth: []
           dwAppKey: []
