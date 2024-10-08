@@ -421,6 +421,12 @@ paths:
                     - userID: f6fd0783-2fdb-4ddb-9fd5-2464d8abc267
                       permissions:
                         - MINOR_GRADUATION_TRANSFER
+              Enable Equity Dividend Reinvestment:
+                value:
+                  accountFeatures:
+                    equities:
+                      dividendReinvestment: true
+                      capitalGainsReinvestment: true
         required: true
       responses:
         '200':
@@ -486,6 +492,7 @@ paths:
                       accountFeatures:
                         fixedIncome:
                           enrolled: true
+                      lastActivityDate: '2024-07-23'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -3575,6 +3582,29 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
+  /options/exercise:
+    post:
+      tags:
+        - Orders
+      summary: Exercise Option
+      description: Exercises an Option contract.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExerciseCreateReq'
+      responses:
+        '200':
+          description: Excising an Option contact was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExerciseRes'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
   /documents:
     post:
       tags:
@@ -5979,6 +6009,8 @@ components:
               type: boolean
               example: false
               description: Is the account enrolled in extended hours trading?
+            lastActivityDate:
+              $ref: '#/components/schemas/lastActivityDate'
     AccountDetailResMinorTransfer:
       type: object
       properties:
@@ -6122,6 +6154,8 @@ components:
               - $ref: '#/components/schemas/authorizedUser'
         finra3210ComplianceEntity:
           $ref: '#/components/schemas/finra3210ComplianceEntity'
+        lastActivityDate:
+          $ref: '#/components/schemas/lastActivityDate'
     CommissionsRes:
       type: array
       items:
@@ -6843,6 +6877,38 @@ components:
           type: boolean
           default: false
           example: true
+    AccountFeatureEquities:
+      type: object
+      description: Account features related to equities
+      properties:
+        dividendReinvestment:
+          type: boolean
+          example: true
+          description: True, if equity dividends are reinvested.
+        dividendReinvestmentOptInWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: The timestamp when the account has opted for equity dividend reinvestment.
+          readOnly: true
+        dividendReinvestmentOptOutWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: The timestamp when the account has opted out of equity dividend reinvestment.
+          readOnly: true
+        capitalGainsReinvestment:
+          type: boolean
+          example: true
+          description: True, if equity capital gains are reinvested.
+        capitalGainsReinvestmentOptInWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: The timestamp when the account has opted for equity capital gains reinvestment.
+          readOnly: true
+        capitalGainsReinvestmentOptOutWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: The timestamp when the account has opted out of equity capital gains reinvestment
+          readOnly: true
     accountFeatures:
       type: object
       properties:
@@ -6852,6 +6918,8 @@ components:
           $ref: '#/components/schemas/mutualFunds'
         fixedIncome:
           $ref: '#/components/schemas/AccountFeatureFixedIncome'
+        equities:
+          $ref: '#/components/schemas/AccountFeatureEquities'
     accountNo:
       type: string
       example: DWBG000052
@@ -7021,6 +7089,10 @@ components:
       type: boolean
       example: false
       description: True, when the account is designated as a Pattern Day Trader.
+    lastActivityDate:
+      type: string
+      example: '2024-07-23'
+      description: The date indicating the last recorded activity of the account.
     wlpID:
       type: string
       example: TTC
@@ -9591,6 +9663,8 @@ components:
           type: string
           example: '2022-12-11T22:28:21.810Z'
           description: The updatedWhen is the last date and time the user's account was updated.
+        lastActivityDate:
+          $ref: '#/components/schemas/lastActivityDate'
     AccountDetails:
       type: array
       description: A list of all the user's accounts at DriveWealth.
@@ -11763,6 +11837,9 @@ components:
             - coupon.dayCount
             - coupon.couponType
             - coupon.nextCouponDate
+            - sector
+            - price
+            - minimumAmount
         operator:
           description: 'Filters, operator`= equal to``!= not equal to``< less than``<= less than or equal to``> greater than``>= greater than or equal to``>< in between``() contains` '
           type: string
@@ -12334,6 +12411,50 @@ components:
           $ref: '#/components/schemas/availableForTradingQuantity'
         partner:
           $ref: '#/components/schemas/parentIBIDObject'
+    ExerciseCreateReq:
+      type: object
+      required:
+        - accountNo
+        - exerciseType
+        - symbol
+        - quantity
+      properties:
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        exerciseType:
+          type: string
+          example: EARLY
+          description: The types of Option exercise.
+          enum:
+            - EARLY
+            - EXCEPTION
+            - DNE
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+        quantity:
+          type: number
+          example: '10.234'
+          description: The amount of the instrument in shares.
+    ExerciseRes:
+      type: object
+      properties:
+        exerciseStatus:
+          type: string
+          example: SUBMITTED
+          description: The exercise status type.
+          enum:
+            - SUBMITTED
+            - REJECTED
+            - ACCEPTED
+            - COMPLETED
+            - ERROR
+        status:
+          type: string
+          example: SUCCESS
+          description: The Option exercise status.
+          enum:
+            - SUCCESS
+            - FAILED
     TaxLot:
       type: object
       properties:
@@ -15347,6 +15468,17 @@ components:
           type: string
           example: $0 - $24,999
           description: The User's annual income range, in dollar form.
+          enum:
+            - Unknown
+            - $0 - $24,999
+            - $25,000 - $49,999
+            - $50,000 - $99,999
+            - $100,000 - $199,999
+            - $200,000 - $499,999
+            - $500,000 - $999,999
+            - $1,000,000 - $4,999,999
+            - $5,000,000 - $9,999,999
+            - $10,000,000+
         ackDisclosureRule14b:
           type: boolean
           example: true
@@ -15359,10 +15491,34 @@ components:
           type: string
           example: $0 - $24,999
           description: 'The user''s liquid net worth range. The amount of cash or near cash equivalents of the User''s net worth. '
+          enum:
+            - Unknown
+            - $0 - $4,999
+            - $5,000 - $24,999
+            - $25,000 - $49,999
+            - $50,000 - $99,999
+            - $100,000 - $199,999
+            - $200,000 - $499,999
+            - $500,000 - $999,999
+            - $1,000,000 - $4,999,999
+            - $5,000,000 - $9,999,999
+            - $10,000,000+
         networthTotalRange:
           type: string
           example: $0 - $24,999
           description: The User's net total net worth range.
+          enum:
+            - Unknown
+            - $0 - $4,999
+            - $5,000 - $24,999
+            - $25,000 - $49,999
+            - $50,000 - $99,999
+            - $100,000 - $199,999
+            - $200,000 - $499,999
+            - $500,000 - $999,999
+            - $1,000,000 - $4,999,999
+            - $5,000,000 - $9,999,999
+            - $10,000,000+
         investmentEquitiesExperience:
           type: string
           example: LIMITED
