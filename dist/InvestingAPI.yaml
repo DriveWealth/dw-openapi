@@ -11297,6 +11297,12 @@ components:
       type: string
       example: AAA
       readOnly: true
+    SpRatingDate:
+      description: The date on which the S&P Rating was last updated.
+      type: string
+      format: date
+      example: '2018-05-10'
+      readOnly: true
     BondType:
       description: The type of bond.
       type: string
@@ -11342,6 +11348,8 @@ components:
           $ref: '#/components/schemas/MaturityDate'
         spRating:
           $ref: '#/components/schemas/SpRating'
+        spRatingDate:
+          $ref: '#/components/schemas/SpRatingDate'
         minimumInvestmentAmount:
           description: The minimum initial investment in the security.
           type: integer
