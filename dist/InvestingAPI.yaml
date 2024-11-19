@@ -3294,6 +3294,14 @@ paths:
                   quantity: 3
                   commissionRate: 0.3
                   price: 4.5
+              Market Order With Travel Rule Enforced:
+                value:
+                  accountNo: DWFS001102
+                  orderType: MARKET
+                  symbol: SBUX
+                  side: BUY
+                  quantity: 2
+                  travelRuleBankAccountID: bank_485ba18c-009d-4c4a-a6e9-99b104c800b2
         required: true
       responses:
         '200':
@@ -12034,6 +12042,10 @@ components:
           $ref: '#/components/schemas/dccs'
         taxLotDisposition:
           $ref: '#/components/schemas/LotDisposition'
+        travelRuleBankAccountID:
+          type: string
+          example: bank_485ba18c-009d-4c4a-a6e9-99b104c800b2
+          description: The travel rule bank account ID. Supported By MARKET, LIMIT, STOP, MARKET_IF_TOUCHED orders. Only if partner enabled to send travel rule.
     LotDisposition:
       type: array
       items:
@@ -12163,6 +12175,10 @@ components:
           $ref: '#/components/schemas/openQuantity'
         availableForTradingQuantity:
           $ref: '#/components/schemas/availableForTradingQuantity'
+        travelRuleBankAccountID:
+          type: string
+          example: bank_485ba18c-009d-4c4a-a6e9-99b104c800b2
+          description: Displays travel rule bank account ID which set while creating order
     CancelOrder:
       type: object
       required:
