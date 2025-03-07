@@ -40,8 +40,6 @@ tags:
     x-displayName: Positions
   - name: Asset Transfer
     x-displayName: Asset Transfer
-  - name: Cancel Rebill
-    x-displayName: Cancel Rebill
   - name: Auth
     x-displayName: Auth
   - name: Supported Countries
@@ -125,6 +123,7 @@ paths:
           dwAppKey: []
   /managed/funds:
     post:
+      deprecated: true
       tags:
         - Funds
       summary: Create Fund
@@ -149,6 +148,7 @@ paths:
           dwAppKey: []
   /managed/funds/{fundID}:
     get:
+      deprecated: true
       tags:
         - Funds
       parameters:
@@ -175,6 +175,7 @@ paths:
           dwAppKey: []
   /managed/portfolios:
     post:
+      deprecated: true
       tags:
         - Portfolios
       summary: Create Portfolio
@@ -199,6 +200,7 @@ paths:
           dwAppKey: []
   /managed/portfolios/{portfolioID}:
     get:
+      deprecated: true
       tags:
         - Portfolios
       summary: Retrieve Portfolio
@@ -224,6 +226,7 @@ paths:
         - sessionToken: []
           dwAppKey: []
     patch:
+      deprecated: true
       tags:
         - Portfolios
       summary: Update Portfolio
@@ -273,6 +276,7 @@ paths:
           dwAppKey: []
   /managed/autopilot/{partnerID}:
     post:
+      deprecated: true
       tags:
         - AutoPilot
       parameters:
@@ -305,6 +309,7 @@ paths:
           dwAppKey: []
   /managed/autopilot/{rebalanceRunID}:
     get:
+      deprecated: true
       tags:
         - AutoPilot
       parameters:
@@ -427,6 +432,11 @@ paths:
                     equities:
                       dividendReinvestment: true
                       capitalGainsReinvestment: true
+              Update Account Status:
+                value:
+                  status: FROZEN
+                  statusChangeReason: PARTNER_RESTRICTED
+                  statusComment: Account is restricted by partner due to suspicious activity.
         required: true
       responses:
         '200':
@@ -434,9 +444,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/AccountDetailRes'
-                  - $ref: '#/components/schemas/AccountDetailResMinorTransfer'
+                $ref: '#/components/schemas/AccountDetailRes'
               examples:
                 Account Summary:
                   value:
@@ -670,8 +678,8 @@ paths:
     get:
       tags:
         - Orders
-      summary: List Account Orders
-      description: Retrives a list of Account Orders by accountID.
+      summary: List Account resting Orders
+      description: Retrives a list of Account Orders by accountID. The orders returned will all be currently pending Orders that are awaiting a fill or cancellation.
       parameters:
         - in: path
           name: accountID
@@ -694,8 +702,8 @@ paths:
     get:
       tags:
         - Orders
-      summary: List Account Orders
-      description: Retrieves a list of Account Orders by accountID.
+      summary: List Account historical Orders
+      description: Retrieves a list of Account Orders by accountID. The orders returned are ones that have been previously closed, either by being filled or by being canceled.
       parameters:
         - in: path
           name: accountID
@@ -754,6 +762,7 @@ paths:
           dwAppKey: []
   /accounts/{accountID}/portfolio:
     get:
+      deprecated: true
       tags:
         - AutoPilot
       parameters:
@@ -899,7 +908,10 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Retrieve Account Summary
-      description: Retrieves an Account Summary details by accountID.
+      description: |-
+        Retrieves an Account Summary details by accountID.
+
+        The full Account Summary API is now deprecated. Instead, use the individual APIs for retrieving the Account's Positions, Transactions, or Orders separately.
       deprecated: true
       responses:
         '200':
@@ -915,6 +927,7 @@ paths:
           dwAppKey: []
   /accounts/{accountID}/performance:
     get:
+      deprecated: true
       tags:
         - Accounts
       parameters:
@@ -1065,6 +1078,7 @@ paths:
           dwAppKey: []
   /accounts/{accountID}/summary/transactions:
     get:
+      deprecated: true
       tags:
         - Transactions
       parameters:
@@ -1074,7 +1088,10 @@ paths:
             $ref: '#/components/schemas/accountID'
           required: true
       summary: Retrieve Account Transaction Summary
-      description: Retrives an Account Transaction Summary details by accountID.
+      description: |-
+        Retrives an Account Transaction Summary details by accountID.
+
+        This API has been deprecated. Instead, use List Account Transactions to retrieve historical Transactions. To retrieve orders, use List Account historical Orders.
       responses:
         '200':
           description: Retrieving Account Transaction Summary details was Successful.
@@ -1183,6 +1200,7 @@ paths:
                         currentMarketValue: 4.18
                         unrealizedPnL: 0.18
                         effectiveCostPerShare: 242.6155411
+                        side: B
                         taxLots:
                           - id: 3db27e74626adac3be7b549f2bbc0ab2480852a7
                             created: '2022-08-25T10:07:47.235Z'
@@ -1278,7 +1296,9 @@ paths:
                   value:
                     id: acats_41eb5bdd-8ce2-4471-8fc6-9892da089cd1
                     source: BROKER0001
+                    sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                     destination: DWXR001004
+                    destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
                     clearingNo: '0001'
                     status:
                       name: PENDING
@@ -1311,7 +1331,9 @@ paths:
                   value:
                     id: acats_45dc50ac-3daa-484d-98cb-5264abb51d86
                     source: FOLIO123
+                    sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                     destination: DWKN000094
+                    destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
                     clearingNo: '0001'
                     status:
                       name: STARTED
@@ -1330,7 +1352,9 @@ paths:
                 Automated Customer Transfer:
                   value:
                     source: FOLIO12345
+                    sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                     destination: DWST000077
+                    destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
                     clearingNo: '0001'
                     sourceAccountType:
                       name: INDIVIDUAL
@@ -1480,7 +1504,9 @@ paths:
                   value:
                     id: acats_0a18eea2-c63d-447a-a0f1-1c7d9a08c9da
                     source: TR6666
+                    sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                     destination: FWCT000005
+                    destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
                     clearingNo: '1111'
                     status:
                       name: SUCCESSFUL
@@ -1530,7 +1556,9 @@ paths:
                   value:
                     id: acats_d9faa000-9d97-4ab8-85f8-cbd856d31b79
                     source: TR6666
+                    sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                     destination: FWRT000005
+                    destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
                     clearingNo: '1111'
                     status:
                       name: FAILED
@@ -1732,7 +1760,9 @@ paths:
                     data:
                       - id: acats_d83e92cb-ca72-4d0d-9576-ede66ffcee2b
                         source: TR6666
+                        sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                         destination: FWCT000005
+                        destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
                         clearingNo: '1111'
                         status:
                           name: PENDING
@@ -1773,7 +1803,9 @@ paths:
                         updated: '2023-10-20T15:00:04.216Z'
                       - id: acats_0a18eea2-c63d-447a-a0f1-1c7d9a08c9da
                         source: TR6666
+                        sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                         destination: FWCT000005
+                        destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
                         clearingNo: '1111'
                         status:
                           name: SUCCESSFUL
@@ -1818,7 +1850,9 @@ paths:
                         updated: '2023-11-02T00:01:19.340Z'
                       - id: acats_d9faa000-9d97-4ab8-85f8-cbd856d31b79
                         source: TR6666
+                        sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                         destination: FWRT000005
+                        destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
                         clearingNo: '1111'
                         status:
                           name: FAILED
@@ -1861,196 +1895,6 @@ paths:
                         updated: '2023-11-02T00:01:34.330Z'
                     nextPageOffset: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621#acats_d9faa000-9d97-4ab8-85f8-cbd856d31b79#2023-08-28T11:30:25.805Z
                     prevPageOffset: ''
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /asset-transfers/cancel-rebills:
-    post:
-      tags:
-        - Cancel Rebill
-      summary: Create Cancel Rebill
-      description: Create Cancel Rebill
-      requestBody:
-        description: Created Cancel Rebill
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CancelRebillRequest'
-            examples:
-              'Create Cancel ':
-                value:
-                  orderNo: IKJL0000001
-                  type: CANCEL
-                  reason: FRAUD
-                  approvedBy: John Doe
-                  comment: Fraud detected.
-                  metadata:
-                    - {}
-              Create Price Adjustment:
-                value:
-                  orderNo: IKJL0000001
-                  type: PRICE_ADJUSTMENT
-                  reason: PRICE_ADJUSTMENT_PARTNER
-                  adjustedPrice: 22.99
-                  approvedBy: John Doe
-                  comment: Incorrect price during execution.
-                  metadata:
-                    - {}
-              Create Commission Adjustment:
-                value:
-                  orderNo: IKJL0000001
-                  type: COMMISSION_ADJUSTMENT
-                  reason: PARTNER_TECHNICAL_ERROR
-                  adjustedCommission: 2.99
-                  approvedBy: John Doe
-                  comment: Incorrect commission during execution.
-                  metadata:
-                    - {}
-      responses:
-        '200':
-          description: Creating a Cancel Rebill was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CancelRebillResponse'
-              examples:
-                Cancel Rebill Response:
-                  value:
-                    id: cxl_rbl_497f6eca-6276-4993-bfeb-53cbbbba6f08
-                    reason:
-                      name: PRICE_ADJUSTMENT_PARTNER
-                      description: Price Adjustment via Partner
-                    type:
-                      name: PRICE_ADJUSTMENT
-                      description: Price Adjustment
-                    orderNo: KJG000001
-                    approvedBy: John Doe
-                    status:
-                      name: STARTED
-                      description: The cancel rebill has been started
-                    comment: reported NSF
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-    get:
-      tags:
-        - Cancel Rebill
-      summary: List Cancel Rebills
-      description: Retrieves a list of Cancel Rebills.
-      parameters:
-        - name: from
-          in: query
-          description: The start date of the range of Cancel Rebill.
-          required: true
-          schema:
-            type: string
-            example: '2023-04-22'
-        - name: to
-          in: query
-          description: The end date of the range of Cancel Rebill.
-          required: true
-          schema:
-            type: string
-            example: '2023-04-22'
-        - name: partnerID
-          in: query
-          schema:
-            type: string
-            example: 5730ee28-78cb-4736-9c99-ede6dc1084a3
-        - name: status
-          in: query
-          description: The Cancel Rebill status code.
-          required: true
-          schema:
-            type: string
-            example: STARTED
-            enum:
-              - STARTED
-              - PENDING
-              - ON_HOLD
-              - APPROVED
-              - REJECTED
-              - SUCCESSFUL
-        - name: limit
-          in: query
-          description: The number of records to be returned by the query.
-          required: false
-          schema:
-            type: integer
-            example: 20
-            minimum: 1
-            maximum: 200
-            default: 50
-        - name: offset
-          in: query
-          description: The offset of the last queried result.
-          required: false
-          schema:
-            type: string
-            example: 5730ee28-78cb-4736-9c99-ede6dc1084a3#cxl_rbl_5730ee28-78cb-4736-9c99-ede6dc1084a3
-        - name: direction
-          in: query
-          required: false
-          schema:
-            type: string
-            enum:
-              - next
-              - previous
-            default: next
-            example: next
-      responses:
-        '200':
-          description: Retrieving a list of Cancel Rebills was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CancelRebillDetailResponse'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /asset-transfers/cancel-rebills/{cancelRebillID}:
-    get:
-      tags:
-        - Cancel Rebill
-      summary: Retrieve Cancel Rebill
-      description: Retrieves Cancel Rebill details by cancelRebillID.
-      parameters:
-        - name: cancelRebillID
-          in: path
-          description: The identifier of the Cancel Rebill.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Retrieving Cancel Rebill was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CancelRebillResponse'
-              examples:
-                Cancel Rebill Response:
-                  value:
-                    id: cxl_rbl_497f6eca-6276-4993-bfeb-53cbbbba6f08
-                    reason:
-                      name: PRICE_ADJUSTMENT_PARTNER
-                      description: Price Adjustment via Partner
-                    type:
-                      name: PRICE_ADJUSTMENT
-                      description: Price Adjustment
-                    orderNo: KJG000001
-                    approvedBy: John Doe
-                    status:
-                      name: STARTED
-                      description: The cancel rebill has been started
-                    comment: reported NSF
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -2181,101 +2025,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DepositByDepositID'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /disclosures:
-    get:
-      tags:
-        - Disclosures
-      summary: List Disclosures
-      description: Retrieves a list of Disclosures.
-      responses:
-        '200':
-          description: Fetching A List of Disclosures was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListOfDisclosures'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /disclosures/{disclosureID}:
-    get:
-      tags:
-        - Disclosures
-      summary: Retrieve Disclosure
-      description: Retrives a Disclosure details by disclosureID.
-      parameters:
-        - in: path
-          name: disclosureID
-          schema:
-            $ref: '#/components/schemas/disclosureID'
-          required: true
-      responses:
-        '200':
-          description: Disclosure was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Disclosure'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /users/{userID}/acknowledgments:
-    post:
-      tags:
-        - Disclosures
-      summary: Create User Disclosure Acknowledgment
-      description: Creates a User Disclosure Acknowledgment by userID.
-      parameters:
-        - in: path
-          name: userID
-          schema:
-            $ref: '#/components/schemas/userID'
-          required: true
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateAcknowledgmentInput'
-      responses:
-        '200':
-          description: Creating a User Disclosure Acknowledgment was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Acknowledgment'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-    get:
-      tags:
-        - Disclosures
-      summary: List User Disclosures Acknowledgments
-      description: Retrieves a list of User Disclosures Acknowledgments by userID.
-      parameters:
-        - in: path
-          name: userID
-          schema:
-            $ref: '#/components/schemas/userID'
-          required: true
-      responses:
-        '200':
-          description: Retrieving a list of User Disclosure Acknowledgments was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListOfAcknowledgments'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -2796,6 +2545,7 @@ paths:
           dwAppKey: []
   /bars:
     get:
+      deprecated: true
       tags:
         - Charts
       parameters:
@@ -3464,155 +3214,6 @@ paths:
           dwAppKey: []
         - sessionToken: []
           dwAppKey: []
-  /orders/crypto/rfq:
-    post:
-      tags:
-        - Orders
-      summary: Create a request-for-quote
-      description: Create an a request-for-quote (RFQ) for a cryptocurrency.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RFQrequest'
-        required: true
-      responses:
-        '200':
-          description: The RFQ creation was successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RDQresponse'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /orders/crypto/execute:
-    post:
-      tags:
-        - Orders
-      summary: Create Order with request-for-quote
-      description: Creates a market order or executes a RFQ order
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/digitalAssetRequest'
-        required: true
-      responses:
-        '200':
-          description: The RFQ assets order creation was successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/digitalAssetResponse'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /orders/options:
-    get:
-      tags:
-        - Orders
-      parameters:
-        - in: query
-          name: type
-          schema:
-            type: string
-            example: LIQUIDATION
-            description: The Transaction Batch type.
-            enum:
-              - LIQUIDATION
-          required: true
-        - in: query
-          name: status
-          schema:
-            type: string
-            example: COMPLETED
-            description: The status of Transaction Batch.
-            enum:
-              - COMPLETED
-          required: true
-        - in: query
-          name: partnerID
-          schema:
-            $ref: '#/components/schemas/parentIBID'
-          required: true
-        - in: query
-          name: from
-          schema:
-            $ref: '#/components/schemas/from'
-          required: false
-        - in: query
-          name: to
-          schema:
-            $ref: '#/components/schemas/to'
-          required: false
-        - in: query
-          name: limit
-          schema:
-            type: integer
-          required: false
-          example: 20
-          description: The number of results to be returned.
-        - in: query
-          name: offset
-          schema:
-            type: integer
-          required: false
-          example: 1
-      summary: Retrieve Option Orders
-      description: Retrieves Options Orders.
-      responses:
-        '200':
-          description: Retrieving Option Orders was Successful.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/OptionsLiquidationResponse'
-                  nextPageOffset:
-                    type: string
-                    example: '100'
-                    description: The next page offset.
-                  prevPageOffset:
-                    type: string
-                    example: '0'
-                    description: The previous page offset.
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /options/exercise:
-    post:
-      tags:
-        - Orders
-      summary: Exercise Option
-      description: Exercises an Option contract.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ExerciseCreateReq'
-      responses:
-        '200':
-          description: Excising an Option contact was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ExerciseRes'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
   /documents:
     post:
       tags:
@@ -3686,6 +3287,20 @@ paths:
           required: false
           example: 15MinDelayed
           description: The quote details will be 15 minutes delayed.
+        - in: query
+          name: instrumentIDs
+          schema:
+            type: string
+          required: true
+          example: 1179e8dd-2781-4ce9-842c-f05ded6a40d7
+          description: The id of an instrument. Multiple instrumentIDs separated by a comma may also be used.
+        - in: query
+          name: isins
+          schema:
+            type: string
+          required: true
+          example: US912810RC45
+          description: The unique identifier of the instrument. Multiple instrumentIDs separated by a comma may also be used.
       summary: Retrieve Quote (referential feed)
       description: Fetch the realtime or 15 minute delayed Referential quote details for a specific security.
       responses:
@@ -3773,6 +3388,22 @@ paths:
                       volume: 3230
                       marketCondition: NORMAL
                       dataProvider: OPRA
+                Fixed Income Quote:
+                  value:
+                    - instrumentID: 1179e8dd-2781-4ce9-842c-f05ded6a40d7
+                      isin: US912810RC45
+                      bidYield: 4.220776
+                      askYield: 4.207803
+                      bid: 92.276
+                      ask: 92.436
+                      priorClose: 92.3085938
+                      askSize: 0
+                      bidSize: 0
+                      lastTradeSize: 0
+                      tradeCount: 0
+                      marketCondition: NORMAL
+                      dataProvider: ICE BondPoint
+                      timeOffset: 0
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -3837,9 +3468,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MarketQuoteResponse'
+                $ref: '#/components/schemas/MarketQuoteResponse'
               examples:
                 QuoteResponse:
                   value:
@@ -3903,7 +3532,6 @@ paths:
       tags:
         - Settlements
       summary: List Cashless Reconciliations
-      deprecated: true
       description: Fetches a list of daily reconciliations for a firm using cashless settlement.
       parameters:
         - in: query
@@ -3949,7 +3577,6 @@ paths:
     get:
       tags:
         - Settlements
-      deprecated: true
       summary: Retrieve Cashless Reconciliation
       description: Fetches reconciliations details for a firm using cashless settlement.
       parameters:
@@ -3975,7 +3602,6 @@ paths:
     patch:
       tags:
         - Settlements
-      deprecated: true
       summary: Update Cashless Reconciliation
       description: Updates a Cashless Reconciliation by reconciliationID.
       parameters:
@@ -4157,101 +3783,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WithdrawalByRedemptionID'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /funding/settlements/instant-funding:
-    get:
-      tags:
-        - Settlements
-      summary: List Bulk Settlements
-      deprecated: true
-      description: Retrieves a list of daily Bulk Settlements details.
-      parameters:
-        - in: query
-          name: from
-          schema:
-            type: string
-          required: true
-          example: '2022-12-08T18:36:40.609Z'
-          description: The date and time in which to start from.
-        - in: query
-          name: to
-          schema:
-            type: string
-          required: true
-          example: '2022-12-25T18:36:40.609Z'
-          description: The date and time in which to end at.
-        - in: query
-          name: category
-          schema:
-            $ref: '#/components/schemas/category'
-          required: false
-          description: Filters the settlements by the category of the settlement.
-      responses:
-        '200':
-          description: Retrieving a list of daily Bulk Settlements details was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListDailySettlementDetails'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-  /funding/settlements/instant-funding/{settlementID}:
-    get:
-      tags:
-        - Settlements
-      summary: Retrieve Bulk Settlement
-      deprecated: true
-      description: Retrieves a Bulk Settlement by settlementID.
-      parameters:
-        - in: path
-          name: settlementID
-          schema:
-            $ref: '#/components/schemas/settlementID'
-          required: true
-          description: The unique identifier that identifies the settlement report.
-      responses:
-        '200':
-          description: Retrieving a Bulk Settlement by settlementID was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SettlementByID'
-      security:
-        - bearerAuth: []
-          dwAppKey: []
-        - sessionToken: []
-          dwAppKey: []
-    patch:
-      tags:
-        - Settlements
-      deprecated: true
-      summary: Update Bulk Settlement
-      description: Updates a Bulk Settlement by settlementID.
-      parameters:
-        - in: path
-          name: settlementID
-          schema:
-            $ref: '#/components/schemas/settlementID'
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SettlementUpdate'
-      responses:
-        '200':
-          description: Updating a Bulk Settlement by settlementID was Successful.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SettlementByID'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -4481,10 +4012,14 @@ paths:
           dwAppKey: []
   /subscriptions:
     post:
+      deprecated: true
       tags:
         - Subscriptions
       summary: Create Subscription
-      description: Creates a Subscription charge for a User's Linked Bank Account.
+      description: |-
+        Creates a Subscription charge for a User's Linked Bank Account.
+
+        This API is now deprecated as the Subscriptions product is no longer supported.
       requestBody:
         content:
           application/json:
@@ -4504,10 +4039,14 @@ paths:
           dwAppKey: []
   /subscriptions/{subscriptionID}:
     delete:
+      deprecated: true
       tags:
         - Subscriptions
       summary: Delete Subscription
-      description: Removes a User's Subscription by Subscription.
+      description: |-
+        Removes a User's Subscription by Subscription.
+
+        This API is now deprecated as the Subscriptions product is no longer supported.
       parameters:
         - in: path
           name: subscriptionID
@@ -4653,10 +4192,14 @@ paths:
                     ackJointMarketData: false
                     ackMarketData: false
                     ackExtendedHoursAgreement: false
+                    ackOptionsAgreement: true
                     dependents: 0
                     termsOfUse: true
                     director: false
                     employerCompany: DriveWealth LLC
+                    employerCompanyID: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+                    employerCompanyStartDate: '2014-09-29'
+                    employerCompanyEndDate: '2022-12-25'
                     employerIsBroker: true
                     employmentPosition: ENGINEER
                     employmentYears: 0
@@ -4789,10 +4332,14 @@ paths:
           dwAppKey: []
   /users/{userID}/subscriptions:
     get:
+      deprecated: true
       tags:
         - Subscriptions
       summary: List Subscriptions by User
-      description: Retrieves all User's Subscriptions by User
+      description: |-
+        Retrieves all User's Subscriptions by User
+
+        This API is now deprecated as the Subscriptions product is no longer supported.
       parameters:
         - in: path
           name: userID
@@ -5018,6 +4565,7 @@ paths:
           dwAppKey: []
   /users/{userID}/managed/funds:
     get:
+      deprecated: true
       tags:
         - Funds
       summary: List Funds by Advisor
@@ -5044,6 +4592,7 @@ paths:
           dwAppKey: []
   /users/{userID}/managed/portfolio:
     get:
+      deprecated: true
       tags:
         - Portfolios
       summary: List Portfolios by Advisor
@@ -5070,6 +4619,7 @@ paths:
           dwAppKey: []
   /users/{userID}/managed/autopilot:
     get:
+      deprecated: true
       tags:
         - AutoPilot
       summary: List AutoPilot Runs by Advisor
@@ -5775,6 +5325,8 @@ components:
           $ref: '#/components/schemas/accountType'
         accountManagementType:
           $ref: '#/components/schemas/accountManagementType'
+        accountHolderType:
+          $ref: '#/components/schemas/accountHolderType'
         tradingType:
           $ref: '#/components/schemas/tradingType'
         finra3210ComplianceEntity:
@@ -5818,6 +5370,10 @@ components:
           $ref: '#/components/schemas/leverage'
         accountFeatures:
           $ref: '#/components/schemas/accountFeatures'
+        interestedParties:
+          type: array
+          items:
+            $ref: '#/components/schemas/interestedParty'
     AccountRes:
       type: object
       properties:
@@ -5838,6 +5394,8 @@ components:
               description: A description of the type of account.
         accountMgmtType:
           $ref: '#/components/schemas/accountManagementTypeObject'
+        accountHolderType:
+          $ref: '#/components/schemas/accountHolderTypeObject'
         status:
           type: object
           properties:
@@ -5905,6 +5463,10 @@ components:
           $ref: '#/components/schemas/flaggedForACATS'
         accountFeatures:
           $ref: '#/components/schemas/accountFeatures'
+        interestedParties:
+          type: array
+          items:
+            $ref: '#/components/schemas/interestedParty'
     AccountDetailRes:
       type: object
       properties:
@@ -5928,6 +5490,8 @@ components:
                   description: A description of the type of account.
             accountMgmtType:
               $ref: '#/components/schemas/accountManagementTypeObject'
+            accountHolderType:
+              $ref: '#/components/schemas/accountHolderTypeObject'
             finra3210ComplianceEntity:
               $ref: '#/components/schemas/finra3210ComplianceEntity'
             status:
@@ -5999,6 +5563,12 @@ components:
               $ref: '#/components/schemas/interestFree'
             accountFeatures:
               $ref: '#/components/schemas/accountFeatures'
+            statusChangeReason:
+              $ref: '#/components/schemas/statusChangeReasonInternal'
+            statusUpdatedBy:
+              $ref: '#/components/schemas/statusUpdatedBy'
+            statusChangeHistory:
+              $ref: '#/components/schemas/statusChangeHistory'
             createdWhen:
               type: string
               example: '2022-12-22T06:07:41.773Z'
@@ -6019,113 +5589,10 @@ components:
               description: Is the account enrolled in extended hours trading?
             lastActivityDate:
               $ref: '#/components/schemas/lastActivityDate'
-    AccountDetailResMinorTransfer:
-      type: object
-      properties:
-        account:
-          type: object
-          properties:
-            id:
-              $ref: '#/components/schemas/accountID'
-            accountNo:
-              $ref: '#/components/schemas/accountNo'
-            accountType:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: LIVE
-                  description: The type of account.
-                description:
-                  type: string
-                  example: Live Account
-                  description: A description of the type of account.
-            finra3210ComplianceEntity:
-              $ref: '#/components/schemas/finra3210ComplianceEntity'
-            accountMgmtType:
-              $ref: '#/components/schemas/accountManagementTypeObject'
-            status:
-              type: object
-              properties:
-                name:
-                  $ref: '#/components/schemas/accountStatus'
-                description:
-                  type: string
-                  example: Open
-                  description: A description of the account status.
-            tradingType:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: CASH
-                  description: The type of trading ocurring in the account.
-                  enum:
-                    - CASH
-                    - MARGIN
-                    - CRYPTO
-                description:
-                  type: string
-                  example: Cash Account
-                  description: A custom description about the type of account.
-            leverage:
-              $ref: '#/components/schemas/leverage'
-            nickname:
-              $ref: '#/components/schemas/accountNickname'
-            parentIB:
-              $ref: '#/components/schemas/parentIBIDObject'
-            taxProfile:
-              $ref: '#/components/schemas/taxProfileObject'
-            commissionID:
-              $ref: '#/components/schemas/commissionID'
-            beneficiaries:
-              $ref: '#/components/schemas/beneficiariesOption'
-            userID:
-              $ref: '#/components/schemas/userID'
-              description: The userID associated with the account. This will be the userID of your customer.
-            restricted:
-              $ref: '#/components/schemas/restricted'
-            goodFaithViolations:
-              $ref: '#/components/schemas/goodFaithViolations'
-            patternDayTrades:
-              $ref: '#/components/schemas/patternDayTrades'
-            freeTradeBalance:
-              $ref: '#/components/schemas/freeTradeBalance'
-            gfvPdtExempt:
-              $ref: '#/components/schemas/gfvPdtExempt'
-            buyingPowerOverride:
-              $ref: '#/components/schemas/buyingPowerOverride'
-            bod:
-              $ref: '#/components/schemas/bod'
-            ria:
-              $ref: '#/components/schemas/riaObject'
-            sweepInd:
-              $ref: '#/components/schemas/sweepInd'
-            interestFree:
-              $ref: '#/components/schemas/interestFree'
-            authorizedUsers:
+            interestedParties:
               type: array
               items:
-                oneOf:
-                  - $ref: '#/components/schemas/authorizedUser'
-            createdWhen:
-              type: string
-              example: '2022-12-22T06:07:41.773Z'
-              description: A timestamp of when the account was created.
-            openedWhen:
-              $ref: '#/components/schemas/openedWhen'
-            updatedWhen:
-              type: string
-              example: '2022-12-22T16:04:47.140Z'
-              description: A timestamp of when the account was last updated.
-            ignoreMarketHoursForTest:
-              $ref: '#/components/schemas/ignoreMarketHoursForTest'
-            flaggedForACATS:
-              $ref: '#/components/schemas/flaggedForACATS'
-            extendedHoursEnrolled:
-              type: boolean
-              example: false
-              description: Is the account enrolled in extended hours trading?
+                $ref: '#/components/schemas/interestedParty'
     UpdateAcctReq:
       type: object
       properties:
@@ -6135,20 +5602,18 @@ components:
           $ref: '#/components/schemas/accountNickname'
         status:
           $ref: '#/components/schemas/accountStatus'
+          items:
+            anyOf:
+              - required:
+                  - statusChangeReason
+        accountHolderType:
+          $ref: '#/components/schemas/accountHolderType'
         statusComment:
           type: string
           example: Closing the Account.
           description: A reason for updating the account status, not required when editing other attributes.
-        closingReason:
-          type: string
-          example: DECEASED
-          description: Pass only when closing an account, ACAT and LEGAL_AML are for DriveWealth internal use only, an account closed due to either of those reasons can only be re-opened by DriveWealth.
-          enum:
-            - ACAT
-            - LEGAL_AML
-            - DUP_ACCOUNT
-            - DECEASED
-            - OTHER
+        statusChangeReason:
+          $ref: '#/components/schemas/statusChangeReason'
         restricted:
           $ref: '#/components/schemas/restricted'
         ignoreMarketHoursForTest:
@@ -6164,6 +5629,10 @@ components:
           $ref: '#/components/schemas/finra3210ComplianceEntity'
         lastActivityDate:
           $ref: '#/components/schemas/lastActivityDate'
+        interestedParties:
+          type: array
+          items:
+            $ref: '#/components/schemas/interestedParty'
     CommissionsRes:
       type: array
       items:
@@ -6650,6 +6119,10 @@ components:
           type: number
           example: 1.09
           description: The effective cost per share of the position.
+        side:
+          type: string
+          example: B
+          description: The parent side of the position, which can be 'B' for Long or 'S' for Short.
         taxLots:
           type: array
           items:
@@ -6769,113 +6242,17 @@ components:
           type: string
           example: 86572e14-84ae-4f0c-9533-3c9432637f8e.1627500314555#65d1aee9-9a6c-4720-9879-71c4fcf43060.2023-12-07T21:17:45.743Z
           description: The previous page offset.
-    userID:
-      type: string
-      example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
-      description: A unique identifier created for each User on DriveWealth's platform.
-    accountType:
-      type: string
-      example: LIVE
-      description: The type of account that has been created.
-      enum:
-        - LIVE
-    accountManagementType:
-      type: string
-      example: SELF
-      description: The type of account who has trading authority.
-      enum:
-        - SELF
-        - ADVISORY
-        - MANAGED
-        - RIA_MANAGED
-        - CUSTODIAL
-        - CUSTODIAL_MANAGED
-        - RESERVED
-        - HSA_SELF
-        - HSA_ADVISORY
-        - HSA_RIA_MANAGED
-    tradingType:
-      type: string
-      example: CASH
-      description: The type of trading the account will participate in.
-      enum:
-        - CASH
-        - MARGIN
-    portfolioID:
-      type: string
-      example: portfolio_87fec25f-c350-4a53-83a0-fc6be0c2989e
-      description: The unique identifier of a portfolio.
-    permissions:
-      type: string
-      example: MINOR_GRADUATION_TRANSFER
-      enum:
-        - ORDERS_CREATE
-        - MINOR_GRADUATION_TRANSFER
-    authorizedUser:
+    accountFeatures:
       type: object
       properties:
-        userID:
-          $ref: '#/components/schemas/userID'
-        permissions:
-          type: array
-          description: Permission assigned to the authorized user.
-          example:
-            - ORDERS_CREATE
-            - MINOR_GRADUATION_TRANSFER
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/permissions'
-    leverage:
-      type: number
-      example: 1
-      description: The amount of leverage an account is allowed to trade with.
-    options:
-      type: object
-      properties:
-        enrolled:
-          type: boolean
-          description: User requested option trading be allowed for their account
-          example: 'true'
-        optionsLevel:
-          type: string
-          description: The level of options trading the customer requested
-          example: LEVEL_1
-          enum:
-            - LEVEL_1
-            - LEVEL_2
-            - LEVEL_3
-            - LEVEL_4
-    mutualFunds:
-      type: object
-      properties:
-        dividendReinvestment:
-          type: boolean
-          example: true
-          description: True, if dividends are reinvested.
-        dividendReinvestmentOptInWhen:
-          type: string
-          example: '2022-12-11T22:28:21.810Z'
-          description: The timestamp when the account has opted for dividend reinvestment.
-          readOnly: true
-        dividendReinvestmentOptOutWhen:
-          type: string
-          example: '2022-12-11T22:28:21.810Z'
-          description: The timestamp when the account has opted out of dividend reinvestment.
-          readOnly: true
-        capitalGainsReinvestment:
-          type: boolean
-          example: true
-          description: True, if capital gains are reinvested.
-        capitalGainsReinvestmentOptInWhen:
-          type: string
-          example: '2022-12-11T22:28:21.810Z'
-          description: The timestamp when the account has opted for capital gains reinvestment.
-          readOnly: true
-        capitalGainsReinvestmentOptOutWhen:
-          type: string
-          example: '2022-12-11T22:28:21.810Z'
-          description: The timestamp when the account has opted out of capital gains reinvestment
-          readOnly: true
+        options:
+          $ref: '#/components/schemas/AccountFeatureOptions'
+        mutualFunds:
+          $ref: '#/components/schemas/AccountFeatureMutualFunds'
+        fixedIncome:
+          $ref: '#/components/schemas/AccountFeatureFixedIncome'
+        equities:
+          $ref: '#/components/schemas/AccountFeatureEquities'
     AccountFeatureFixedIncome:
       type: object
       description: Account features related to Fixed Income
@@ -6917,17 +6294,178 @@ components:
           example: '2022-12-11T22:28:21.810Z'
           description: The timestamp when the account has opted out of equity capital gains reinvestment
           readOnly: true
-    accountFeatures:
+    AccountFeatureOptions:
       type: object
       properties:
-        options:
-          $ref: '#/components/schemas/options'
-        mutualFunds:
-          $ref: '#/components/schemas/mutualFunds'
-        fixedIncome:
-          $ref: '#/components/schemas/AccountFeatureFixedIncome'
-        equities:
-          $ref: '#/components/schemas/AccountFeatureEquities'
+        enrolled:
+          type: boolean
+          description: User requested option trading be allowed for their account
+          example: 'true'
+        optionsLevel:
+          type: string
+          description: The level of options trading the customer requested
+          example: LEVEL_1
+          enum:
+            - LEVEL_1
+            - LEVEL_2
+            - LEVEL_3
+            - LEVEL_4
+    AccountFeatureMutualFunds:
+      type: object
+      properties:
+        dividendReinvestment:
+          type: boolean
+          example: true
+          description: True, if dividends are reinvested.
+        dividendReinvestmentOptInWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: The timestamp when the account has opted for dividend reinvestment.
+          readOnly: true
+        dividendReinvestmentOptOutWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: The timestamp when the account has opted out of dividend reinvestment.
+          readOnly: true
+        capitalGainsReinvestment:
+          type: boolean
+          example: true
+          description: True, if capital gains are reinvested.
+        capitalGainsReinvestmentOptInWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: The timestamp when the account has opted for capital gains reinvestment.
+          readOnly: true
+        capitalGainsReinvestmentOptOutWhen:
+          type: string
+          example: '2022-12-11T22:28:21.810Z'
+          description: The timestamp when the account has opted out of capital gains reinvestment
+          readOnly: true
+    userID:
+      type: string
+      example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+      description: A unique identifier created for each User on DriveWealth's platform.
+    accountType:
+      type: string
+      example: LIVE
+      description: The type of account that has been created.
+      enum:
+        - LIVE
+    accountManagementType:
+      type: string
+      example: SELF
+      description: The type of account who has trading authority.
+      enum:
+        - SELF
+        - ADVISORY
+        - MANAGED
+        - RIA_MANAGED
+        - CUSTODIAL
+        - CUSTODIAL_MANAGED
+        - RESERVED
+        - HSA_SELF
+        - HSA_ADVISORY
+        - HSA_RIA_MANAGED
+    accountHolderType:
+      type: string
+      example: I
+      description: A classification for the type of the account holder. US broker-dealers must utilize this field for CAIS compliance. If unset, a default value of `I` will be assumed for CAIS reporting. Please refer to CAIS documentation and instructions for more information on the allowed values.
+      enum:
+        - E
+        - I
+        - A
+        - F
+        - O
+        - V
+        - P
+        - X
+    tradingType:
+      type: string
+      example: CASH
+      description: The type of trading the account will participate in.
+      enum:
+        - CASH
+        - MARGIN
+    portfolioID:
+      type: string
+      example: portfolio_87fec25f-c350-4a53-83a0-fc6be0c2989e
+      description: The unique identifier of a portfolio.
+    permissions:
+      type: string
+      example: MINOR_GRADUATION_TRANSFER
+      enum:
+        - ORDERS_CREATE
+        - MINOR_GRADUATION_TRANSFER
+    authorizedUser:
+      type: object
+      properties:
+        userID:
+          $ref: '#/components/schemas/userID'
+        permissions:
+          type: array
+          description: Permission assigned to the authorized user.
+          example:
+            - ORDERS_CREATE
+            - MINOR_GRADUATION_TRANSFER
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/permissions'
+    leverage:
+      type: number
+      example: 1
+      description: The amount of leverage an account is allowed to trade with.
+    interestedPartyAuthorizedUser:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/userID'
+        reportingRole:
+          type: string
+          description: The role of the interested party of the ID.
+          enum:
+            - AUTH3RD
+            - AUTHREP
+            - NTHOLDER
+            - TRDHOLDER
+        tradeDiscretion:
+          type: boolean
+          description: The trade discretion of the interested party of the ID.
+        from:
+          type: string
+          format: date-time
+          pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+          example: '2022-12-25T22:28:21.810Z'
+          description: Time when the interested party role started
+        to:
+          type: string
+          format: date-time
+          pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+          example: '2022-12-26T22:28:21.810Z'
+          description: Time when the interested party role ended
+        endReason:
+          type: string
+          description: The reason the interested party role ended.
+          enum:
+            - CORRECTION
+            - ENDED
+            - INACTIVE
+            - REPLACED
+            - OTHER
+            - TRANSFER
+    interestedParty:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of interested party.
+          enum:
+            - AUTHORIZED_USERS
+        data:
+          type: array
+          description: 'The data of the interested party. Different types can be used in this field. Current supported type: InterestedPartyAuthorizedUser'
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/interestedPartyAuthorizedUser'
     accountNo:
       type: string
       example: DWBG000052
@@ -6962,6 +6500,15 @@ components:
           type: string
           example: Self Directed Account
           description: A custom description of the account management type.
+    accountHolderTypeObject:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/accountHolderType'
+        description:
+          type: string
+          example: An account that does not meet FINRA Rule 4215(c) or a proprietary trading account
+          description: A custom description of the account holder type.
     accountStatus:
       type: string
       example: OPEN
@@ -7097,10 +6644,47 @@ components:
       type: boolean
       example: false
       description: True, when the account is designated as a Pattern Day Trader.
+    statusChangeReasonInternal:
+      type: string
+      example: LEGAL_AML
+      description: Reason for the account status change
+      enum:
+        - ACAT
+        - ACCOUNT_TRANSFERRED
+        - COMPLIANCE_RESTRICTED
+        - DUPLICATE_ACCOUNT
+        - DECEASED
+        - FINRA_RESTRICTIONS
+        - LEGAL_AML
+        - MARGIN_CALLS
+        - PAYMENT_FAILURE
+        - PARTNER_RESTRICTED
+        - PDT_RESTRICTIONS
+    statusUpdatedBy:
+      type: string
+      example: ACAT_SYSTEM
+      description: A free string, which can be UUID of Backoffice user or any other system which updated the status.
+    statusChangeHistory:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/accountStatus'
+        statusChangeReason:
+          $ref: '#/components/schemas/statusChangeReasonInternal'
+        statusUpdatedBy:
+          $ref: '#/components/schemas/statusUpdatedBy'
     lastActivityDate:
       type: string
       example: '2024-07-23'
-      description: The date indicating the last recorded activity of the account.
+      description: The date indicating the last recorded activity of the account, across the partner's ecosystem. It's important to update this field regularly, as activity recency may impact functions like escheatment, and there may be activity occuring outside of the DriveWealth APIs.
+    statusChangeReason:
+      type: string
+      example: DECEASED
+      description: Change account status with reason
+      enum:
+        - DUPLICATE_ACCOUNT
+        - DECEASED
+        - PARTNER_RESTRICTED
     wlpID:
       type: string
       example: TTC
@@ -7515,6 +7099,9 @@ components:
       description: The unique identifier that references back to the specific transaction.
     feeObject:
       type: object
+      required:
+        - type
+        - amount
       properties:
         type:
           type: string
@@ -7522,6 +7109,8 @@ components:
           description: The type of fee that is being applied.
           enum:
             - FEE_ACH
+            - FEE_FEDERAL_TAX
+            - FEE_STATE_TAX
         description:
           type: string
           example: Fee - ACH
@@ -8791,7 +8380,7 @@ components:
         - JOINT
         - CUSTODIAL
         - IRA
-        - IRA_MANAGED
+        - RIA_MANAGED
     AcatsType:
       type: string
       description: The type of ACAT transfer to be performed.
@@ -8820,7 +8409,6 @@ components:
         - source
         - destination
         - clearingNo
-        - sourceAccountType
         - type
     ACATSTransfer:
       type: object
@@ -8828,6 +8416,10 @@ components:
         - $ref: '#/components/schemas/GenericTransfer'
         - $ref: '#/components/schemas/AcatsCreateRequestModelWithoutEnums'
       properties:
+        sourceAccountID:
+          $ref: '#/components/schemas/sourceAccountID'
+        destinationAccountID:
+          $ref: '#/components/schemas/destinationAccountID'
         sourceAccountType:
           type: object
           properties:
@@ -8876,78 +8468,10 @@ components:
           minimum: 1
       required:
         - quantity
-    CancelRebillRequest:
-      type: object
-      required:
-        - orderNo
-        - type
-        - reason
-      properties:
-        orderNo:
-          $ref: '#/components/schemas/orderNo'
-        type:
-          type: string
-          example: CANCEL
-          enum:
-            - CANCEL
-            - PRICE_ADJUSTMENT
-            - COMMISSION_ADJUSTMENT
-          description: The adjustment classification.
-        reason:
-          type: string
-          example: FRAUD
-          enum:
-            - FRAUD
-            - PRICE_ADJUSTMENT_PARTNER
-            - PRICE_ADJUSTMENT_VENUE
-            - DRIVEWEALTH_TECHNICAL_ERROR
-            - PARTNER_TECHNICAL_ERROR
-            - VENDOR_ERROR
-          description: The cause of the request.
-        approvedBy:
-          $ref: '#/components/schemas/userID'
-        adjustedPrice:
-          type: number
-          example: 125.3
-          description: The *updated* price that should be set; from the original transaction.
-        adjustedCommission:
-          type: number
-          example: 2.49
-          description: The *updated* commission that should be set; from the original transaction.
-        comment:
-          type: string
-          description: The comment on the reason for Cancellation or an Adjustment.
-          minLength: 1
-          maxLength: 100
-        metadata:
-          type: array
-          description: Any metadata field which needs to be part of cancel rebill transaction.
-          items:
-            type: object
     CancelRebillIdentifer:
       type: string
       description: A unique identifier generated for the Cancel Rebill.
       format: string
-    CancelRebillResponse:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/CancelRebillIdentifer'
-        reason:
-          $ref: '#/components/schemas/CancelRebillReason'
-        type:
-          $ref: '#/components/schemas/CancelRebillType'
-        orderNo:
-          $ref: '#/components/schemas/orderNo'
-        status:
-          $ref: '#/components/schemas/CancelRebillStatus'
-        approvedBy:
-          type: string
-          description: The user who approved the Cancel Rebill Request.
-          minLength: 1
-          maxLength: 50
-        comment:
-          $ref: '#/components/schemas/note'
     CancelRebillReason:
       type: object
       properties:
@@ -8994,83 +8518,6 @@ components:
           description: The description of the Cancel Rebill status.
         code:
           type: integer
-    CancelRebillDetailResponse:
-      type: object
-      title: CancelRebillDetailResponse
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CancelRebillDetail'
-        responseMetadata:
-          $ref: '#/components/schemas/ResponseMetadata'
-    CancelRebillDetail:
-      type: object
-      title: CancelRebillDetail
-      description: Model object to list all the cancel rebill transaction attributes.
-      properties:
-        id:
-          $ref: '#/components/schemas/CancelRebillIdentifer'
-        partner:
-          $ref: '#/components/schemas/parentIBIDObject'
-        reviewRequired:
-          example: true
-          type: boolean
-          description: Flag which suggests whether the cancel rebill request require manual processing.
-        orderNo:
-          $ref: '#/components/schemas/orderNo'
-        accountNo:
-          $ref: '#/components/schemas/accountNo'
-        accountID:
-          $ref: '#/components/schemas/accountID'
-        errorAccountNo:
-          $ref: '#/components/schemas/accountNo'
-          description: Error Account against which the Cancel rebill transaction was booked.
-        errorAccountID:
-          $ref: '#/components/schemas/accountID'
-        type:
-          $ref: '#/components/schemas/CancelRebillType'
-        reason:
-          $ref: '#/components/schemas/CancelRebillReason'
-        symbol:
-          $ref: '#/components/schemas/instrumentSymbol'
-          description: The instrument symbol for which the original trade was booked.
-        quantity:
-          type: number
-          example: 4
-          description: The order quantity of original transaction.
-        price:
-          type: number
-          example: 100.01
-          description: The price of original transaction.
-        adjustedPrice:
-          type: number
-          example: 100.03
-          description: New price when adjusting the price of original transaction.
-        adjustedCommission:
-          type: number
-          example: 2.49
-          description: The new commission when adjusting the commission of original transaction.
-        status:
-          $ref: '#/components/schemas/CancelRebillStatus'
-        statusComment:
-          type: string
-          description: Comment while approving rejecting the Cancel Rebill transaction.
-        approvedBy:
-          type: string
-          description: The approver of the Cancel Rebill Request.
-          example: John Doe
-          minLength: 1
-          maxLength: 50
-        updated:
-          type: string
-          description: The last updated date of the Cancel Rebill transaction.
-        comment:
-          $ref: '#/components/schemas/note'
-        auditDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuditDetails'
     AuditDetails:
       type: object
       properties:
@@ -9083,16 +8530,6 @@ components:
         updated:
           type: string
           description: The date when the status was last updated.
-    ResponseMetadata:
-      type: object
-      title: ResponseMetadata
-      properties:
-        lastKey:
-          type: string
-          example: 5730ee28-78cb-4736-9c99-ede6dc1084a3#cxl_rbl_9ee1379f-2d18-433f-a2b4-0d523afe4007
-        count:
-          type: integer
-          example: 1
     metadata:
       type: object
       example:
@@ -9102,6 +8539,14 @@ components:
       type: string
       example: c85b231a-2bc9-11ee-be56-0242ac120002
       description: The unique identifier of the asset transfer.
+    sourceAccountID:
+      type: string
+      example: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
+      description: It's a unique source account id, that is human readable.
+    destinationAccountID:
+      type: string
+      example: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
+      description: It's a unique destination account id, that is human readable.
     partnerID:
       type: string
       example: 80f9b672-120d-4b73-9ccv9-42fb3262c4b9
@@ -9673,6 +9118,10 @@ components:
           description: The updatedWhen is the last date and time the user's account was updated.
         lastActivityDate:
           $ref: '#/components/schemas/lastActivityDate'
+        interestedParties:
+          type: array
+          items:
+            $ref: '#/components/schemas/interestedParty'
     AccountDetails:
       type: array
       description: A list of all the user's accounts at DriveWealth.
@@ -9839,22 +9288,6 @@ components:
       $ref: '#/components/schemas/Acknowledgment'
     CreateAcknowledgmentOutput:
       $ref: '#/components/schemas/Acknowledgment'
-    ListOfDisclosures:
-      type: object
-      description: A list of disclosures
-      properties:
-        disclosures:
-          type: array
-          items:
-            $ref: '#/components/schemas/Disclosure'
-    ListOfAcknowledgments:
-      type: object
-      description: A list of disclosure acknowledgments
-      properties:
-        acknowledgments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Acknowledgment'
     Exchange:
       type: object
       required:
@@ -11474,9 +10907,13 @@ components:
           format: double
           example: 0.05
           readOnly: true
+        debtType:
+          description: The code for the type fixed income instrument.
+          type: integer
+          readOnly: true
         bondType:
           $ref: '#/components/schemas/BondType'
-        debtType:
+        debtTypeDescription:
           type: string
           description: The description for the type fixed income instrument.
           enum:
@@ -11616,6 +11053,8 @@ components:
           $ref: '#/components/schemas/Issuer'
         indicators:
           $ref: '#/components/schemas/Indicators'
+        denominationAmounts:
+          $ref: '#/components/schemas/DenominationAmounts'
     Coupon:
       description: A coupon or coupon payment is the annual interest rate paid on a bond, expressed as a percentage of the face value and paid from issue date until maturity.
       type: object
@@ -11766,52 +11205,123 @@ components:
     Indicators:
       description: Indicators that provide additional information about the security
       example:
-        convertibleIndicator: true
+        callIndicator: false
+        convertibleIndicator: false
+        defaultIndicator: false
         dtcIndicator: true
-        oidIndicator: true
-        callIndicator: true
-        putIndicator: true
+        oidIndicator: false
+        putIndicator: false
+        sinkIndicator: false
+        tipsIndicator: false
+        floaterIndicator: false
         traceEligible: true
-        defaultIndicator: true
-        sinkIndicator: true
-        tipsIndicator: true
+        capitalizedIndicator: false
+        childIndicator: false
+        defeasanceIndicator: false
+        equityLinkedNoteIndicator: false
+        pikIndicator: false
+        tenderExchangeOfferIndicator: false
+        warrantsIndicator: false
+        tradingRestrictionsType: None
       properties:
         callIndicator:
-          description: Indicates whether the security is callable.
+          description: Indicates if the security is eligible to be redeemed by the issuer on a call basis
           readOnly: true
           type: boolean
         convertibleIndicator:
-          description: Indicates whether the security is convertible.
+          description: Specifies whether an issue is convertible or exchangeable
           readOnly: true
           type: boolean
         defaultIndicator:
-          description: Indicates whether the security is in default.
+          description: Specifies whether the security is in default or not
           readOnly: true
           type: boolean
         dtcIndicator:
-          description: Indicates whether the security is eligible for DTC settlement.
+          description: Indicates whether the security is acceptable for clearing by the DTCC.
           readOnly: true
           type: boolean
         oidIndicator:
-          description: Indicates whether the security is an original issue discount.
+          description: Specifies whether or not this issue qualifies for Original Issue Discount status
           readOnly: true
           type: boolean
         putIndicator:
-          description: Indicates whether the security is puttable.
+          description: Indicates whether the security carries provisions that allow for redemption at the request of owners of the security
           readOnly: true
           type: boolean
         sinkIndicator:
-          description: Indicates whether the security is sinkable.
+          description: Indicates whether the security carries a sinking fund as part of its terms and conditions
           readOnly: true
           type: boolean
         tipsIndicator:
-          description: Indicates whether the security is a Treasury Inflation Protected Security.
+          description: Indicates whether the security is a Treasury Inflation Protected Security
           readOnly: true
           type: boolean
         traceEligible:
-          description: Indicates whether the security is TRACE eligible.
+          description: Indicates whether the security is considered TRACE eligible for price reporting
           readOnly: true
           type: boolean
+        capitalizedIndicator:
+          description: Specifies whether a bond issuer has set aside some of the proceeds from a bond sale to cover a certain number of interest payments
+          readOnly: true
+          type: boolean
+        childIndicator:
+          description: Indicates whether the security is created as the result of a corporate action or other event (the child instrument) from a previously issued instrument (the parent)
+          readOnly: true
+          type: boolean
+        defeasanceIndicator:
+          description: Indicates whether the security contains a provision that voids a bond or loan when the borrower sets aside cash or bonds sufficient enough to service the borrower's debt (a process called defeasance)
+          readOnly: true
+          type: boolean
+        equityLinkedNoteIndicator:
+          description: Indicates whether the security is an Equity Linked Note
+          readOnly: true
+          type: boolean
+        pikIndicator:
+          description: Indicates whether the security carries provisions to make Payment In Kind (PIK) to owners of the security
+          readOnly: true
+          type: boolean
+        tenderExchangeOfferIndicator:
+          description: Indicates whether the security has an associated exchange or tender offer
+          readOnly: true
+          type: boolean
+        warrantsIndicator:
+          description: Indicates whether there is a warrant associated with the particular security
+          readOnly: true
+          type: boolean
+        floaterIndicator:
+          description: Indicates whether the security has a floating or adjustable rate issue
+          readOnly: true
+          type: boolean
+        tradingRestrictionsType:
+          description: Indicates whether any trading restrictions are in effect for the security
+          enum:
+            - None
+            - 144A
+            - REG_S
+            - PRIVATE_PLACEMENT
+            - ACCREDITED_INVESTORS
+            - REG_D
+            - SEC_ACT_OF_1933
+          readOnly: true
+          type: string
+    DenominationAmounts:
+      description: A set of amounts that represent denomination amounts for the security
+      properties:
+        incrementAmount:
+          description: The increment amount for the security.
+          readOnly: true
+          type: number
+          format: double
+        incrementAmountSecondary:
+          description: The secondary increment amount for the security.
+          readOnly: true
+          type: number
+          format: double
+        minimumAmount:
+          description: ' The minimum denomination amount for the security.'
+          readOnly: true
+          type: number
+          format: double
     FilterCriterion:
       type: object
       required:
@@ -11824,26 +11334,50 @@ components:
           type: string
           example: spRating
           enum:
+            - id
             - ISIN
             - CUSIP
+            - CINS
             - payFrequency
+            - payFrequencyDescription
             - couponRate
             - maturityDate
             - spRating
+            - assetClassCode
+            - assetClassDescription
+            - accrualDate
             - bidPrice
             - askPrice
+            - meanPrice
             - askYieldToMaturity
             - bidYieldToMaturity
             - status
-            - bondType
+            - statusDescription
             - issuer.primaryName
+            - issuer.country
             - issuer.domicileCountry
+            - features.minimumInvestmentAmount
+            - features.incrementalInvestmentAmount
+            - coupon.dayCountDescription
+            - coupon.couponTypeDescription
+            - details.nextCouponDate
+            - statusCode
+            - longOnly
             - coupon.dayCount
             - coupon.couponType
             - coupon.nextCouponDate
             - sector
             - price
             - minimumAmount
+            - orderBook.liquidityRetail
+            - orderBook.liquidityInstitutional
+            - orderBook.liquidityMicro
+            - orderBook.onlyLiveQuotes
+            - orderBook.price
+            - orderBook.yieldToWorst
+            - details.debtTypeDescription
+            - denominationAmounts.incrementAmount
+            - indicators.tradingRestrictionsType
         operator:
           description: 'Filters, operator`= equal to``!= not equal to``< less than``<= less than or equal to``> greater than``>= greater than or equal to``>< in between``() contains` '
           type: string
@@ -12042,6 +11576,14 @@ components:
           type: string
           example: bank_485ba18c-009d-4c4a-a6e9-99b104c800b2
           description: The travel rule bank account ID. Supported By MARKET, LIMIT, STOP, MARKET_IF_TOUCHED orders. Only if partner enabled to send travel rule.
+        traderID:
+          type: string
+          example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+          description: The trader ID of the individual creating the order.
+        clientOrderTransactionTime:
+          $ref: '#/components/schemas/clientOrderTransactionTime'
+        clientOrderID:
+          $ref: '#/components/schemas/clientOrderID'
     LotDisposition:
       type: array
       items:
@@ -12175,6 +11717,10 @@ components:
           type: string
           example: bank_485ba18c-009d-4c4a-a6e9-99b104c800b2
           description: Displays travel rule bank account ID which set while creating order
+        clientOrderTransactionTime:
+          $ref: '#/components/schemas/clientOrderTransactionTime'
+        clientOrderID:
+          $ref: '#/components/schemas/clientOrderID'
     CancelOrder:
       type: object
       required:
@@ -12186,6 +11732,14 @@ components:
           enum:
             - CANCEL
           description: The method in which is requested.
+        traderID:
+          type: string
+          example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+          description: The trader ID of the individual.
+        clientOrderTransactionTime:
+          $ref: '#/components/schemas/clientOrderTransactionTime'
+        clientOrderID:
+          $ref: '#/components/schemas/clientOrderID'
     CancelOrderResponse:
       type: object
       properties:
@@ -12197,86 +11751,6 @@ components:
           type: string
           example: EFXM000103
           description: A human readable order identifier.
-    RFQrequest:
-      type: object
-      required:
-        - accountID
-        - symbol
-        - side
-        - quotedCurrency
-        - ipAddress
-      properties:
-        accountID:
-          $ref: '#/components/schemas/accountID'
-        symbol:
-          type: string
-          example: BTC
-          description: The symbol of the cryptocurrency.
-        side:
-          $ref: '#/components/schemas/sideAbbreviated'
-        quantity:
-          $ref: '#/components/schemas/orderQuantity'
-        amountCash:
-          type: number
-          example: null
-          description: Order quantity in USD cash amount for "MARKET" and "STOP" order types. Only required if `quantity` is null.
-        quotedCurrency:
-          type: string
-          example: USD
-          description: The currency symbol of the requested quote. Must be in USD.
-        ipAddress:
-          type: string
-          example: ''
-          description: IP address of the user that is sending this request.
-    RDQresponse:
-      type: object
-      properties:
-        expires:
-          type: string
-          example: '2019-06-12T23:59:59Z'
-          description: The time at which the RFQ will expire yyyy-mm-dd.
-        id:
-          type: string
-          example: 465c5ab3-f61d-4dcc-a799-9167173ac433
-          description: A unique identifier associated with the quote.
-    digitalAssetRequest:
-      type: object
-      properties:
-        accountID:
-          $ref: '#/components/schemas/accountID'
-        type:
-          type: string
-          example: MARKET
-          description: Order type of the order being placed.
-          enum:
-            - MARKET
-        symbol:
-          type: string
-          example: BTC
-          description: The symbol of the cryptocurrency.
-        side:
-          $ref: '#/components/schemas/sideAbbreviated'
-        quantity:
-          $ref: '#/components/schemas/orderQuantity'
-        amountCash:
-          type: number
-          example: null
-          description: Order quantity in USD cash amount for "MARKET" and "STOP" order types. Only required if `quantity` is null.
-        quotedID:
-          type: string
-          example: 465c5ab3-f61d-4dcc-a799-9167173ac433
-          description: A unique identifier associated with the quote.
-        ipAddress:
-          type: string
-          example: ''
-          description: IP address of the user that is sending this request.
-    digitalAssetResponse:
-      type: object
-      properties:
-        orderID:
-          $ref: '#/components/schemas/orderID'
-        orderNO:
-          $ref: '#/components/schemas/orderNo'
     openQuantity:
       type: number
       example: 1
@@ -12312,178 +11786,23 @@ components:
         - REJECTED
         - CANCELED
         - PENDING_CANCEL
-    side:
-      type: string
-      example: BUY
-      description: The side of the order.
-      enum:
-        - BUY
-        - SELL
     dccs:
       type: boolean
       example: true
       description: True, when the Mutual Fund HSA is classified as Defined Contribution Clearing and Settlement (DCC&S) order.
-    OptionsLiquidationResponse:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/orderID'
-        orderNo:
-          $ref: '#/components/schemas/orderNo'
-        type:
-          $ref: '#/components/schemas/orderTypes'
-        side:
-          $ref: '#/components/schemas/side'
-        status:
-          $ref: '#/components/schemas/localOrderStatus'
-        instrumentID:
-          $ref: '#/components/schemas/instrumentID'
-        ISIN:
-          $ref: '#/components/schemas/instrumentISIN'
-        CUSIP:
-          $ref: '#/components/schemas/instrumentCUSIP'
-        symbol:
-          $ref: '#/components/schemas/instrumentSymbol'
-        averagePrice:
-          type: number
-          format: double
-          example: 160
-          description: The average price of the security being transacted in the order.
-        currency:
-          $ref: '#/components/schemas/currency'
-        totalOrderAmount:
-          type: number
-          format: double
-          example: 800
-          description: The total amount paid for the order.
-        cumulativeQuantity:
-          type: number
-          format: double
-          example: 5
-          description: The number of shares currently being transacted.
-        quantity:
-          type: number
-          format: double
-          example: 5
-          description: The total number of shares requested.
-        fees:
-          type: number
-          format: double
-          example: 0.01
-          description: The cost of the order.
-        ptpWithholdingFee:
-          type: number
-          format: double
-          example: 0.01
-          description: The publicly traded partnership (PTP) withholding fee for the order.
-        createdBy:
-          $ref: '#/components/schemas/userID'
-        userID:
-          $ref: '#/components/schemas/userID'
-        accountID:
-          $ref: '#/components/schemas/accountID'
-        accountNo:
-          $ref: '#/components/schemas/accountNo'
-        created:
-          type: string
-          example: '2019-02-14T18:56:07.411Z'
-          description: The time at which the order was created.
-        statusMessage:
-          type: object
-          properties:
-            errorCode:
-              type: object
-              example: '0802'
-              description: The error code produced.
-            message:
-              type: string
-              example: System market data unavailable
-              description: The description of the error code.
-            reason:
-              type: string
-              example: 0105 Order quantity exceeds quantity available for sale.  Cannot SELL SHORT. null
-              description: The reason for the error.
-        amountCash:
-          type: number
-          example: 800
-          description: The cash amount requested for the order.
-        OrderExpires:
-          type: string
-          example: null
-          description: The ending period of when the order will/has expired.
-        salesCredit:
-          $ref: '#/components/schemas/SalesCredit'
-        instrumentType:
-          $ref: '#/components/schemas/instrumentType'
-        dccs:
-          $ref: '#/components/schemas/dccs'
-        openQuantity:
-          $ref: '#/components/schemas/openQuantity'
-        availableForTradingQuantity:
-          $ref: '#/components/schemas/availableForTradingQuantity'
-        partner:
-          $ref: '#/components/schemas/parentIBIDObject'
-    ExerciseCreateReq:
-      type: object
-      required:
-        - accountNo
-        - exerciseType
-        - symbol
-        - quantity
-      properties:
-        accountNo:
-          $ref: '#/components/schemas/accountNo'
-        exerciseType:
-          type: string
-          example: EARLY
-          description: The types of Option exercise.
-          enum:
-            - EARLY
-            - EXCEPTION
-            - DNE
-        symbol:
-          $ref: '#/components/schemas/instrumentSymbol'
-        quantity:
-          type: number
-          example: '10.234'
-          description: The amount of the instrument in shares.
-    ExerciseRes:
-      type: object
-      properties:
-        exerciseStatus:
-          type: string
-          example: SUBMITTED
-          description: The exercise status type.
-          enum:
-            - SUBMITTED
-            - REJECTED
-            - ACCEPTED
-            - COMPLETED
-            - ERROR
-        status:
-          type: string
-          example: SUCCESS
-          description: The Option exercise status.
-          enum:
-            - SUCCESS
-            - FAILED
+    clientOrderTransactionTime:
+      type: string
+      example: '2024-07-30T22:13:18.000Z'
+      description: The date with a valid timestamp of when a partner received the order from the customer.
+    clientOrderID:
+      type: string
+      example: 5a1762d5-4562
+      description: A unique identifier that represents the order, as defined by the partner. This detail will be reported to the CAT system for US brokers to more easily reconcile reported information.
     TaxLot:
       type: object
       properties:
         taxLotID:
           $ref: '#/components/schemas/taxLotID'
-    from:
-      type: string
-      format: date
-      pattern: yyyy-MM-dd
-      example: '2022-12-25'
-      description: A filter, the start date.
-    to:
-      type: string
-      format: date
-      pattern: yyyy-MM-dd
-      example: '2022-12-26'
-      description: A filter, the end date.
     UploadUserPhysicalDocument:
       type: object
       properties:
@@ -12645,6 +11964,7 @@ components:
       items:
         oneOf:
           - $ref: '#/components/schemas/EquityQuote'
+          - $ref: '#/components/schemas/FixedIncomeQuote'
     EquityQuote:
       type: object
       properties:
@@ -12692,6 +12012,68 @@ components:
           type: string
           example: NYSE
           description: The exchange venue providing the quote.
+    FixedIncomeQuote:
+      type: array
+      properties:
+        instrumentID:
+          type: string
+          example: 1179e8dd-2781-4ce9-842c-f05ded6a40d7
+          description: The unique identifier of the instrument.
+        isin:
+          type: string
+          example: US912810RC45
+          description: The International Securities Identification Number (ISIN) of the instrument.
+        bidYield:
+          type: number
+          example: 4.220776
+          description: The yield at which the buyer is willing to buy the security.
+        askYield:
+          type: number
+          example: 4.207803
+          description: The yield at which the seller is willing to sell the security.
+        bid:
+          type: number
+          example: 92.276
+          description: The price at which the buyer is willing to buy the security.
+        ask:
+          type: number
+          example: 92.436
+          description: The price at which the seller is willing to sell the security.
+        priorClose:
+          type: number
+          example: 92.3085938
+          description: The closing price of the current symbol for the prior trading day.
+        askSize:
+          type: number
+          example: 0
+          description: The ask size is the number of shares investors are trying to sell at a given price for a particular security.
+        bidSize:
+          type: number
+          example: 0
+          description: The bid size is the number of shares investors are trying to buy at a given price for a particular security.
+        lastTradeSize:
+          type: number
+          example: 0
+          description: The quantity of shares of the last trade.
+        tradeCount:
+          type: number
+          example: 0
+          description: The number of trades placed for the symbol during the current trading day.
+        marketCondition:
+          type: string
+          example: NORMAL
+          description: The trading status of the symbol.
+          enum:
+            - NORMAL
+            - TRADING_HALT
+            - UNKNOWN
+        dataProvider:
+          type: string
+          example: ICE BondPoint
+          description: The exchange venue providing the quote.
+        timeOffset:
+          type: number
+          example: 0
     BidPrice:
       type: object
       description: Bid Price
@@ -13217,6 +12599,12 @@ components:
           type: boolean
           example: false
           description: True, if the account is a managed account and a full liquidation is requested from the user.
+        fees:
+          type: array
+          description: A list of fees associated to the withdrawal.
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/feeObject'
         note:
           $ref: '#/components/schemas/note'
         settlementProfileID:
@@ -13457,118 +12845,6 @@ components:
           type: string
           example: New redemption request from the back-office
           description: A custom description that describes the current status of the redemption/withdrawal.
-    DailySettlementDetails:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/settlementID'
-        date:
-          $ref: '#/components/schemas/date'
-          description: The date the settlement report was run for.
-        partnerID:
-          $ref: '#/components/schemas/parentIBID'
-        status:
-          $ref: '#/components/schemas/settlementStatus'
-        statusComment:
-          type: string
-          example: Finished processing breakdown
-          description: A custom comment about the current status of the settlement.
-        totalAmount:
-          type: number
-          example: -14250
-          description: The total aggregated sum of instant deposit across sub accounts.
-        created:
-          $ref: '#/components/schemas/created'
-          description: The date and time the settlement report was created.
-        updated:
-          $ref: '#/components/schemas/updated'
-          description: The date and time the settlement report was last updated.
-        updatedBy:
-          $ref: '#/components/schemas/updatedBy'
-        category:
-          $ref: '#/components/schemas/category'
-        settlementProfileID:
-          $ref: '#/components/schemas/settlementProfileID'
-    ListDailySettlementDetails:
-      type: array
-      description: A list of daily settlement details.
-      items:
-        oneOf:
-          - $ref: '#/components/schemas/DailySettlementDetails'
-    SettlementUpdate:
-      type: object
-      properties:
-        status:
-          type: string
-          example: SUCCESSFUL
-          description: The status to update the settlement to.
-          enum:
-            - SUCCESSFUL
-        statusComment:
-          type: string
-          example: Updated settlement status for testing purposes.
-          description: A custom comment about the current status of the settlement.
-    SettlementByID:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/settlementID'
-        date:
-          $ref: '#/components/schemas/date'
-          description: The date the settlement report was run for.
-        category:
-          $ref: '#/components/schemas/category'
-        status:
-          $ref: '#/components/schemas/settlementStatus'
-        statusComment:
-          type: string
-          example: Finished processing breakdown
-          description: A custom comment about the current status of the settlement.
-        amount:
-          type: object
-          properties:
-            total:
-              type: number
-              example: 100
-              description: The total amount due to DriveWealth, or owed to the firm.
-            deposits:
-              type: number
-              example: 100
-              description: The total amount of deposits or withdrawals across sub accounts made on the settlement date.
-            breakdown:
-              type: object
-              properties:
-                JSON:
-                  type: string
-                  example: https://d2qswopkglay13.cloudfront.net/ifaSettlementReport_f211f5bf-3ddd-49b9-94c6-d912946acb31_20210601.json?Policy=eyJTd GF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6Imh0dHBzOi8vZDJxc3dvcGtnbGF5MTMuY2xvdWRmcm9udC5uZXQvaWZhU2V0dGxlbWVu dFJlcG9ydF9mMjExZjViZi0zZGRkLTQ5YjktOTRjNi1kOTEyOTQ2YWNiMzFfMjAyMTA2MDEuanNvbiIsIkNvbmRpdGlvbiI6eyJEYXRlT GVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTYyNDU1Nzg2NH0sIklwQWRkcmVzcyI6eyJBV1M6U291cmNlSXAiOiIwLjAuMC4wL zAifX19XX0_&Signature=d7SmaaDK-WQyiJ6C0R70Ql75MiUynC0cXJE0X4kqjUeB9sxK8hXhmPWrqVHpP~sXFkbX10pDg8llCAsMBL1EEzmFi6BDIfTg6afNWRwr4a5xGzyOuAlA6xCjK4L3xVPhcKi99aN97VhyDx7fPFvXyXgxa4Qlua04XcjZmL0t0YCkxmoW5WyAy8iiO UDKMrTosLcEi~6F2BYwpY9F9mDRD2PQTec6bGUXI~6JNMGPbH9PH-1-ow-5vgpczfIb4dWRPoNROjSKZMnPZvJqFmtwmt6mfNE Y6wOIUzqqyylLgP-83rwCfPz7OzSdnwpAuyex9WTFOaocJ3dUIzcS2Wxp-w__&Key-Pair-Id=APKAJD7VLH4OKOE2R73Q
-                  description: A breakdown of all the deposits or withdrawals across sub accounts over the course of the settlement date.
-            transactions:
-              type: object
-              properties:
-                total:
-                  type: string
-                  example: 2
-                  description: The total number of deposits or withdrawals across sub accounts.
-                failed:
-                  type: string
-                  example: 0
-                  description: The total of failed deposits or withdrawals across sub accounts.
-                succeeded:
-                  type: string
-                  example: 2
-                  description: The total amount of successful deposits or withdrawals across sub accounts.
-        partnerID:
-          $ref: '#/components/schemas/parentIBID'
-        created:
-          $ref: '#/components/schemas/created'
-          description: The date and time of when the settlement report was created.
-        updated:
-          $ref: '#/components/schemas/updated'
-          description: The date and time of when the settlement was last updated.
-        updatedBy:
-          $ref: '#/components/schemas/updatedBy'
-        settlementProfileID:
-          $ref: '#/components/schemas/settlementProfileID'
     CreateDVPRVP:
       type: object
       required:
@@ -13781,30 +13057,18 @@ components:
         updatedAt:
           $ref: '#/components/schemas/updated'
           description: The date and time of when the settlement was last updated.
-    category:
+    from:
       type: string
-      example: DEPOSIT
-      enum:
-        - DEPOSIT
-        - WITHDRAWAL
-    settlementID:
-      type: string
-      example: DP_63ccb073-a7b6-4b33-af77-5baec5cc4494_20220118
-      description: The unique identifier that identifies the settlement report.
-    date:
-      type: string
+      format: date
+      pattern: yyyy-MM-dd
       example: '2022-12-25'
-      description: ''
-    settlementStatus:
+      description: A filter, the start date.
+    to:
       type: string
-      example: APPROVED
-      description: The current status of the settlement report.
-      enum:
-        - PENDING
-        - APPROVED
-        - PROCESSING
-        - SUCCESSFUL
-        - FAILED
+      format: date
+      pattern: yyyy-MM-dd
+      example: '2022-12-26'
+      description: A filter, the end date.
     singleSettlementStatus:
       type: string
       example: PENDING
@@ -13818,6 +13082,30 @@ components:
       type: string
       example: sett_63ccb073-a7b6-4b33-af77-5baec5cc4494_settle-profile-usa_20221224
       description: A unique identifier that identifies the settlement.
+    date:
+      type: string
+      example: '2022-12-25'
+      description: ''
+    settlementID:
+      type: string
+      example: DP_63ccb073-a7b6-4b33-af77-5baec5cc4494_20220118
+      description: The unique identifier that identifies the settlement report.
+    settlementStatus:
+      type: string
+      example: APPROVED
+      description: The current status of the settlement report.
+      enum:
+        - PENDING
+        - APPROVED
+        - PROCESSING
+        - SUCCESSFUL
+        - FAILED
+    category:
+      type: string
+      example: DEPOSIT
+      enum:
+        - DEPOSIT
+        - WITHDRAWAL
     UserGeneratedAccountDocument:
       type: object
       properties:
@@ -13917,21 +13205,21 @@ components:
               - $ref: '#/components/schemas/Tax_Info'
               - $ref: '#/components/schemas/Personal_Info'
               - $ref: '#/components/schemas/Address_Info'
-              - $ref: '#/components/schemas/KYCVerificationInfo'
+              - $ref: '#/components/schemas/KYC_Verification_Info'
               - $ref: '#/components/schemas/Employment_Info'
               - $ref: '#/components/schemas/Investor_Profile_Info'
               - $ref: '#/components/schemas/Disclosures'
               - $ref: '#/components/schemas/MarginDisclosure'
               - $ref: '#/components/schemas/CustodianInfo'
-              - $ref: '#/components/schemas/DirectorInfo'
-              - $ref: '#/components/schemas/InstitutionalInfo'
-              - $ref: '#/components/schemas/TrustInfo'
+              - $ref: '#/components/schemas/Director_Info'
+              - $ref: '#/components/schemas/Institutional_Info'
+              - $ref: '#/components/schemas/Trust_Info'
         metadata:
           type: object
           example:
             myCustomKey: myCustomValue
           description: The metadata object allows for creating a maximum of 5 keys (max 36 characters) and each value cannot exceed more than 128 bytes.
-    KYCVerificationInfo:
+    KYC_Verification_Info:
       type: object
       properties:
         type:
@@ -13983,7 +13271,7 @@ components:
               example: customFieldValue4
             customField5:
               example: customFieldValue5
-    TrustInfo:
+    Trust_Info:
       type: object
       properties:
         type:
@@ -14060,7 +13348,7 @@ components:
           properties:
             userID:
               $ref: '#/components/schemas/userID'
-    DirectorInfo:
+    Director_Info:
       type: object
       properties:
         type:
@@ -14088,7 +13376,7 @@ components:
           type: string
           example: fa1336af-02a3-2a82-d1a8-ccf11ecea398
           description: The unique identifier of the institution director should assioacted with..
-    InstitutionalInfo:
+    Institutional_Info:
       type: object
       properties:
         type:
@@ -14411,6 +13699,21 @@ components:
                 The User's current employer name. 
 
                  *⚠️ Only required when status equal to EMPLOYED or SELF_EMPLOYED*
+            companyID:
+              type: string
+              example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+              description: |-
+                A unique identifier created for each Institution or entity on DriveWealth's platform. 
+
+                 *⚠️ Required when 'company' is not provided*
+            from:
+              type: string
+              example: '2014-09-29'
+              description: The User's start date at the employment.
+            to:
+              type: string
+              example: '2022-12-25'
+              description: The User's end date at the employment.
             type:
               type: string
               example: FINANCE
@@ -14890,6 +14193,21 @@ components:
                 The User's current employer name. 
 
                  *⚠️ Only required when status equal to EMPLOYED or SELF_EMPLOYED*
+            companyID:
+              type: string
+              example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+              description: |-
+                A unique identifier created for each Institution or entity on DriveWealth's platform. 
+
+                 *⚠️ Required when 'company' is not provided*
+            from:
+              type: string
+              example: '2014-09-29'
+              description: The User's start date at the employment.
+            to:
+              type: string
+              example: '2022-12-25'
+              description: The User's end date at the employment.
             type:
               type: string
               example: FINANCE
@@ -15134,6 +14452,10 @@ components:
               type: boolean
               example: true
               description: The User accepts DriveWealth's Market Data Agreement.
+            optionsAgreement:
+              type: boolean
+              example: true
+              description: True, if the User accepts DriveWealth's Options trading Agreement.
             rule14b:
               type: boolean
               example: true
@@ -15391,6 +14713,10 @@ components:
           type: boolean
           example: false
           description: True, if the User has accepted DriveWealth's Extended Hours Agreement.
+        ackOptionsAgreement:
+          type: boolean
+          example: true
+          description: True, if the User accepts DriveWealth's Options trading Agreement.
         dependents:
           type: number
           example: 0
@@ -15410,6 +14736,21 @@ components:
           type: string
           example: DriveWealth LLC
           description: The name of the User's employer.
+        employerCompanyID:
+          type: string
+          example: cc07f91b-7ee1-4868-b8fc-823c70a1b932
+          description: |-
+            A unique identifier created for each Institution or entity on DriveWealth's platform. 
+
+             *⚠️ Required when 'company' is not provided*
+        employerCompanyStartDate:
+          type: string
+          example: '2014-09-29'
+          description: The User's start date at the employment.
+        employerCompanyEndDate:
+          type: string
+          example: '2022-12-25'
+          description: The User's end date at the employment.
         employerIsBroker:
           type: boolean
           example: true
