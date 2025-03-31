@@ -42,6 +42,8 @@ tags:
     x-displayName: Asset Transfer
   - name: Auth
     x-displayName: Auth
+  - name: Correspondent Reports
+    x-displayName: Correspondent Reports
   - name: Supported Countries
     x-displayName: Supported Countries
   - name: Disclosures
@@ -1939,6 +1941,66 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateSessToken'
       security: []
+  /correspondantReport:
+    get:
+      tags:
+        - Correspondent Reports
+      parameters:
+        - in: query
+          name: date
+          schema:
+            type: string
+          required: true
+          example: '2023-03-21'
+          description: The date for which the Correspondent Report is being requested
+      summary: Retrieve Correspondent Reports
+      description: Fetch daily reports generated to provide positions, account activity, balances, and more in file format
+      responses:
+        '200':
+          description: Fetching Correspondent reports was successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    $ref: '#/components/schemas/fileURL'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                Invalid request missing date:
+                  value:
+                    errorCode: E031
+                    message: 'Invalid or missing parameters in the request URL or body. Refer to the API documentation for details. Details: Required : [date]'
+                Invalid request:
+                  value:
+                    errorCode: E033
+                    message: Invalid parameter in message body. Refer to the API documentation for details.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorCode:
+                    type: string
+                  message:
+                    type: string
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
   /countries:
     get:
       tags:
@@ -1974,6 +2036,14 @@ paths:
         - Deposits
       summary: Create Deposit
       description: Creates a Deposit.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema:
+            type: string
+            example: a1b2c3d4-5e6f-7g8h-9i0j-1k2l3m4n5o6
+          required: false
+          description: A unique key (UUID) that is used to prevent duplicate requests. Should a network interruption occur, or you otherwise lost a response from the API, you can safely perform the request provided that you send the same value as the Idempotency-Key. DriveWealth Idempotency Keys are saved for 4 days. Within this time period, sending any request with a duplicate key will return the exact same response as the original request, including the same status code and payload.
       requestBody:
         content:
           application/json:
@@ -2636,6 +2706,10 @@ paths:
                   value:
                     errorCode: B100
                     message: The number of bars requested has exceeded the maximum allowed of 20 Years for Weekly bars.
+                Invalid request:
+                  value:
+                    errorCode: E033
+                    message: Invalid parameter in message body. Refer to the API documentation for details.
         '500':
           description: Internal Server Error
           content:
@@ -3052,6 +3126,14 @@ paths:
                   side: BUY
                   quantity: 2
                   travelRuleBankAccountID: bank_485ba18c-009d-4c4a-a6e9-99b104c800b2
+              Market Order With deptType:
+                value:
+                  accountNo: DWFS001102
+                  orderType: MARKET
+                  symbol: SBUX
+                  side: BUY
+                  quantity: 2
+                  deptType: ATS
         required: true
       responses:
         '200':
@@ -3715,6 +3797,14 @@ paths:
         - Withdrawals
       summary: Create Withdrawal
       description: Creates a Withdrawal.
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema:
+            type: string
+            example: a1b2c3d4-5e6f-7g8h-9i0j-1k2l3m4n5o6
+          required: false
+          description: A unique key (UUID) that is used to prevent duplicate requests. Should a network interruption occur, or you otherwise lost a response from the API, you can safely perform the request provided that you send the same value as the Idempotency-Key. DriveWealth Idempotency Keys are saved for 4 days. Within this time period, sending any request with a duplicate key will return the exact same response as the original request, including the same status code and payload.
       requestBody:
         content:
           application/json:
@@ -5352,7 +5442,7 @@ components:
         violationsExempt:
           type: boolean
           example: false
-          description: Instruct the GFV/PDT system to not process for this account.
+          description: Instruct the GFV/PDT system to not process for this account. Available only in sandbox.
         ignoreMarketHoursForTest:
           type: boolean
           example: true
@@ -8653,6 +8743,10 @@ components:
           type: string
           example: 8WfNzC4oTendiesTradingCompanyPuQNwg7BPByWqQOj
           description: The secret of the client accessing the DriveWealth system.
+    fileURL:
+      type: string
+      example: https://dzb6emi8pracf.cloudfront.net/5a013513-8af1-4078-be75-36a5250953f7.1488219178676/Stmt_DRVW_001_DWJM000019_Apr2017.pdf?Policy=eyJTdGF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6Imh0dHBzOi8vZHpiNmVtaThwcmFjZi5jbG91ZGZyb250Lm5ldC81YTAxMzUxMy04YWYxLTQwNzgtYmU3NS0zNmE1MjUwOTUzZjcuMTQ4ODIxOTE3ODY3Ni9TdG10X0RSVldfMDAxX0RXSk0wMDAwMTlfQXByMjAxNy5wZGYiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE0OTk3MTc1NDV9LCJJcEFkZHJlc3MiOnsiQVdTOlNvdXJjZUlwIjoiMC4wLjAuMC8wIn19fV19&Signature=UWZRPku4IWoqkp4fyQ179auFVrImZUYDXswjjO-zPGW9-XKno3-TG9O2OHxWG-j7NfEHMXtZbCha~lQwpjt~g58YpL1NYk9xhlp7~HR-skC3J3W8GFVWxbR5TQUXPFOdU-KNwYlTnlE1Wr81nUyoNWrrF-8afyiHVnfm2w35GpZavAKhOiKNDHn7kTorQz3rbkYDks9u1CGPU7TCeZ-GzupVqsUN7xDOxPUnH0KCVGY86PT8bEpPkhpc3jNmtLnB~WB3YdrFg0bSbrbU4M-sVyp49AqK~xq5uDu3Bx22vdyJlKUClEsVvKhQLOArkpMdHYwyPZC~Kz85sroGqnP3oQ__&Key-Pair-Id=APKAJP3MFGZ6DRA4CW4Q
+      description: A short-lived URL that can be accessed to download the file.
     ListOfAllowedCountry:
       type: object
       properties:
@@ -8883,7 +8977,6 @@ components:
       description: The method/form in which the funds will be arriving to the user's account.
       enum:
         - ACH
-        - WIRE
         - BULK_FUNDING
         - CASH_PROMOTION
         - CASH_TRANSFER
@@ -11584,6 +11677,8 @@ components:
           $ref: '#/components/schemas/clientOrderTransactionTime'
         clientOrderID:
           $ref: '#/components/schemas/clientOrderID'
+        deptType:
+          $ref: '#/components/schemas/deptType'
     LotDisposition:
       type: array
       items:
@@ -11803,6 +11898,17 @@ components:
       properties:
         taxLotID:
           $ref: '#/components/schemas/taxLotID'
+    deptType:
+      type: string
+      example: ATS
+      description: The name of the department in abbreviation form.
+      enum:
+        - A
+        - ATS
+        - DMA
+        - SA
+        - T
+        - O
     UploadUserPhysicalDocument:
       type: object
       properties:
@@ -11833,7 +11939,7 @@ components:
       type: object
       properties:
         url:
-          $ref: '#/components/schemas/physicalDocumentUrl'
+          $ref: '#/components/schemas/fileURL'
     physicalDocumentTypes:
       type: string
       example: DRIVER_LICENSE
@@ -11881,10 +11987,6 @@ components:
           type: string
           example: Document has not been submitted for approval.
           description: A custom description that describes the document current status.
-    physicalDocumentUrl:
-      type: string
-      example: https://d1gfu8yyntzl2k.cloudfront.net/532e1b7d-09fd-4a1b-956f-d4e91ad71b4f.jpeg?Policy=eyJTdGF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6Imh0dHBzOi8vZDFnZnU4eXludHpsMmsuY2xvdWRmcm9udC5uZXQvNTMyZTFiN2QtMDlmZC00YTFiLTk1NmYtZDRlOTFhZDcxYjRmLmpwZWciLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2NzIxNjA4MDl9LCJJcEFkZHJlc3MiOnsiQVdTOlNvdXJjZUlwIjoiMC4wLjAuMC8wIn19fV19&Signature=CB-NL9bncBFNCPZG3m6a7iTgTqvEpqMhY0UnutMl2ysCm1uDS8~zZpuINUioNv7caPeuwIVWJvVTSyZF863j58CPeRYxK2Hlrg4A-JO-nb9oL1nc91Wft2PkUM39WWJsvGWzwGv4nTVlhY~9yP3ZD277LGHKnTnMFFV~07dumA3E7EOR1ygMf8aHkvUecCsGuiH2SjGaCKtqi-fcvAXHx9uk21C3Oy5Z2e8EwQ2xX9cytmMASBwyspxPe~4h1zBDZGO47JBGrjhskTllK6wPcUXt6N8qu~iRsdYaZyPvw4w9MbH2CPj3L6dUChpUjYdC2btkzsAWfkXC08t5iQTUjA__&Key-Pair-Id=APKAJD7VLH4OKOE2R73Q
-      description: A Temporary Uniform Resource Locator (URL) to access the file.
     NBBO:
       type: object
       properties:
@@ -13086,41 +13188,17 @@ components:
       type: string
       example: '2022-12-25'
       description: ''
-    settlementID:
-      type: string
-      example: DP_63ccb073-a7b6-4b33-af77-5baec5cc4494_20220118
-      description: The unique identifier that identifies the settlement report.
-    settlementStatus:
-      type: string
-      example: APPROVED
-      description: The current status of the settlement report.
-      enum:
-        - PENDING
-        - APPROVED
-        - PROCESSING
-        - SUCCESSFUL
-        - FAILED
-    category:
-      type: string
-      example: DEPOSIT
-      enum:
-        - DEPOSIT
-        - WITHDRAWAL
     UserGeneratedAccountDocument:
       type: object
       properties:
         accountID:
           $ref: '#/components/schemas/accountID'
         url:
-          $ref: '#/components/schemas/accountDocumentUrl'
+          $ref: '#/components/schemas/fileURL'
     fileKey:
       type: string
       example: '2022122502'
       description: A unique identifier for the specific account document.
-    accountDocumentUrl:
-      type: string
-      example: https://dzb6emi8pracf.cloudfront.net/5a013513-8af1-4078-be75-36a5250953f7.1488219178676/Stmt_DRVW_001_DWJM000019_Apr2017.pdf?Policy=eyJTdGF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6Imh0dHBzOi8vZHpiNmVtaThwcmFjZi5jbG91ZGZyb250Lm5ldC81YTAxMzUxMy04YWYxLTQwNzgtYmU3NS0zNmE1MjUwOTUzZjcuMTQ4ODIxOTE3ODY3Ni9TdG10X0RSVldfMDAxX0RXSk0wMDAwMTlfQXByMjAxNy5wZGYiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE0OTk3MTc1NDV9LCJJcEFkZHJlc3MiOnsiQVdTOlNvdXJjZUlwIjoiMC4wLjAuMC8wIn19fV19&Signature=UWZRPku4IWoqkp4fyQ179auFVrImZUYDXswjjO-zPGW9-XKno3-TG9O2OHxWG-j7NfEHMXtZbCha~lQwpjt~g58YpL1NYk9xhlp7~HR-skC3J3W8GFVWxbR5TQUXPFOdU-KNwYlTnlE1Wr81nUyoNWrrF-8afyiHVnfm2w35GpZavAKhOiKNDHn7kTorQz3rbkYDks9u1CGPU7TCeZ-GzupVqsUN7xDOxPUnH0KCVGY86PT8bEpPkhpc3jNmtLnB~WB3YdrFg0bSbrbU4M-sVyp49AqK~xq5uDu3Bx22vdyJlKUClEsVvKhQLOArkpMdHYwyPZC~Kz85sroGqnP3oQ__&Key-Pair-Id=APKAJP3MFGZ6DRA4CW4Q
-      description: A Temporary Uniform Resource Locator (URL) to access the file.
     SubscriptionRequest:
       type: object
       required:
@@ -15536,6 +15614,7 @@ components:
       enum:
         - ACTIVE
         - DELETED
+        - DISABLED
     schemas-Documents:
       type: object
       properties:
