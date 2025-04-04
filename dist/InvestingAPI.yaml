@@ -48,6 +48,8 @@ tags:
     x-displayName: Supported Countries
   - name: Disclosures
     x-displayName: Disclosures
+  - name: Escheatment
+    x-displayName: Escheatment
   - name: Exchanges
     x-displayName: Exchanges
   - name: Charts
@@ -1292,9 +1294,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ACATSTransfer'
+                $ref: '#/components/schemas/ACATSTransferCreatedResponseModel'
               examples:
-                Automated Customer Transfer Full:
+                ACATS Transfer (Full):
                   value:
                     id: acats_41eb5bdd-8ce2-4471-8fc6-9892da089cd1
                     source: BROKER0001
@@ -1329,7 +1331,7 @@ paths:
                         comment: <string>
                     created: '2023-07-28T23:56:10.491Z'
                     updated: '2023-07-28T23:56:10.667Z'
-                Automated Customer Transfer Partial:
+                ACATS Transfer (Partial):
                   value:
                     id: acats_45dc50ac-3daa-484d-98cb-5264abb51d86
                     source: FOLIO123
@@ -1351,61 +1353,12 @@ paths:
                       - symbol: META
                         instrumentID: 4312a85c-93ba-4adb-b50d-cc7973243a53
                         quantity: 1
-                Automated Customer Transfer:
-                  value:
-                    source: FOLIO12345
-                    sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
-                    destination: DWST000077
-                    destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
-                    clearingNo: '0001'
-                    sourceAccountType:
-                      name: INDIVIDUAL
-                      description: Individual Account
-                    acatType:
-                      name: FULL
-                      description: Full Acats Transfer
-                    cash: 0
-                    positions:
-                      - symbol: AMZN
-                        instrumentID: 4312a85c-93ba-4adb-b50d-cc7973243a53
-                        quantity: 1
-                    comment: string
-                    metadata: {}
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                  message:
-                    type: string
-                  errorDetails:
-                    type: object
-                    properties:
-                      field:
-                        type: string
-                        description: Json field name in request body
-                      type:
-                        type: string
-                        enum:
-                          - STRING
-                          - ARRAY
-                          - INT
-                          - DECIMAL
-                          - BOOL
-                          - TEXT
-                          - UUID
-                          - DATE
-                          - MAP
-                          - OBJECT
-                        description: |
-                          DataType of the field
-                      allowedValues:
-                        type: string
-                        description: Example values which are allowed in the field
+                $ref: '#/components/schemas/ErrorResponseModel'
               examples:
                 Invalid accountNo on request body:
                   value:
@@ -1429,6 +1382,45 @@ paths:
                     errorDetails:
                       field: positions.symbol
                       type: ARRAY
+                Invalid clearing broker:
+                  value:
+                    errorCode: E032
+                    message: Invalid or missing parameters in the request body. Refer to the API documentation for details.
+                    errorDetails:
+                      detail: 'Refer supported DTCC Broker list on API documentation. '
+                      field: brokerCode
+                      type: STRING
+                Cash Should be Greater Than 0 400 Bad:
+                  value:
+                    errorCode: E032
+                    message: Invalid or missing parameters in the request body. Refer to the API documentation for details.
+                    errorDetails:
+                      detail: cash should greater than 0
+                      field: cash
+                      type: DECIMAL
+                Invalid Symbol in Partial Acats Transfer 400 Bad:
+                  value:
+                    errorCode: I019
+                    message: Invalid symbol(s) in the request body.
+                    errorDetails:
+                      detail: Invalid value for AMZ
+                      field: positions.symbol
+                      type: STRING
+                Positions Required on Partial Acat Transfer 400 Bad:
+                  value:
+                    errorCode: E032
+                    message: Invalid or missing parameters in the request body. Refer to the API documentation for details.
+                    errorDetails:
+                      field: positions
+                      type: OBJECT
+                Acat Type is Missing 400 Bad:
+                  value:
+                    errorCode: E032
+                    message: Invalid or missing parameters in the request body. Refer to the API documentation for details.
+                    errorDetails:
+                      detail: PARTIAL, FULL
+                      field: type
+                      type: ENUM
       requestBody:
         content:
           application/json:
@@ -1451,9 +1443,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ACATSTransfer'
+                $ref: '#/components/schemas/GenericTransferResponseModel'
               examples:
-                Minor Graduation:
+                Minor Graduation Created:
                   value:
                     id: grad_28d08c72-3d0f-4c6e-8961-2dc6491c28a8
                     source: LKGE000001
@@ -1465,6 +1457,51 @@ paths:
                       name: TEEN
                       description: Teen Account Transfer
                     created: '2023-07-26T14:05:18.518Z'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseModel'
+              examples:
+                Validate Source accountNo 400 Bad:
+                  value:
+                    errorCode: E033
+                    message: Invalid parameter in message body. Refer to the API documentation for details.
+                    errorDetails:
+                      field: source
+                      type: STRING
+                Validate Destination accountNo 400 Bad:
+                  value:
+                    errorCode: E033
+                    message: Invalid parameter in message body. Refer to the API documentation for details.
+                    errorDetails:
+                      field: destination
+                      type: STRING
+                Source and Destination account can't be same in transfer 400 Bad:
+                  value:
+                    errorCode: E032
+                    message: 'Invalid or missing parameters in the request body. Refer to the API documentation for details. Details: Source and Destination accounts can''t be same.'
+                Destination account should be OPEN 400 Bad:
+                  value:
+                    errorCode: U072
+                    message: 'User is not allowed to access this resource. Forbidden: LKAF000023 should be OPEN in order to initiate the transfer.'
+                Source account should be OPEN 400 Bad:
+                  value:
+                    errorCode: T004
+                    message: 'Assets Transfer cannot initiate. Details: LKKZ000021 has PENDING account status, user can''t initiate the transfer. Please contact support.'
+                Source account has no cash and positions both 400 Bad:
+                  value:
+                    errorCode: T004
+                    message: 'Assets Transfer cannot initiate. Details: LKMA000035 has no cash or positions, user can''t initiate the transfer. Please contact support.'
+                Missing Authorized User on Teen Account 400 Bad:
+                  value:
+                    errorCode: A022
+                    message: Authorized user on account is missing. Refer to the API documentation for the details.
+                Duplicate Minor Asset Transfer Request 400 Bad:
+                  value:
+                    errorCode: E020
+                    message: 'Value is already exists. Details: Assets transfer request is already exist for LKNS000023'
       requestBody:
         content:
           application/json:
@@ -1500,16 +1537,109 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ACATSTransfer'
+                anyOf:
+                  - $ref: '#/components/schemas/AcatsTransferGetResponseModel'
+                  - $ref: '#/components/schemas/GenericTransferResponseModel'
               examples:
-                Successful ACATS Transfer:
+                ACATS Transfer (Full):
+                  value:
+                    id: acats_385621f4-ef89-4a4e-8cc1-ef1295549ca4
+                    source: FA-IJKE001
+                    destination: DWWFP000907
+                    destinationAccountID: deb66500-168a-4432-9b1c-05a58e1d563f.1742485154193
+                    clearingNo: '0123'
+                    status:
+                      name: PENDING
+                      description: Asset transfer request is pending
+                    type:
+                      name: ACAT
+                      description: ACAT transfer
+                    acatType:
+                      name: FULL
+                      description: Full Acats Transfer
+                    acatTransit:
+                      name: ACAT_IN
+                      description: Incoming ACAT Transfer
+                    sourceAccountType:
+                      name: INDIVIDUAL
+                      description: Individual Account
+                    partner:
+                      id: ac5de50f-2297-e2e7-7b31-2c54872ae231
+                      name: Test
+                    incomingCash: 10000
+                    positions: []
+                    incomingPositions:
+                      - symbol: AMD
+                        cusip: '007903107'
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 8
+                      - symbol: SBSI
+                        cusip: 84470P109
+                        instrumentID: 1c6c1625-a84b-4dd3-8146-c6a97cd74bcf
+                        quantity: 7
+                      - symbol: TSLA
+                        cusip: 88160R101
+                        instrumentID: 5b85fabb-a7f6-44e6-d57c-a3efc760226c
+                        quantity: 9
+                    outgoingPositions: []
+                    settlementInfo:
+                      controlNo: '20250320013533'
+                      status724: '310'
+                      status: ACAT_SETTLED
+                      positions:
+                        accepted:
+                          - '007903107'
+                          - 84470P109
+                          - 88160R101
+                      cash: 10000
+                    auditDetails:
+                      - timestamp: '2025-03-20T15:39:19.319Z'
+                        status:
+                          name: STARTED
+                          description: Asset transfer request has been initiated.
+                        comment: Transfer request has been submitted in queue
+                      - timestamp: '2025-03-20T15:43:09.252Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        comment: TIF has been created
+                        updatedBy: ACAT_TRANSFER_SYSTEM
+                      - timestamp: '2025-03-20T15:44:26.852Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        comment: Transfer is under review
+                        updatedBy: ACAT_STATUS_UPDATE_SYSTEM
+                      - timestamp: '2025-03-20T15:45:03.041Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '230'
+                        comment: ACAT auto-review completed. Ready for sending to DTCC.
+                        updatedBy: ACAT_REVIEW_SYSTEM
+                      - timestamp: '2023-10-20T18:00:04.185Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '500'
+                        comment: Partial transfer in progress
+                        updatedBy: ACAT_STATUS_UPDATE_SYSTEM
+                      - timestamp: '2023-10-21T00:01:19.340Z'
+                        status:
+                          name: SUCCESSFUL
+                          description: Asset transfer request has been successfully completed
+                        status724: '310'
+                        comment: Transfer Settled
+                        updatedBy: ACAT_STATUS_UPDATE_SYSTEM
+                    created: '2025-03-20T15:39:19.226Z'
+                    updated: '2025-03-20T15:44:27.029Z'
+                ACATS Transfer (Partial):
                   value:
                     id: acats_0a18eea2-c63d-447a-a0f1-1c7d9a08c9da
                     source: TR6666
-                    sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
                     destination: FWCT000005
                     destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
-                    clearingNo: '1111'
+                    clearingNo: '0158'
                     status:
                       name: SUCCESSFUL
                       description: Asset transfer request has been successfully completed
@@ -1528,10 +1658,28 @@ paths:
                     partner:
                       id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
                       name: Stark House
+                    incomingCash: 0
+                    incomingPositions:
+                      - symbol: AMD
+                        cusip: '007903107'
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 3
+                      - symbol: SBSI
+                        cusip: 84470P109
+                        instrumentID: 1c6c1625-8146-4dd3-a84b-c6a97cd74bcf
+                        quantity: 56
+                    outgoingPositions: []
+                    settlementInfo:
+                      controlNo: '20250320013533'
+                      status724: '310'
+                      status: ACAT_SETTLED
+                      positions:
+                        accepted:
+                          - '007903107'
                     positions:
-                      - symbol: ACHN
-                        instrumentID: 27673f0e-2219-40b0-9ecc-91c87266efaf
-                        quantity: 1
+                      - symbol: AMD
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 3
                       - symbol: SBSI
                         instrumentID: 1c6c1625-8146-4dd3-a84b-c6a97cd74bcf
                         quantity: 56
@@ -1547,60 +1695,318 @@ paths:
                           name: PENDING
                           description: Asset transfer request is pending
                         comment: TIF has been created
-                      - timestamp: '2023-11-02T00:01:19.340Z'
+                        updatedBy: ACAT_TRANSFER_SYSTEM
+                      - timestamp: '2023-10-20T17:00:04.185Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '230'
+                        comment: ACAT auto-review completed. Ready for sending to DTCC.
+                        updatedBy: ACAT_REVIEW_SYSTEM
+                      - timestamp: '2023-10-20T18:00:04.185Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '500'
+                        comment: Partial transfer in progress
+                        updatedBy: ACAT_STATUS_UPDATE_SYSTEM
+                      - timestamp: '2023-10-21T00:01:19.340Z'
                         status:
                           name: SUCCESSFUL
                           description: Asset transfer request has been successfully completed
+                        status724: '310'
                         comment: Transfer Settled
+                        updatedBy: ACAT_STATUS_UPDATE_SYSTEM
                     created: '2023-10-20T13:02:50.960Z'
-                    updated: '2023-11-02T00:01:19.340Z'
-                Failed ACATS Transfer:
+                    updated: '2023-10-21T00:01:19.340Z'
+                ACATS Transfer accepted:
                   value:
-                    id: acats_d9faa000-9d97-4ab8-85f8-cbd856d31b79
+                    id: acats_385621f4-ef89-4a4e-8cc1-ef1295549ca4
                     source: TR6666
-                    sourceAccountID: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
-                    destination: FWRT000005
-                    destinationAccountID: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
-                    clearingNo: '1111'
+                    destination: DWWFP000907
+                    destinationAccountID: deb66500-168a-4432-9b1c-05a58e1d563f.1742485154193
+                    clearingNo: '0123'
                     status:
-                      name: FAILED
-                      description: Asset transfer is failed.
+                      name: PENDING
+                      description: Asset transfer request is pending
                     type:
                       name: ACAT
                       description: ACAT transfer
                     acatType:
                       name: FULL
                       description: Full Acats Transfer
+                    acatTransit:
+                      name: ACAT_IN
+                      description: Incoming ACAT Transfer
                     sourceAccountType:
                       name: INDIVIDUAL
                       description: Individual Account
                     partner:
-                      id: 25f77a3e-2a4b-48bf-bea2-1b8bcd541621
-                      name: Stark House
+                      id: ac5de50f-2297-e2e7-7b31-2c54872ae231
+                      name: Test
+                    incomingCash: 0
                     positions: []
-                    metadata:
-                      customer_id: '12345'
-                    rejectionInfo:
-                      rejectionCode: ACCOUNT_NOT_MATCH
-                      rejectionReason: Account Title Mismatch
+                    incomingPositions:
+                      - symbol: AMD
+                        cusip: '007903107'
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 3
+                    outgoingPositions: []
+                    settlementInfo:
+                      controlNo: '20250320013533'
+                      status724: '230'
+                      status: ACAT_REVIEW_ACCEPTED
+                      positions:
+                        accepted:
+                          - '007903107'
                     auditDetails:
-                      - timestamp: '2023-08-28T11:30:26.367Z'
+                      - timestamp: '2025-03-20T15:39:19.319Z'
                         status:
                           name: STARTED
                           description: Asset transfer request has been initiated.
                         comment: Transfer request has been submitted in queue
-                      - timestamp: '2023-09-12T15:55:03.294Z'
+                      - timestamp: '2025-03-20T15:43:09.252Z'
                         status:
                           name: PENDING
                           description: Asset transfer request is pending
-                        comment: Request has been submitted for ACAT transfer
-                      - timestamp: '2023-11-02T00:01:34.330Z'
+                        comment: TIF has been created
+                        updatedBy: ACAT_TRANSFER_SYSTEM
+                      - timestamp: '2025-03-20T15:44:26.852Z'
                         status:
-                          name: FAILED
-                          description: Asset transfer is failed.
-                        comment: Full Transfer Rejected. Contact Clearing Broker for further information
-                    created: '2023-08-28T11:30:25.805Z'
-                    updated: '2023-11-02T00:01:34.330Z'
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        comment: Transfer is under review
+                        updatedBy: ACAT_STATUS_UPDATE_SYSTEM
+                      - timestamp: '2025-03-20T15:45:03.041Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '230'
+                        comment: ACAT auto-review completed. Ready for sending to DTCC.
+                        updatedBy: ACAT_REVIEW_SYSTEM
+                    created: '2025-03-20T15:39:19.226Z'
+                    updated: '2025-03-20T15:44:27.029Z'
+                ACATS Transfer rejected, symbol unsupported:
+                  value:
+                    id: acats_afa75685-370b-4b28-a3d1-3e791797f4e6
+                    source: FAKE001
+                    destination: DWWHA000914
+                    destinationAccountID: deb66500-168a-4432-9b1c-05a58e1d563f.1742496584428
+                    clearingNo: '0123'
+                    status:
+                      name: PENDING
+                      description: Asset transfer request is pending
+                    type:
+                      name: ACAT
+                      description: ACAT transfer
+                    acatType:
+                      name: PARTIAL
+                      description: Partial Acats Transfer
+                    acatTransit:
+                      name: ACAT_IN
+                      description: Incoming ACAT Transfer
+                    sourceAccountType:
+                      name: INDIVIDUAL
+                      description: Individual Account
+                    partner:
+                      id: ac5de50f-2297-e2e7-7b31-2c54872ae231
+                      name: Test
+                    incomingCash: 100
+                    positions:
+                      - symbol: AMD
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 15
+                    incomingPositions:
+                      - symbol: AMD
+                        cusip: '007903107'
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 3
+                    outgoingPositions: []
+                    settlementInfo:
+                      controlNo: '20250320013538'
+                      status724: '220'
+                      status: ACAT_REVIEW_ERROR
+                      cash: 100
+                    rejectionInfo:
+                      rejected:
+                        '007903107': AMD is not supported. EQUITY is not supported.
+                      rejectionCode: SYMBOL_NOT_SUPPORTED
+                      rejectionReason: Instrument not supported
+                      positions:
+                        '007903107': AMD is not supported. EQUITY is not supported.
+                    auditDetails:
+                      - timestamp: '2025-03-20T18:54:32.953Z'
+                        status:
+                          name: STARTED
+                          description: Asset transfer request has been initiated.
+                        comment: Transfer request has been submitted in queue
+                      - timestamp: '2025-03-20T18:54:41.967Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        comment: TIF has been created
+                      - timestamp: '2025-03-20T18:56:19.001Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        comment: Transfer is under review
+                      - timestamp: '2025-03-20T18:56:27.547Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '220'
+                        comment: ACAT auto-review completed. Ready for sending to DTCC.
+                    created: '2025-03-20T18:54:32.914Z'
+                    updated: '2025-03-20T18:56:19.148Z'
+                ACATS Transfer rejected, debit balance:
+                  value:
+                    id: acats_8a83f127-642f-467f-9b3c-499995d20c23
+                    source: FAKE001
+                    destination: DWWNE000902
+                    destinationAccountID: deb66500-168a-4432-9b1c-05a58e1d563f.1742500153887
+                    clearingNo: '0123'
+                    status:
+                      name: PENDING
+                      description: Asset transfer request is pending
+                    type:
+                      name: ACAT
+                      description: ACAT transfer
+                    acatType:
+                      name: PARTIAL
+                      description: Partial Acats Transfer
+                    acatTransit:
+                      name: ACAT_IN
+                      description: Incoming ACAT Transfer
+                    sourceAccountType:
+                      name: INDIVIDUAL
+                      description: Individual Account
+                    partner:
+                      id: ac5de50f-2297-e2e7-7b31-2c54872ae231
+                      name: Test
+                    cash: 500
+                    incomingCash: -700
+                    positions:
+                      - symbol: AMD
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 15
+                    incomingPositions:
+                      - symbol: AMD
+                        cusip: '007903107'
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 15
+                    outgoingPositions: []
+                    settlementInfo:
+                      controlNo: '20250320013541'
+                      status724: '220'
+                      status: ACAT_REVIEW_ERROR
+                      positions:
+                        accepted:
+                          - '007903107'
+                    rejectionInfo:
+                      rejectionCode: MISSING_FUND
+                      rejectionReason: Partial transfer cannot have debit balance.
+                      cash: 700
+                    auditDetails:
+                      - timestamp: '2025-03-20T19:49:18.653Z'
+                        status:
+                          name: STARTED
+                          description: Asset transfer request has been initiated.
+                        comment: Transfer request has been submitted in queue
+                      - timestamp: '2025-03-20T19:50:08.062Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '200'
+                        comment: Transfer is under review
+                        updatedBy: ACAT_STATUS_UPDATE_SYSTEM
+                      - timestamp: '2025-03-20T19:50:32.102Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '220'
+                        comment: ACAT auto-review completed. Ready for sending to DTCC.
+                        updatedBy: ACAT_REVIEW_SYSTEM
+                    created: '2025-03-20T19:49:18.627Z'
+                    updated: '2025-03-20T19:50:08.308Z'
+                ACATS Transfer with excluded securities:
+                  value:
+                    id: acats_91bd66d1-85bd-49c7-ae1a-aefb9e77a79e
+                    source: FF-12-001
+                    destination: DWWNE000901
+                    destinationAccountID: deb66500-168a-4432-9b1c-05a58e1d563f.1742499753944
+                    clearingNo: '0123'
+                    status:
+                      name: PENDING
+                      description: Asset transfer request is pending
+                    type:
+                      name: ACAT
+                      description: ACAT transfer
+                    acatType:
+                      name: PARTIAL
+                      description: Partial Acats Transfer
+                    acatTransit:
+                      name: ACAT_IN
+                      description: Incoming ACAT Transfer
+                    sourceAccountType:
+                      name: INDIVIDUAL
+                      description: Individual Account
+                    partner:
+                      id: ac5de50f-2297-e2e7-7b31-2c54872ae231
+                      name: Test
+                    incomingCash: 100
+                    positions:
+                      - symbol: AMD
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 15
+                    incomingPositions:
+                      - symbol: AMD
+                        cusip: '007903107'
+                        instrumentID: 0bfd8059-8456-4b1b-1491-b394992409df
+                        quantity: 15
+                      - symbol: ''
+                        cusip: L7066G104
+                        quantity: 21
+                      - symbol: ''
+                        cusip: L8066G104
+                        quantity: 21
+                      - symbol: ''
+                        cusip: L9066G104
+                        quantity: 21
+                    outgoingPositions: []
+                    settlementInfo:
+                      controlNo: '20250320013540'
+                      status724: '230'
+                      status: ACAT_REVIEW_ACCEPTED
+                      positions:
+                        accepted:
+                          - '007903107'
+                        excluded:
+                          L7066G104: Offshore MF found and excluded.
+                          L8066G104: Offshore MF found and excluded.
+                          L9066G104: Offshore MF found and excluded.
+                      cash: 100
+                    auditDetails:
+                      - timestamp: '2025-03-20T19:42:38.877Z'
+                        status:
+                          name: STARTED
+                          description: Asset transfer request has been initiated.
+                        comment: Transfer request has been submitted in queue
+                      - timestamp: '2025-03-20T19:43:32.377Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '200'
+                        comment: Transfer is under review
+                        updatedBy: ACAT_STATUS_UPDATE_SYSTEM
+                      - timestamp: '2025-03-20T19:43:56.113Z'
+                        status:
+                          name: PENDING
+                          description: Asset transfer request is pending
+                        status724: '230'
+                        comment: ACAT auto-review completed. Ready for sending to DTCC.
+                        updatedBy: ACAT_REVIEW_SYSTEM
+                    created: '2025-03-20T19:42:38.799Z'
+                    updated: '2025-03-20T19:43:32.611Z'
                 Minor Graduation:
                   value:
                     id: grad_28d08c72-3d0f-4c6e-8961-2dc6491c28a8
@@ -1679,7 +2085,8 @@ paths:
                     type: array
                     items:
                       anyOf:
-                        - $ref: '#/components/schemas/ACATSTransfer'
+                        - $ref: '#/components/schemas/AcatsTransferListResponseModel'
+                        - $ref: '#/components/schemas/GenericTransferResponseModel'
                   nextPageOffset:
                     type: string
                     description: The next page offset.
@@ -1970,12 +2377,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                  message:
-                    type: string
+                $ref: '#/components/schemas/ErrorResponseModel'
               examples:
                 Invalid request missing date:
                   value:
@@ -1990,12 +2392,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                  message:
-                    type: string
+                $ref: '#/components/schemas/ErrorResponseModel'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -2675,12 +3072,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                  message:
-                    type: string
+                $ref: '#/components/schemas/ErrorResponseModel'
               examples:
                 Invalid request for daily bars:
                   value:
@@ -2715,12 +3107,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                  message:
-                    type: string
+                $ref: '#/components/schemas/ErrorResponseModel'
               examples:
                 OneTick bars request exceeded:
                   value:
@@ -3147,32 +3534,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                  message:
-                    type: string
-                  errorDetails:
-                    type: object
-                    properties:
-                      field:
-                        type: string
-                        description: Json field name in request body
-                      type:
-                        type: string
-                        enum:
-                          - STRING
-                          - ARRAY
-                          - INT
-                          - DECIMAL
-                          - BOOL
-                          - TEXT
-                          - UUID
-                          - DATE
-                          - MAP
-                          - OBJECT
-                        description: DataType of the field
+                $ref: '#/components/schemas/ErrorResponseModel'
               examples:
                 Both Commission and CommissionRate are present in the request:
                   value:
@@ -3203,12 +3565,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errorCode:
-                    type: string
-                  message:
-                    type: string
+                $ref: '#/components/schemas/ErrorResponseModel'
               examples:
                 Account is restricted from making day trades:
                   value:
@@ -3291,6 +3648,157 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OrderStatusResponse'
+      security:
+        - bearerAuth: []
+          dwAppKey: []
+        - sessionToken: []
+          dwAppKey: []
+  /orders/{orderID}/audit:
+    get:
+      tags:
+        - Orders
+      summary: Retrieve Order Audit Details
+      description: Retrieves an Order Audit Details by Order
+      parameters:
+        - in: path
+          name: orderID
+          schema:
+            $ref: '#/components/schemas/orderID'
+          required: true
+      responses:
+        '200':
+          description: Retrieving an Order Audit by OrderID was Successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderAuditResponse'
+              examples:
+                Order Audit Example:
+                  value:
+                    orderID: LL.203309cd-91c7-4f9a-9f33-632d0109cc77
+                    orderNo: LLFE048977
+                    accountID: a8888112-92d3-65d9-h20a-f333aeb4ae76.1646639525528
+                    accountNo: XXXR000004
+                    quantities:
+                      requestedQuantity: 10
+                      totalFilledQuantity: 10
+                    ordStatus: FILLED
+                    side: SELL
+                    symbol: HOOD
+                    ordType: LIMIT
+                    amountCash: 0
+                    violationExempt: false
+                    preventQueuing: false
+                    extendedHours: false
+                    pricing:
+                      avgPxRaw: 44.22
+                      avgPx: 44.22
+                      stopPx: 0
+                      mitTriggerPrice: 0
+                    instrumentID: 4ab39131-2ca0-466c-b96c-332357bc0826
+                    orderExpires: '2025-03-07T21:00:00.000Z'
+                    commissionOverride:
+                      commissionOverrideType: RAW_COMMISSION
+                      commissionID: null
+                      commissionOverrideDesc: Standard Commission
+                      commissionAmount: 1.28
+                      secOverride: 0.01
+                      tafOverride: 0.01
+                    commissionAndFees:
+                      total: 1.3
+                      tefra: 0
+                      ptp: 0
+                    auditOrders:
+                      - status: NEW
+                        quantities:
+                          cumulativeQuantity: 0
+                          filledQuantity: 0
+                          remainingQuantity: 0
+                        pricing:
+                          averagePrice: 0
+                          averagePriceRaw: 0
+                          lastPrice: 0
+                          rateAsk: 0
+                          rateBid: 0
+                        commissionAndFees:
+                          commission: 1.28
+                          feeSec: 0
+                          feeTaf: 0
+                          feeBase: 0
+                          feeXtraShares: 0
+                          feeExchange: 0
+                        pnl: 0
+                        transactTime: '2024-12-10T01:57:53.109Z'
+                        comment: NOS started
+                        createdWhen: '2024-12-10T01:57:53.109Z'
+                      - status: CANCELED
+                        quantities:
+                          cumulativeQuantity: 0
+                          filledQuantity: 0
+                          remainingQuantity: 0
+                        pricing:
+                          averagePrice: 0
+                          averagePriceRaw: 0
+                          lastPrice: 0
+                          rateAsk: 37.44
+                          rateBid: 37.4
+                        commissionAndFees:
+                          commission: 0
+                          feeSec: 0
+                          feeTaf: 0
+                          feeBase: 0
+                          feeXtraShares: 0
+                          feeExchange: 0
+                        pnl: 0
+                        transactTime: '2024-12-10T21:25:00.358Z'
+                        comment: oNo LLFE048977 aNo RAXR000004
+                        eventID: event_cc97eaa0-a245-469b-83f4-1f5b8374f77e
+                        createdWhen: '2024-12-10T21:25:00.375Z'
+                      - status: NEW
+                        quantities:
+                          cumulativeQuantity: 0
+                          filledQuantity: 0
+                          remainingQuantity: 10
+                        pricing:
+                          averagePrice: 0
+                          averagePriceRaw: 0
+                          lastPrice: 0
+                          rateAsk: 38.74
+                          rateBid: 38.7
+                        commissionAndFees:
+                          commission: 0
+                          feeSec: 0
+                          feeTaf: 0
+                          feeBase: 0
+                          feeXtraShares: 0
+                          feeExchange: 0
+                        pnl: 0
+                        transactTime: '2024-12-11T14:05:32.600Z'
+                        comment: NOS Sending to sor when open
+                        createdWhen: '2024-12-11T14:05:32.600Z'
+                      - status: FILLED
+                        quantities:
+                          cumulativeQuantity: 0
+                          filledQuantity: 0
+                          remainingQuantity: 0
+                        pricing:
+                          averagePrice: 44.22
+                          averagePriceRaw: 44.22
+                          lastPrice: 0
+                          rateAsk: 38
+                          rateBid: 37.84
+                        commissionAndFees:
+                          commission: 0
+                          feeSec: 0
+                          feeTaf: 0
+                          feeBase: 0
+                          feeXtraShares: 0
+                          feeExchange: 0
+                        pnl: 0
+                        transactTime: '2024-12-11T21:00:05.494Z'
+                        comment: oNo LLFE048977 aNo RAXR000004
+                        eventID: event_539cae86-9c77-48a1-b2d7-5efe111a638c
+                        createdWhen: '2024-12-11T21:00:05.523Z'
       security:
         - bearerAuth: []
           dwAppKey: []
@@ -7274,7 +7782,7 @@ components:
     orderNo:
       type: string
       example: ICDU023727
-      description: The unique order number that is human readable.
+      description: A unique, human-readable DriveWealth order number.
     created:
       type: string
       example: '2022-12-11T22:28:21.810Z'
@@ -7416,7 +7924,7 @@ components:
     orderTypes:
       type: string
       example: MARKET
-      description: The type of order that is placed.
+      description: The type of the Order.
       enum:
         - MARKET
         - LIMIT
@@ -8398,10 +8906,8 @@ components:
           $ref: '#/components/schemas/note'
         metadata:
           $ref: '#/components/schemas/metadata'
-    GenericTransfer:
+    GenericTransferResponseModel:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/GenericTransferRequest'
       properties:
         id:
           $ref: '#/components/schemas/assetTransferID'
@@ -8483,6 +8989,77 @@ components:
       enum:
         - ACAT_IN
         - ACAT_OUT
+    Status724:
+      type: string
+      description: The status of the transfer in the clearing custody.
+      example: '230'
+    SettlementInfo:
+      title: AcatSettlementInfo
+      type: object
+      description: Settlement Info will appear when transfer gets sent to clearing custody. It consists of the controlno assigned from clearing custody and the status.
+      properties:
+        controlNo:
+          type: string
+          description: The control number assigned by the clearing custody.
+          example: '20250320013533'
+        status:
+          type: string
+          enum:
+            - ACAT_RECEIVED
+            - ACAT_READY
+            - ACAT_READY_AFTER_CUTOFF
+            - ACAT_SENT
+            - ACAT_ACK
+            - ACAT_ADJUST
+            - ACAT_IN_PROGRESS
+            - ACAT_UNDER_REVIEW
+            - ACAT_REVIEW_ACK
+            - ACAT_REVIEW_SENT
+            - ACAT_REVIEW_ADJUST
+            - ACAT_PTR_IN_PROGRESS
+            - ACAT_REVIEW_ACCEPTED
+            - ACAT_SETTLEMENT_IN_PROGRESS
+            - ACAT_REVIEW_ERROR
+            - ACAT_SETTLED
+            - ACAT_REJECTED
+            - ACAT_PURGE
+            - ACAT_PTR_REJECTED
+            - UNRECOGNISED
+          description: Enum for the status assigned by clearing custody
+          example: ACAT_REVIEW_ACCEPTED
+        status724:
+          $ref: '#/components/schemas/Status724'
+        positions:
+          type: object
+          description: The positions and cash which accepted by broker after review.
+          properties:
+            cash:
+              type: number
+              description: The amount of cash to be moved to account.
+              default: 0
+            accepted:
+              type: array
+              description: The positions which are accepted and to be moved from the account. Array is consist of cusip values.
+            excluded:
+              type: array
+              description: The positions which are excluded in transfer. Array is consist of cusip values. We will exclude the assets which are not supported by ACAT transfer.
+    RejectionInfo:
+      type: object
+      properties:
+        rejectionCode:
+          $ref: '#/components/schemas/AcatRejectionCode'
+        rejectionReason:
+          type: string
+        positions:
+          type: object
+          description: The positions which are rejected by broker after review.
+          additionalProperties:
+            type: string
+            example: Instrument not found.
+        cash:
+          type: number
+          description: The debit amount of cash which is rejected by broker after review.
+          example: -700
     AcatsCreateRequestModel:
       type: object
       title: AcatsRequestModel
@@ -8500,11 +9077,8 @@ components:
         - destination
         - clearingNo
         - type
-    ACATSTransfer:
+    AcatsTransferListResponseModel:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/GenericTransfer'
-        - $ref: '#/components/schemas/AcatsCreateRequestModelWithoutEnums'
       properties:
         sourceAccountID:
           $ref: '#/components/schemas/sourceAccountID'
@@ -8531,6 +9105,47 @@ components:
               $ref: '#/components/schemas/AcatsTransitType'
             description:
               type: string
+        settlementInfo:
+          $ref: '#/components/schemas/SettlementInfo'
+        rejectionInfo:
+          $ref: '#/components/schemas/RejectionInfo'
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        auditDetails:
+          type: array
+          description: Audit of Transfer status changes
+          anyOf:
+            - $ref: '#/components/schemas/AcatsAuditDetails'
+    AcatsTransferGetResponseModel:
+      type: object
+      properties:
+        sourceAccountID:
+          $ref: '#/components/schemas/sourceAccountID'
+        destinationAccountID:
+          $ref: '#/components/schemas/destinationAccountID'
+        sourceAccountType:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/AcatsTransferEnumValues_SourceAccountType'
+            description:
+              type: string
+        acatType:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/AcatsType'
+            description:
+              type: string
+        acatTransit:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/AcatsTransitType'
+            description:
+              type: string
+        settlementInfo:
+          $ref: '#/components/schemas/SettlementInfo'
         rejectionInfo:
           type: object
           properties:
@@ -8538,6 +9153,58 @@ components:
               $ref: '#/components/schemas/AcatRejectionCode'
             rejectionReason:
               type: string
+            positions:
+              type: object
+              description: The positions which are rejected by broker after review.
+              additionalProperties:
+                type: string
+                example: Instrument not found.
+            cash:
+              type: number
+              description: The debit amount of cash which is rejected by broker after review.
+              example: -700
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        auditDetails:
+          type: array
+          description: Audit of Transfer status changes
+          anyOf:
+            - $ref: '#/components/schemas/AcatsAuditDetails'
+    ACATSTransferCreatedResponseModel:
+      type: object
+      properties:
+        sourceAccountID:
+          $ref: '#/components/schemas/sourceAccountID'
+        destinationAccountID:
+          $ref: '#/components/schemas/destinationAccountID'
+        sourceAccountType:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/AcatsTransferEnumValues_SourceAccountType'
+            description:
+              type: string
+        acatType:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/AcatsType'
+            description:
+              type: string
+        acatTransit:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/AcatsTransitType'
+            description:
+              type: string
+        metadata:
+          $ref: '#/components/schemas/metadata'
+        auditDetails:
+          type: array
+          description: Audit of Transfer status changes
+          anyOf:
+            - $ref: '#/components/schemas/AcatsAuditDetails'
     MinorCreateRequestModel:
       type: object
       allOf:
@@ -8611,7 +9278,25 @@ components:
     AuditDetails:
       type: object
       properties:
-        status: {}
+        status:
+          $ref: '#/components/schemas/AssetTransferStatus'
+        comment:
+          $ref: '#/components/schemas/note'
+        updatedBy:
+          type: string
+          description: The user who updated the status.
+        timestamp:
+          type: string
+          format: date-time
+          description: Status update timestamp
+          example: '2022-12-22T06:07:41Z'
+    AcatsAuditDetails:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/AssetTransferStatus'
+        status724:
+          $ref: '#/components/schemas/Status724'
         comment:
           $ref: '#/components/schemas/note'
         updatedBy:
@@ -8625,10 +9310,6 @@ components:
       example:
         myCustomKey: myCustomValue
       description: The metadata object allows for creating a maximum of 5 keys (max 36 characters) and each value cannot exceed more than 128 bytes.
-    assetTransferID:
-      type: string
-      example: c85b231a-2bc9-11ee-be56-0242ac120002
-      description: The unique identifier of the asset transfer.
     sourceAccountID:
       type: string
       example: d6a776bc-be5c-47df-94eb-baf914f1847c.1738660911962
@@ -8637,6 +9318,53 @@ components:
       type: string
       example: c815c129-27cd-46f2-b316-ab6bde9aff62.1737384219426
       description: It's a unique destination account id, that is human readable.
+    ErrorCode:
+      type: string
+      description: The error code that is returned when an error occurs.
+      example: E032
+    ErrorCodeMessage:
+      type: string
+      description: The error message that is returned when an error occurs.
+    ErrorDetails:
+      type: object
+      properties:
+        field:
+          type: string
+          description: JSON field name from the request body that caused an error
+        type:
+          type: string
+          enum:
+            - STRING
+            - ARRAY
+            - INT
+            - DECIMAL
+            - BOOL
+            - TEXT
+            - UUID
+            - DATE
+            - MAP
+            - OBJECT
+          description: Expected data type of the field
+        allowedValues:
+          type: string
+          description: Example values which are allowed in the field
+    ErrorResponseModel:
+      type: object
+      description: The error response model that is returned when an error occurs.
+      required:
+        - errorCode
+        - message
+      properties:
+        errorCode:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          $ref: '#/components/schemas/ErrorCodeMessage'
+        errorDetails:
+          $ref: '#/components/schemas/ErrorDetails'
+    assetTransferID:
+      type: string
+      example: c85b231a-2bc9-11ee-be56-0242ac120002
+      description: The unique identifier of the asset transfer.
     partnerID:
       type: string
       example: 80f9b672-120d-4b73-9ccv9-42fb3262c4b9
@@ -11567,34 +12295,13 @@ components:
           example: CSSW000001
           description: The user's assiocated account number.
         orderType:
-          type: string
-          example: MARKET
-          description: The type of order that is being placed. For Options orders, only “LIMIT” orders will be supported
-          enum:
-            - MARKET
-            - LIMIT
-            - STOP
-            - MARKET_IF_TOUCHED
+          $ref: '#/components/schemas/orderTypesRequest'
         limitType:
-          type: string
-          enum:
-            - PRICE
-            - YIELD
-          description: Whether the limit price represents a unit price, or a yield. Only applicable to Orders for debt Instruments.
-          example: PRICE
+          $ref: '#/components/schemas/limitType'
         symbol:
           $ref: '#/components/schemas/instrumentSymbol'
         side:
-          type: string
-          example: BUY
-          description: Whether an order is to purchase or sell. Generally, the value should be set to `BUY` or `SELL`. For Options orders, `BUY_OPEN`, `BUY_CLOSE`, `SELL_OPEN`, `SELL_CLOSE` should be used.
-          enum:
-            - BUY
-            - SELL
-            - BUY_OPEN
-            - BUY_CLOSE
-            - SELL_OPEN
-            - SELL_CLOSE
+          $ref: '#/components/schemas/schemas-side'
         instrumentID:
           $ref: '#/components/schemas/instrumentID'
         ISIN:
@@ -11619,46 +12326,21 @@ components:
           example: 4
           description: A USD amount to charge as commission for an Order. This defaults to using an Account's assigned Commission Schedule if unset. For example, `4` will result in a $4.00 commission charge, regardless of the assigned Commission Schedule.
         commissionRate:
-          type: number
-          format: BigDecimal
-          description: The commission rate is a percentage charge to the total amount of the order.
-          example: 0.3
-          minimum: 0.0001
-          maximum: 1
+          $ref: '#/components/schemas/commissionRate'
         clientNotes:
           type: string
           example: Manual limit order.
           description: Client facing notes that can be added to a request.
         preventQueuing:
-          type: boolean
-          example: false
-          description: If set to `true`, Orders received when the market is closed will not be queued for the next market open, and will be rejected. Please pay attention to the spelling of queuing as there are two valid spellings of this word.
-          enum:
-            - true
-            - false
+          $ref: '#/components/schemas/preventQueuing'
         extendedHours:
-          type: boolean
-          example: false
-          description: Whether the order is eligible for Extended Hours Trading. The `timeInForce` must be set to `GTX` when this field is `true`. Only applicable to Equity Orders.
-          enum:
-            - true
-            - false
+          $ref: '#/components/schemas/extendedHours'
         metadata:
           $ref: '#/components/schemas/metadata'
         timeInForce:
-          type: string
-          example: GTC
-          description: Set to "GTC" for a good-til-canceled order. Set to "GTX" for extended hours orders. When this property is not set, market and limit orders will be good-for-day by default, while stops and market-if-touched orders will be assumed good-til-canceled.
-          enum:
-            - GTC
-            - GTX
-            - DAY
-            - FILL_OR_KILL
+          $ref: '#/components/schemas/timeInForce'
         expiration:
-          type: string
-          format: date
-          example: YYYY-MM-DD
-          description: The date of expiration for a good-til-canceled order, in “YYYY-MM-DD” format. The order will be canceled if not executed by the market close on this date. If not set, a good-til-canceled Stop and MIT order will be assumed to expire 90 days after creation. If not set, a limit order will be considered GTD and will cancel at the end of the trading day.
+          $ref: '#/components/schemas/expiration'
         salesCredit:
           $ref: '#/components/schemas/SalesCredit'
         dccs:
@@ -11700,18 +12382,13 @@ components:
       description: Order details for a fixed income asset trade
       properties:
         id:
-          type: string
-          example: EF.418a5506-256c-4c3c-9d4d-f491522cf7f2
-          description: Unique ID created when an order is placed.
+          $ref: '#/components/schemas/orderID'
         orderNo:
-          type: string
-          example: EFXM000103
-          description: A human readable order identifier.
+          $ref: '#/components/schemas/orderNo'
         type:
-          type: string
-          example: MARKET
-          description: The type of order placed.
-        side: {}
+          $ref: '#/components/schemas/orderTypes'
+        side:
+          $ref: '#/components/schemas/schemas-side'
         status:
           $ref: '#/components/schemas/localOrderStatus'
         instrumentID:
@@ -11723,10 +12400,7 @@ components:
         symbol:
           $ref: '#/components/schemas/instrumentSymbol'
         averagePrice:
-          type: number
-          format: double
-          example: 160
-          description: Average price of the security being transacted in the order.
+          $ref: '#/components/schemas/orderAveragePrice'
         currency:
           $ref: '#/components/schemas/currency'
         totalOrderAmount:
@@ -11735,15 +12409,9 @@ components:
           example: 800
           description: Total amount paid for the order.
         cumulativeQuantity:
-          type: number
-          format: double
-          example: 5
-          description: The number of shares currently being transacted. Larger orders may execute in chunks. E.g A BUY order of 1,000 shares may get filled in 5 executions of 200 orders.
+          $ref: '#/components/schemas/orderCumulativeQuantity'
         quantity:
-          type: number
-          format: double
-          example: 5
-          description: Total number of shares the order is submitted for.
+          $ref: '#/components/schemas/orderQuantity'
         fees:
           type: number
           format: double
@@ -11791,9 +12459,7 @@ components:
               example: null
               description: A longer reason for the error.
         amountCash:
-          type: number
-          example: 800
-          description: Displays the cash amount requested for the order.
+          $ref: '#/components/schemas/amountCash'
         OrderExpires:
           type: string
           example: null
@@ -11835,6 +12501,8 @@ components:
           $ref: '#/components/schemas/clientOrderTransactionTime'
         clientOrderID:
           $ref: '#/components/schemas/clientOrderID'
+        cancelDetails:
+          $ref: '#/components/schemas/cancelDetails'
     CancelOrderResponse:
       type: object
       properties:
@@ -11881,10 +12549,190 @@ components:
         - REJECTED
         - CANCELED
         - PENDING_CANCEL
+    side:
+      type: string
+      example: BUY
+      description: The side of the order.
+      enum:
+        - BUY
+        - SELL
+    auditLog:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/localOrderStatus'
+        quantities:
+          type: object
+          properties:
+            cumulativeQuantity:
+              example: 0
+            filledQuantity:
+              example: 0
+            remainingQuantity:
+              example: 0
+        pricing:
+          type: object
+          properties:
+            averagePrice:
+              example: 0
+            averagePriceRaw:
+              example: 0
+            lastPrice:
+              example: 0
+            rateAsk:
+              example: 0
+            rateBid:
+              example: 0
+        commissionAndFees:
+          type: object
+          properties:
+            commission:
+              example: 0
+            feeSec:
+              example: 0
+            feeTaf:
+              example: 0
+            feeBase:
+              example: 0
+            feeXtraShares:
+              example: 0
+            feeExchange:
+              example: 0
+        pnl:
+          example: 0
+        transactTime:
+          $ref: '#/components/schemas/updated'
+        comment:
+          $ref: '#/components/schemas/note'
+        eventID:
+          type: string
+          example: event_15cc717e-856d-4eb4-8348-93cd5b6186aa
+          description: EventID sent to client
+        createdWhen:
+          $ref: '#/components/schemas/created'
     dccs:
       type: boolean
       example: true
       description: True, when the Mutual Fund HSA is classified as Defined Contribution Clearing and Settlement (DCC&S) order.
+    commissionOverride:
+      oneOf:
+        - type: object
+          properties:
+            commissionOverrideType:
+              $ref: '#/components/schemas/commissionOverrideType'
+            commissionID:
+              $ref: '#/components/schemas/commissionID'
+            commissionOverrideDesc:
+              $ref: '#/components/schemas/commissionOverrideDesc'
+        - type: object
+          properties:
+            commissionOverrideType:
+              $ref: '#/components/schemas/commissionOverrideType'
+            commissionID:
+              $ref: '#/components/schemas/commissionID'
+            commissionOverrideDesc:
+              $ref: '#/components/schemas/commissionOverrideDesc'
+            commissionAmount:
+              example: 3.5
+            secOverride:
+              example: 0.01
+            tafOverride:
+              example: 0.01
+        - type: object
+          properties:
+            commissionOverrideType:
+              example: '#/components/schemas/commissionOverrideType'
+            commissionID:
+              $ref: '#/components/schemas/commissionID'
+            commissionOverrideDesc:
+              example: '#/components/schemas/commissionOverrideDesc'
+            commissionRate:
+              example: 0.5
+            secOverride:
+              example: 0.01
+            tafOverride:
+              example: 0.01
+    OrderAuditResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/orderID'
+        orderNo:
+          $ref: '#/components/schemas/orderNo'
+        accountID:
+          $ref: '#/components/schemas/accountID'
+        accountNo:
+          $ref: '#/components/schemas/accountNo'
+        quantities:
+          type: object
+          properties:
+            requestedQuantity:
+              type: number
+              example: 1
+              description: The amount of shares requested in the order.
+            totalFilledQuantity:
+              type: number
+              example: 1
+              description: The amount of shares filled in the order.
+        ordStatus:
+          $ref: '#/components/schemas/localOrderStatus'
+        side:
+          $ref: '#/components/schemas/side'
+        symbol:
+          $ref: '#/components/schemas/instrumentSymbol'
+        ordType:
+          $ref: '#/components/schemas/orderTypes'
+        amountCash:
+          $ref: '#/components/schemas/amountCash'
+        violationExempt:
+          type: boolean
+          example: true
+        preventQueuing:
+          $ref: '#/components/schemas/preventQueuing'
+        extendedHours:
+          $ref: '#/components/schemas/extendedHours'
+        orderExpires:
+          type: string
+          format: date
+          example: YYYY-MM-DDTHH:MM:SS.sssZ
+          description: The date of expiration for a good-til-canceled order, in ISO format. The order will be canceled if not executed by the market close on this date. If not set, a good-til-canceled Stop and MIT order will be assumed to expire 90 days after creation. If not set, a limit order will be considered GTD and will cancel at the end of the trading day.
+        openQuantity:
+          $ref: '#/components/schemas/openQuantity'
+        availableForTradingQuantity:
+          $ref: '#/components/schemas/availableForTradingQuantity'
+        instrumentID:
+          $ref: '#/components/schemas/instrumentID'
+        pricing:
+          type: object
+          properties:
+            avgPxRaw:
+              example: 33.66
+            avgPx:
+              example: 33.66
+            stopPx:
+              example: 0
+            minTriggerPrice:
+              example: 0
+        commissionOverride:
+          $ref: '#/components/schemas/commissionOverride'
+        commissionAndFees:
+          type: object
+          properties:
+            total:
+              example: 2.99
+            tefra:
+              example: 0
+            ptp:
+              example: 0
+        auditLog:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/auditLog'
+        clientOrderTransactionTime:
+          $ref: '#/components/schemas/clientOrderTransactionTime'
+        clientOrderID:
+          $ref: '#/components/schemas/clientOrderID'
     clientOrderTransactionTime:
       type: string
       example: '2024-07-30T22:13:18.000Z'
@@ -11893,6 +12741,95 @@ components:
       type: string
       example: 5a1762d5-4562
       description: A unique identifier that represents the order, as defined by the partner. This detail will be reported to the CAT system for US brokers to more easily reconcile reported information.
+    cancelDetails:
+      type: object
+      description: Additional details to clarify when and how the cancel request was received. US broker-dealers must utilize this field for CAT compliance.
+      properties:
+        initiator:
+          type: string
+          nullable: true
+          example: C
+          description: The individual responsible for initiating the cancellation of an order. Please refer to CAT documentation and instructions for more information on the allowed values.
+          enum:
+            - C
+            - F
+        requestedTimestamp:
+          type: string
+          nullable: true
+          example: '2023-07-30T22:13:18.000Z'
+          description: The requested timestamp in ISO format by user to cancel an order
+        manualCancel:
+          type: boolean
+          nullable: true
+          example: true
+          description: Whether an order cancellation request was received from a human, manually. A false value represents that an automated system initiated the cancel.
+        comment:
+          type: string
+          nullable: true
+          example: This order has been cancelled
+          description: A freeform comment to attach to the cancel request
+    orderTypesRequest:
+      type: string
+      example: MARKET
+      description: The type of the Order.
+      enum:
+        - MARKET
+        - LIMIT
+        - STOP
+        - MARKET_IF_TOUCHED
+    limitType:
+      type: string
+      enum:
+        - PRICE
+        - YIELD
+      description: Whether the limit price represents a unit price, or a yield. Only applicable to Orders for debt Instruments.
+      example: PRICE
+    schemas-side:
+      type: string
+      example: BUY
+      description: Whether an order is to purchase or sell. Generally, the value should be set to `BUY` or `SELL`. For Options orders, `BUY_OPEN`, `BUY_CLOSE`, `SELL_OPEN`, `SELL_CLOSE` should be used.
+      enum:
+        - BUY
+        - SELL
+        - BUY_OPEN
+        - BUY_CLOSE
+        - SELL_OPEN
+        - SELL_CLOSE
+    commissionRate:
+      type: number
+      format: BigDecimal
+      description: The commission rate is a percentage charge to the total amount of the order.
+      example: 0.3
+      minimum: 0.0001
+      maximum: 1
+    preventQueuing:
+      type: boolean
+      example: false
+      description: If set to `true`, Orders received when the market is closed will not be queued for the next market open, and will be rejected. Please pay attention to the spelling of queuing as there are two valid spellings of this word.
+      enum:
+        - true
+        - false
+    extendedHours:
+      type: boolean
+      example: false
+      description: Whether the order is eligible for Extended Hours Trading. The `timeInForce` must be set to `GTX` when this field is `true`. Only applicable to Equity Orders.
+      enum:
+        - true
+        - false
+    timeInForce:
+      type: string
+      example: GTC
+      description: Set to "GTC" for a good-til-canceled order. Set to "GTX" for extended hours orders. When this property is not set, market and limit orders will be good-for-day by default, while stops and market-if-touched orders will be assumed good-til-canceled.
+      enum:
+        - GTC
+        - GTX
+        - DAY
+        - FILL_OR_KILL
+    expiration:
+      type: string
+      format: date
+      example: YYYY-MM-DD
+      description: The date of expiration for a good-til-canceled order, in “YYYY-MM-DD” format. The order will be canceled if not executed by the market close on this date. If not set, a good-til-canceled Stop and MIT order will be assumed to expire 90 days after creation. If not set, a limit order will be considered GTD and will cancel at the end of the trading day.
     TaxLot:
       type: object
       properties:
@@ -11909,6 +12846,10 @@ components:
         - SA
         - T
         - O
+    orderAveragePrice:
+      type: number
+      example: 1038.81
+      description: The average price of the security being transacted in the order.
     UploadUserPhysicalDocument:
       type: object
       properties:
@@ -15844,10 +16785,6 @@ components:
       type: number
       example: 302
       description: The remaining amount of shares that have not been allocated to the sub accounts.
-    orderAveragePrice:
-      type: number
-      example: 1038.81
-      description: The average price of the security being transacted in the order.
     allocatedQuantity:
       type: number
       example: 0.7219
